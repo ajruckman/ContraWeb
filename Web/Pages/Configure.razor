@@ -1,0 +1,18 @@
+@using ShapeSet.Components
+@using Microsoft.AspNetCore.Components.Web
+
+@page "/configure"
+
+@if (Config != null)
+{
+    <Checkbox checked="@Config.DomainNeeded" @onchange="@((args) => Config.DomainNeeded = (bool) args.Value)"></Checkbox>
+
+    <input type="text" @bind-value="@Config.SpoofedA" @bind-value:event="oninput"/>
+    <input type="text" @bind-value="@Config.SpoofedAAAA" @bind-value:event="oninput"/>
+    <input type="text" @bind-value="@Config.SpoofedCNAME" @bind-value:event="oninput"/>
+    <input type="text" @bind-value="@Config.SpoofedDefault" @bind-value:event="oninput"/>
+}
+else
+{
+    <div class="Configure_NoConfigNotice">There is no config saved in the Contradomain database. Please run the ContraCore DNS server once to populate the database.</div>
+}

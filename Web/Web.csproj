@@ -10,7 +10,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\css" />
+      <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="UISet.ColorSet" Version="1.0.10-alpha" />
+      <PackageReference Include="UISet.FontSet" Version="1.0.1-alpha" />
+      <PackageReference Include="UISet.ShapeSet" Version="1.0.6-alpha" />
     </ItemGroup>
 
 </Project>
