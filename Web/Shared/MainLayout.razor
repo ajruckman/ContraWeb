@@ -1,6 +1,21 @@
 ﻿@using Superset.Web.Resources
+@using Blazored.LocalStorage
+
+@inject ILocalStorageService LocalStorage
+
 @inherits LayoutComponentBase
 
-@ResourceManifest.Render(new Configuration().ResourceManifests)
+<style>
+    #blazor-error-ui {
+    display: none;
+    }
+</style>
 
-@Body
+@ResourceManifest.RenderScripts(new Configuration().ResourceManifests)
+
+@if (_themeLoader.Complete)
+{
+    @_themeLoader.RenderLink()
+    @Body
+    @_themeLoader.RenderDropdown()
+}

@@ -1,3 +1,23 @@
 #blazor-error-ui {
     display: none;
 }
+
+body {
+    background-color: var(--ColorSet_ThemeColor_Background_10);
+    color:            var(--ColorSet_ThemeColor_Text_80);
+
+    * {
+        font-family: var(--FontSet-SansSerifFont);
+    }
+
+    // https://codepen.io/gliesche/pen/ZQyPeV
+    .Check {
+        border-bottom: 3px solid #78b13f;
+        border-right:  3px solid #78b13f;
+        display:       inline-block;
+        height:        12px;
+        transform:     rotate(45deg);
+        width:         6px;
+        margin: 0 5px;
+    }
+}

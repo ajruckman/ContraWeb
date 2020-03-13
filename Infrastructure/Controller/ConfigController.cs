@@ -2,18 +2,19 @@
 using System.Linq;
 using Database.ContraDB;
 using Infrastructure.Schema;
+using Superset.Logging;
 
 namespace Infrastructure.Controller
 {
     public class ConfigController
     {
-        public Config? Read()
+        public static Config? Read()
         {
             using ContraDBContext contraDB = new ContraDBContext();
 
             if (!contraDB.config.Any())
                 return null;
-            
+
             config config = contraDB.config.OrderByDescending(v => v.id).Take(1).Single();
 
             return new Config
@@ -28,14 +29,30 @@ namespace Infrastructure.Controller
                 SpoofedDefault = config.spoofed_default
             };
         }
-        
-        public void Update(Config config)
+
+        public static bool Update(Config config)
         {
             using ContraDBContext contraDB = new ContraDBContext();
 
+            Config? current = Read();
+            if (current != null)
+                if (current.ToString() == config.ToString())
+                {
+                    Common.Logger.Info(
+                        "The latest config in the database matches the new config passed to ConfigController.Update(); not storing new config.",
+                        new Fields {{"Config", config.ToString()}}
+                    );
+                    return true;
+                }
+
+            Common.Logger.Info(
+                "Storing new config in database.",
+                new Fields {{"Config", config.ToString()}}
+            );
+
             contraDB.config.Add(new config
             {
-                id              = config.ID,
+                id              = 0,
                 sources         = config.Sources.ToArray(),
                 search_domains  = config.SearchDomains.ToArray(),
                 domain_needed   = config.DomainNeeded,
@@ -46,6 +63,8 @@ namespace Infrastructure.Controller
             });
 
             contraDB.SaveChanges();
+
+            return true;
         }
     }
 }

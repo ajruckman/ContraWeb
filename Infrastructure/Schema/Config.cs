@@ -12,5 +12,19 @@ namespace Infrastructure.Schema
         public string       SpoofedAAAA    { get; set; }
         public string       SpoofedCNAME   { get; set; }
         public string       SpoofedDefault { get; set; }
+
+        public override string ToString()
+        {
+            return
+                $"{{"                                 +
+                $"{string.Join(',', Sources)} "       +
+                $"{string.Join(',', SearchDomains)} " +
+                $"{DomainNeeded} "                    +
+                $"{SpoofedA} "                        +
+                $"{SpoofedAAAA} "                     +
+                $"{SpoofedCNAME} "                    +
+                $"{SpoofedDefault}"                   +
+                $"}}";
+        }
     }
 }

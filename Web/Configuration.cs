@@ -7,7 +7,14 @@ namespace Web
     {
         public readonly List<ResourceManifest> ResourceManifests = new List<ResourceManifest>
         {
-            Superset.Web.ResourceManifests.LocalCSS
-        }; 
+            Superset.Web.ResourceManifests.LocalCSS,
+
+            ColorSet.ResourceManifests.Globals,
+
+            FontSet.ResourceManifests.Inter,
+            FontSet.ResourceManifests.JetBrainsMono,
+
+            ShapeSet.ResourceManifests.Composite
+        };
     }
 }

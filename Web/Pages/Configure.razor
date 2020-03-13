@@ -6,11 +6,53 @@
 @if (Config != null)
 {
     <Checkbox checked="@Config.DomainNeeded" @onchange="@((args) => Config.DomainNeeded = (bool) args.Value)"></Checkbox>
+    <br>
+    <input type="text" @bind-value="@Config.SpoofedA" @bind-value:event="oninput" class="SS_Input"/>
+    <br>
+    <input type="text" @bind-value="@Config.SpoofedAAAA" @bind-value:event="oninput" class="SS_Input"/>
+    <br>
+    <input type="text" @bind-value="@Config.SpoofedCNAME" @bind-value:event="oninput" class="SS_Input"/>
+    <br>
+    <input type="text" @bind-value="@Config.SpoofedDefault" @bind-value:event="oninput" class="SS_Input"/>
+    <br>
+    <br>
+    <button @onclick="@Commit" class="SS_Button">COMMIT</button>
+    @if (_configCommitted ?? false)
+    {
+        <div class="Check"></div>
+    }                                            
 
-    <input type="text" @bind-value="@Config.SpoofedA" @bind-value:event="oninput"/>
-    <input type="text" @bind-value="@Config.SpoofedAAAA" @bind-value:event="oninput"/>
-    <input type="text" @bind-value="@Config.SpoofedCNAME" @bind-value:event="oninput"/>
-    <input type="text" @bind-value="@Config.SpoofedDefault" @bind-value:event="oninput"/>
+    <br>
+
+    <table>
+        <thead>
+        <tr>
+            <th></th>
+            <th>URL</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (Source source in _sources)
+        {
+            <tr>
+                <td>
+                    <button class="SS_Button" @onclick="@(() => RemoveSource(source))">✖</button>
+                </td>
+                <td>@source.URL</td>
+            </tr>
+        }
+        </tbody>
+
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <input class="SS_Input SS_Input--WidthWide" type="text" @bind="@NewSource"/>
+                <button class="SS_Button" @onclick="@AddSource">+</button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 }
 else
 {
