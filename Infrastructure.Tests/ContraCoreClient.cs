@@ -16,7 +16,7 @@ namespace Infrastructure.Tests
         [Test]
         public async Task PingTest()
         {
-            await _ccc.ConnectionComplete.Task;
+            _ccc.ConnectionComplete.WaitHandle.WaitOne();
             bool success = await _ccc.Ping("Infrastructure.Tests.ContraCoreClient.Setup()");
             Assert.IsTrue(success);
         }

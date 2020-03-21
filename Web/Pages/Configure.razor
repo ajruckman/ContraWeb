@@ -3,58 +3,86 @@
 
 @page "/configure"
 
-@if (Config != null)
-{
-    <Checkbox checked="@Config.DomainNeeded" @onchange="@((args) => Config.DomainNeeded = (bool) args.Value)"></Checkbox>
-    <br>
-    <input type="text" @bind-value="@Config.SpoofedA" @bind-value:event="oninput" class="SS_Input"/>
-    <br>
-    <input type="text" @bind-value="@Config.SpoofedAAAA" @bind-value:event="oninput" class="SS_Input"/>
-    <br>
-    <input type="text" @bind-value="@Config.SpoofedCNAME" @bind-value:event="oninput" class="SS_Input"/>
-    <br>
-    <input type="text" @bind-value="@Config.SpoofedDefault" @bind-value:event="oninput" class="SS_Input"/>
-    <br>
-    <br>
-    <button @onclick="@Commit" class="SS_Button">COMMIT</button>
-    @if (_configCommitted ?? false)
+<div class="Configure_SettingsContainer">
+
+    @if (Config != null)
     {
-        <div class="Check"></div>
-    }                                            
+        <section class="Options">
+            <h3>Options</h3>
 
-    <br>
+            <span class="CheckboxContainer">
+                <Checkbox checked="@Config.DomainNeeded" @onchange="@((args) => Config.DomainNeeded = (bool) args.Value)" id="DomainNeededCheckbox"></Checkbox>
+                <label for="DomainNeededCheckbox">Don't pass queries for short names to upstream servers</label>
+            </span>
+        </section>
 
-    <table>
-        <thead>
-        <tr>
-            <th></th>
-            <th>URL</th>
-        </tr>
-        </thead>
+        <div class="Spacer"></div>
 
-        <tbody>
-        @foreach (Source source in _sources)
-        {
-            <tr>
-                <td>
-                    <button class="SS_Button" @onclick="@(() => RemoveSource(source))">✖</button>
-                </td>
-                <td>@source.URL</td>
-            </tr>
-        }
-        </tbody>
+        <section class="SpoofedResponseValues">
+            <h3>Spoofed response values for blocked DNS queries</h3>
+            <label>A</label>
+            <input type="text" @bind-value="@Config.SpoofedA" @bind-value:event="oninput" class="SS_Input"/>
+            <br>
+            <label>AAAA</label>
+            <input type="text" @bind-value="@Config.SpoofedAAAA" @bind-value:event="oninput" class="SS_Input"/>
+            <br>
+            <label>CNAME</label>
+            <input type="text" @bind-value="@Config.SpoofedCNAME" @bind-value:event="oninput" class="SS_Input"/>
+            <br>
+            <label>Default</label>
+            <input type="text" @bind-value="@Config.SpoofedDefault" @bind-value:event="oninput" class="SS_Input"/>
+        </section>
 
-        <tfoot>
-        <tr>
-            <td colspan="2">
-                <input class="SS_Input SS_Input--WidthWide" type="text" @bind="@NewSource"/>
-                <button class="SS_Button" @onclick="@AddSource">+</button>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
-}
-else
-{
-    <div class="Configure_NoConfigNotice">There is no config saved in the Contradomain database. Please run the ContraCore DNS server once to populate the database.</div>
-}
+        <div class="Spacer"></div>
+
+        <section class="RuleSources">
+            <h3>Domain lists for blacklist rules</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>URL</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                @foreach (Source source in _sources)
+                {
+                    <tr>
+                        <td>
+                            <button class="SS_Button SS_Button--Red" @onclick="@(() => RemoveSource(source))">✖</button>
+                        </td>
+                        <td>
+                            <a href="@source.URL" target="_blank">@source.URL</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+
+                <tfoot>
+                <tr>
+                    <td colspan="2">
+                        <input class="SS_Input SS_Input--WidthWide" type="text" @bind="@NewSource" placeholder="New source URL"/>
+                        <button class="SS_Button SS_Button--Green" @onclick="@AddSource">+</button>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <div class="Spacer"></div>
+
+        <section class="CommitConfig">
+            <button @onclick="@Commit" class="SS_Button SS_Button--Green">COMMIT</button>
+            @if (_configCommitted ?? false)
+            {
+                <div class="Check"></div>
+            }
+        </section>
+    }
+    else
+    {
+        <div class="Configure_NoConfigNotice">There is no config saved in the Contradomain database. Please run the ContraCore DNS server once to populate the database.</div>
+    }
+
+</div>

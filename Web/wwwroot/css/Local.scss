@@ -3,8 +3,10 @@
 }
 
 body {
-    background-color: var(--ColorSet_ThemeColor_Background_10);
+    background-color: var(--ColorSet_ThemeColor_Background_20);
     color:            var(--ColorSet_ThemeColor_Text_80);
+    font-size:        13px;
+    margin:           0;
 
     * {
         font-family: var(--FontSet-SansSerifFont);
@@ -16,8 +18,93 @@ body {
         border-right:  3px solid #78b13f;
         display:       inline-block;
         height:        12px;
+        margin:        0 5px;
         transform:     rotate(45deg);
         width:         6px;
-        margin: 0 5px;
+    }
+
+    .Index_LogTableContainer {
+        padding: 5px;
+    }
+
+    .Configure_SettingsContainer {
+        padding: 5px;
+        
+        h3 {
+            margin: 4px 0;
+        }
+
+        .Options {
+            .CheckboxContainer {
+                align-items: center;
+                display:     flex;
+
+                .SS_CheckboxContainer {
+                    margin-right: 6px;
+                }
+            }
+        }
+
+        .SpoofedResponseValues {
+            label {
+                display: inline-block;
+                width:   75px;
+            }
+        }
+
+        .RuleSources {
+            table {
+                thead tr th {
+                    text-align: left;
+                }
+
+                tbody tr td {
+                    &:first-child {
+                        width: 30px;
+
+                        button {
+                            height: 25px;
+                            width:  25px;
+                        }
+                    }
+
+                    &:nth-child(2) a {
+                        color:                 var(--ColorSet_ThemeColor_Text_80);
+                        font-family:           var(--FontSet-MonospaceFont);
+                        text-decoration-color: var(--ColorSet_ThemeColor_Text_0);
+
+                        &:hover {
+                            text-decoration-color: var(--ColorSet_ThemeColor_Text_80);
+                        }
+                    }
+                }
+
+                tfoot tr td {
+                    button {
+                        height: 25px;
+                        width:  25px;
+                    }
+                }
+            }
+        }
+
+        .CommitConfig {
+            button {
+
+            }
+        }
+
+        .Spacer {
+            height: 25px;
+        }
+    }
+
+    .RuleGen_ProgressContainer {
+        padding: 5px;
+
+        span {
+            display:     block;
+            font-family: var(--FontSet-MonospaceFont);
+        }
     }
 }

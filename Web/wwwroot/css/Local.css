@@ -2,8 +2,10 @@
   display: none; }
 
 body {
-  background-color: var(--ColorSet_ThemeColor_Background_10);
-  color: var(--ColorSet_ThemeColor_Text_80); }
+  background-color: var(--ColorSet_ThemeColor_Background_20);
+  color: var(--ColorSet_ThemeColor_Text_80);
+  font-size: 13px;
+  margin: 0; }
   body * {
     font-family: var(--FontSet-SansSerifFont); }
   body .Check {
@@ -11,6 +13,43 @@ body {
     border-right: 3px solid #78b13f;
     display: inline-block;
     height: 12px;
+    margin: 0 5px;
     transform: rotate(45deg);
-    width: 6px;
-    margin: 0 5px; }
+    width: 6px; }
+  body .Index_LogTableContainer {
+    padding: 5px; }
+  body .Configure_SettingsContainer {
+    padding: 5px; }
+    body .Configure_SettingsContainer h3 {
+      margin: 4px 0; }
+    body .Configure_SettingsContainer .Options .CheckboxContainer {
+      align-items: center;
+      display: flex; }
+      body .Configure_SettingsContainer .Options .CheckboxContainer .SS_CheckboxContainer {
+        margin-right: 6px; }
+    body .Configure_SettingsContainer .SpoofedResponseValues label {
+      display: inline-block;
+      width: 75px; }
+    body .Configure_SettingsContainer .RuleSources table thead tr th {
+      text-align: left; }
+    body .Configure_SettingsContainer .RuleSources table tbody tr td:first-child {
+      width: 30px; }
+      body .Configure_SettingsContainer .RuleSources table tbody tr td:first-child button {
+        height: 25px;
+        width: 25px; }
+    body .Configure_SettingsContainer .RuleSources table tbody tr td:nth-child(2) a {
+      color: var(--ColorSet_ThemeColor_Text_80);
+      font-family: var(--FontSet-MonospaceFont);
+      text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
+      body .Configure_SettingsContainer .RuleSources table tbody tr td:nth-child(2) a:hover {
+        text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }
+    body .Configure_SettingsContainer .RuleSources table tfoot tr td button {
+      height: 25px;
+      width: 25px; }
+    body .Configure_SettingsContainer .Spacer {
+      height: 25px; }
+  body .RuleGen_ProgressContainer {
+    padding: 5px; }
+    body .RuleGen_ProgressContainer span {
+      display: block;
+      font-family: var(--FontSet-MonospaceFont); }

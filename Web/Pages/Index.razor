@@ -1,5 +1,68 @@
 ﻿@page "/"
+@using FT3
+@using FT3.Component
+@using Infrastructure.Schema
 
-<h1>Hello, world!</h1>
+<div class="Index_LogTableContainer">
 
-Welcome to your new app.
+    <FlareTableContainer FlareTable="@_flareTable1">
+
+        <FlareTableControlRow>
+            <FlareTableColumnToggles T="Log"/>
+            <FlareTableControlSpacer/>
+            <FlareTableResetButton T="Log"/>
+            <FlareTableControlFiller/>
+            <FlareTableRegexToggle T="Log"/>
+        </FlareTableControlRow>
+
+        <FlareTableControlRow>
+            <FlareTablePaginationSize T="Log"/>
+            <FlareTableControlFiller/>
+            <FlareTablePaginationButtons T="Log" ID="1"/>
+        </FlareTableControlRow>
+
+        <FlareTableTable>
+            <FlareTableHead>
+                <FlareTableHeadingRow>
+                    @foreach (Column column in _flareTable1.Columns)
+                    {
+                        <FlareTableHeading T="Log" ID="@column.ID"/>
+                    }
+                </FlareTableHeadingRow>
+                <FlareTableFilterRow>
+                    @foreach (Column column in _flareTable1.Columns)
+                    {
+                        <FlareTableFilter T="Log" ID="@column.ID"/>
+                    }
+                </FlareTableFilterRow>
+            </FlareTableHead>
+            <FlareTableBody T="Log">
+                @foreach (Log row in _flareTable1.Rows())
+                {
+                    <FlareTableBodyRow T="Log" Value="@row">
+                        <FlareTableCell T="Log" ID="Time">@row.Time.ToString("HH:mm:ss.fff")</FlareTableCell>
+                        <FlareTableCell T="Log" ID="Client">@row.Client</FlareTableCell>
+                        <FlareTableCell T="Log" ID="Question">@row.Question</FlareTableCell>
+                        <FlareTableCell T="Log" ID="Action">@row.Action</FlareTableCell>
+                        <FlareTableCell T="Log" ID="Answers">
+                            @if (row.Answers != null)
+                            {
+                                @:@string.Join(", ", row.Answers)
+                            }
+                        </FlareTableCell>
+                        <FlareTableCell T="Log" ID="ClientHostname">@row.ClientHostname</FlareTableCell>
+                        <FlareTableCell T="Log" ID="ClientVendor">@row.ClientVendor</FlareTableCell>
+                    </FlareTableBodyRow>
+                }
+            </FlareTableBody>
+        </FlareTableTable>
+
+        <FlareTableControlRow>
+            <FlareTablePaginationInfo T="Log"/>
+            <FlareTableControlFiller/>
+            <FlareTablePaginationButtons T="Log" ID="2"/>
+        </FlareTableControlRow>
+
+    </FlareTableContainer>
+
+</div>

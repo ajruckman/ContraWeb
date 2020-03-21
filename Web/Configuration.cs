@@ -8,13 +8,17 @@ namespace Web
         public readonly List<ResourceManifest> ResourceManifests = new List<ResourceManifest>
         {
             Superset.Web.ResourceManifests.LocalCSS,
+            
+            Subsegment.Resources.ResourceManifest,
 
             ColorSet.ResourceManifests.Globals,
 
             FontSet.ResourceManifests.Inter,
             FontSet.ResourceManifests.JetBrainsMono,
 
-            ShapeSet.ResourceManifests.Composite
+            FT3.ResourceManifests.FlareTables,
+            
+            ShapeSet.ResourceManifests.Composite,
         };
     }
 }

@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Superset.Web.State
+@using Infrastructure.Controller
+
+@page "/rulegen"
+
+<div class="RuleGen_ProgressContainer">
+    <table>
+        <tr>
+            <TriggerWrapper>
+                <td>Number of blacklist rules</td>
+                <td>@_blacklistRuleCount</td>
+            </TriggerWrapper>
+        </tr>
+    </table>
+    
+    <button @onclick="@GenRules" disabled="@_processing" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
+
+    <TriggerWrapper Trigger="@_progressUpdated">
+        @if (_processing)
+        {
+            @for (var i = 0; i < _progress.Count; i++)
+            {
+                <span @key="@($"RuleGen_ProgressLine_{i}")">@_progress[i]</span>
+            }
+        }
+    </TriggerWrapper>
+</div>

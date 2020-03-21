@@ -16,10 +16,12 @@
     <ItemGroup>
       <PackageReference Include="Blazored.LocalStorage" Version="2.1.1" />
       <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
+      <PackageReference Include="FT3" Version="3.4.0-alpha" />
+      <PackageReference Include="Integrant.Subsegment" Version="1.4.1-alpha" />
       <PackageReference Include="Superset" Version="1.9.0-alpha" />
-      <PackageReference Include="UISet.ColorSet" Version="1.0.10-alpha" />
-      <PackageReference Include="UISet.FontSet" Version="1.0.1-alpha" />
-      <PackageReference Include="UISet.ShapeSet" Version="1.0.6-alpha" />
+      <PackageReference Include="UISet.ColorSet" Version="1.0.11-alpha" />
+      <PackageReference Include="UISet.FontSet" Version="1.0.2-alpha" />
+      <PackageReference Include="UISet.ShapeSet" Version="1.1.0-alpha" />
     </ItemGroup>
 
 </Project>

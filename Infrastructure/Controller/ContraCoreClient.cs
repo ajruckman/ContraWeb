@@ -27,12 +27,18 @@ namespace Infrastructure.Controller
 
         private readonly Logger _logger = new Logger();
 
-        public event Action OnConnected;
-        public event Action OnDisconnected;
-        public event Action OnStatusChange; // OnConnected + OnDisconnected
-        public event Action OnNewLog;
-        
-        public TaskCompletionSource<bool> ConnectionComplete = new TaskCompletionSource<bool>();
+        public event Action         OnConnected;
+        public event Action         OnDisconnected;
+        public event Action         OnStatusChange; // OnConnected + OnDisconnected
+        public event Action         OnNewLog;
+        public event Action<string> OnGenRulesCallback;
+
+        public bool         GeneratingRules { get; private set; }
+        public event Action OnGenRulesChange;
+
+        public readonly ManualResetEventSlim ConnectionComplete = new ManualResetEventSlim();
+
+        // public TaskCompletionSource<bool> ConnectionComplete = new TaskCompletionSource<bool>();
 
         public bool Connected { get; private set; }
 
@@ -46,6 +52,7 @@ namespace Infrastructure.Controller
             {
                 Connected = true;
                 _logger.Info("Connected to ContraCore");
+                ConnectionComplete.Set();
                 OnStatusChange?.Invoke();
             };
             OnDisconnected += () =>
@@ -87,12 +94,12 @@ namespace Infrastructure.Controller
                     _reader = new StreamReader(_stream);
 
                     OnConnected?.Invoke();
-                    ConnectionComplete.SetResult(true);
+                    // ConnectionComplete.SetResult(true);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    _logger.Warning("Failed to connect to server; retrying...", meta: new Fields {{"Hostname", hostname}},
-                        printStacktrace: true);
+                    _logger.Warning("Failed to connect to server; retrying...", e: e, meta: new Fields {{"Hostname", hostname}},
+                        true);
                     Thread.Sleep(1000);
 
                     OnDisconnected?.Invoke();
@@ -113,14 +120,14 @@ namespace Infrastructure.Controller
                         switch (cmd)
                         {
                             case "ping":
-                                await Send("pong");
+                                await Send("ping.pong");
                                 break;
 
-                            case "pong":
+                            case "ping.pong":
                                 _pongEvent.Release();
                                 break;
 
-                            case "cache":
+                            case "get_cache.cache":
                                 List<Log> logs = JsonConvert.DeserializeObject<List<Log>>(parts[1]);
                                 await _cacheChannel.Writer.WriteAsync(logs);
                                 break;
@@ -131,6 +138,22 @@ namespace Infrastructure.Controller
                                 _data.Enqueue(log);
 
                                 OnNewLog?.Invoke();
+                                break;
+
+                            case "gen_rules.sources":
+                            case "gen_rules.gen_progress":
+                            case "gen_rules.save_progress":
+                            case "gen_rules.saved_in":
+                            case "gen_rules.recache_progress":
+                            case "gen_rules.recached_in":
+                                string value = line.Substring(line.IndexOf(" ", StringComparison.Ordinal) + 1);
+                                _logger.Debug($"Rule gen progress: {cmd} {value}");
+                                OnGenRulesCallback?.Invoke(value);
+                                break;
+
+                            case "gen_rules.complete":
+                                GeneratingRules = false;
+                                OnGenRulesChange?.Invoke();
                                 break;
 
                             default:
@@ -144,7 +167,7 @@ namespace Infrastructure.Controller
                 }
                 catch (Exception e)
                 {
-                    _logger.Warning("Failed to read from server; reconnecting...", e, new Fields {{"Hostname", hostname}});
+                    _logger.Warning("Failed to read from server; reconnecting...", e, new Fields {{"Hostname", hostname}}, true);
                     Thread.Sleep(1000);
 
                     OnDisconnected?.Invoke();
@@ -167,6 +190,13 @@ namespace Infrastructure.Controller
             OnDisconnected += source.Cancel;
             await Send("get_cache");
             return await _cacheChannel.Reader.ReadAsync(source.Token);
+        }
+
+        public async Task GenRules()
+        {
+            GeneratingRules = true;
+            OnGenRulesChange?.Invoke();
+            await Send("gen_rules");
         }
 
         public async Task<bool> Ping(string caller)

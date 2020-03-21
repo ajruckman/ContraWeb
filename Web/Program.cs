@@ -7,6 +7,9 @@ namespace Web
     {
         public static void Main(string[] args)
         {
+            // ReSharper disable once AssignmentIsFullyDiscarded
+            _ = Common.ContraCoreClient.Connected;
+            
             CreateHostBuilder(args).Build().Run();
         }
 

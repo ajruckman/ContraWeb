@@ -66,5 +66,11 @@ namespace Infrastructure.Controller
 
             return true;
         }
+
+        public static int BlacklistRuleCount()
+        {
+            using ContraDBContext contraDB = new ContraDBContext();
+            return contraDB.blacklist.Count();
+        }
     }
 }

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using Database.ContraDB;
 
 namespace Infrastructure.Schema
@@ -13,7 +11,7 @@ namespace Infrastructure.Schema
 
         public DateTime Time { get; set; }
 
-        public IPAddress Client { get; set; }
+        public string Client { get; set; }
 
         public string Question { get; set; }
 
@@ -25,7 +23,7 @@ namespace Infrastructure.Schema
 
         public string ClientHostname { get; set; }
 
-        public PhysicalAddress ClientMAC { get; set; }
+        public string ClientMAC { get; set; }
 
         public string ClientVendor { get; set; }
 
@@ -34,13 +32,13 @@ namespace Infrastructure.Schema
         public Log(log log)
         {
             Time           = log.time;
-            Client         = log.client;
+            Client         = log.client.ToString();
             Question       = log.question;
             QuestionType   = log.question_type;
             Action         = log.action;
             Answers        = log.answers?.ToList() ?? new List<string>();
             ClientHostname = log.client_hostname;
-            ClientMAC      = log.client_mac;
+            ClientMAC      = log.client_mac?.ToString();
             ClientVendor   = log.client_vendor;
         }
 

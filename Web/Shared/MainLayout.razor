@@ -16,6 +16,7 @@
 @if (_themeLoader.Complete)
 {
     @_themeLoader.RenderLink()
+    @_header.Render()
     @Body
     @_themeLoader.RenderDropdown()
 }
