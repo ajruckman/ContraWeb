@@ -1,4 +1,5 @@
 @import "EditableList.scss";
+@import "Loader.scss";
 
 #blazor-error-ui {
     display: none;
@@ -14,45 +15,48 @@ body {
         font-family: var(--FontSet-SansSerifFont);
     }
 
-
     h3 {
         margin: 4px 0;
     }
 
+    .Spacer {
+        height: 25px;
+    }
+
     // https://codepen.io/gliesche/pen/ZQyPeV
     .CheckMark {
-        height:   12px;
+        //box-shadow: 0 0 0 1px black;
+        height:   21px;
         position: relative;
-        width:    17px;
+        width:    21px;
 
         &:after {
             border-bottom: 3px solid #78b13f;
             border-right:  3px solid #78b13f;
-            bottom:        0.5px;
             content:       '';
             display:       inline-block;
-            height:        12px;
-            left:          3.5px;
+            height:        15px;
+            left:          27%;
             position:      absolute;
             transform:     rotate(45deg);
-            width:         6px;
+            width:         7px;
         }
-
     }
 
     .XMark {
-        height:   12px;
+        //box-shadow: 0 0 0 1px black;
+        height:   21px;
         position: relative;
-        width:    17px;
+        width:    21px;
 
         &:before, &:after {
             background-color: #ff0000;
             content:          '';
-            height:           16px;
-            left:             4.5px;
+            height:           21px;
+            left:             43%;
             position:         absolute;
-            top:              -2px;
-            width:            3px;
+            top:              1%;
+            width:            2.8px;
         }
 
         &:before {
@@ -61,6 +65,26 @@ body {
 
         &:after {
             transform: rotate(-45deg);
+        }
+    }
+
+    .Exclamation {
+        border-color: transparent transparent var(--ColorSet_ThemeColor_SolidYellow_20) transparent;
+        border-style: solid;
+        border-width: 0 calc(21px / 2) 21px calc(21px / 2);
+        color:        black;
+        font-family:  "Arial", sans-serif;
+        font-size:    21px;
+        height:       0;
+        line-height:  21px;
+        position:     relative;
+        width:        0;
+
+        &:after {
+            content:  '!';
+            left:     -3.05px;
+            position: absolute;
+            top:      2px;
         }
     }
 
@@ -79,6 +103,15 @@ body {
                 .SS_CheckboxContainer {
                     margin-right: 6px;
                 }
+            }
+        }
+
+        .SearchDomains {
+            margin-top: 15px;
+
+            .EditableListContainer {
+                max-width: 400px;
+                width:     100%;
             }
         }
 
@@ -146,20 +179,45 @@ body {
                 }
             }
         }
-
-        .Spacer {
-            height: 25px;
-        }
     }
-    
+
     .RuleGen_NewWhitelistContainer {
         padding: 5px 7px;
-        
-        table {
+
+        .Inputs {
+
             tr {
                 td {
                     &:first-child {
-                        
+                        color:          var(--ColorSet_ThemeColor_Text_40);
+                        font-weight:    600;
+                        padding-right:  10px;
+                        padding-top:    6px;
+                        vertical-align: top;
+                    }
+
+                    #NewWhitelist_Pattern {
+                        width: 247px;
+                    }
+
+                    .EL_Validation {
+                        align-items:   center;
+                        display:       flex;
+                        height:        21px;
+                        margin-bottom: 5px;
+
+                        span {
+                            margin-left: 5px;
+                        }
+                    }
+
+                    .ExpirationDateFuturesContainer {
+
+                    }
+
+                    .EditableListContainer {
+                        max-width: 400px;
+                        width:     100%;
                     }
                 }
             }
@@ -172,16 +230,17 @@ body {
         .RuleStats {
             tr {
                 td {
-                    &:first-child {
-                        color:          var(--ColorSet_ThemeColor_Text_40);
-                        font-weight:    600;
-                        padding-right:  10px;
-                        vertical-align: top;
+                    vertical-align: top;
 
-                        a {
-                            display:         inline-block;
-                            text-decoration: none;
-                        }
+                    a {
+                        display:         inline-block;
+                        text-decoration: none;
+                    }
+
+                    &:first-child {
+                        color:         var(--ColorSet_ThemeColor_Text_40);
+                        font-weight:   600;
+                        padding-right: 10px;
                     }
 
                     &:nth-child(2) {
@@ -197,6 +256,15 @@ body {
                         }
                     }
                 }
+            }
+        }
+
+        .GeneratingRulesNoticeContainer {
+            align-items: center;
+            display:     flex;
+
+            > * {
+                margin-right: 5px;
             }
         }
 

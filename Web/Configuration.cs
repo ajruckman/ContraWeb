@@ -16,7 +16,11 @@ namespace Web
             FontSet.ResourceManifests.Inter,
             FontSet.ResourceManifests.JetBrainsMono,
 
+            FlareSelect.Resources.FocusScript,
             FT3.ResourceManifests.FlareTables,
+            
+            Fundament.Resources.ResourceManifest,
+            Rudiment.Resources.ResourceManifest,
             
             ShapeSet.ResourceManifests.Composite,
         };

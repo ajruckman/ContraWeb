@@ -11,19 +11,20 @@
     }
 
     .EditableList--Selected {
-        border:        1px solid var(--ColorSet_ThemeColor_Border_30);
-        background-color:         var(--ColorSet_ThemeColor_Background_30);
-        border-radius: 2px;
-        display:       flex;
-        flex-wrap:     wrap;
-        min-height:    22px;
-        padding:       1px;
+        background-color: var(--ColorSet_ThemeColor_Background_30);
+        border:           1px solid var(--ColorSet_ThemeColor_Border_30);
+        border-radius:    2px;
+        display:          flex;
+        flex-wrap:        wrap;
+        min-height:       26px;
+        padding:          1px;
 
         .EditableList--Selection {
             background-color: var(--ColorSet_ThemeColor_Background_40);
             border:           1px solid var(--ColorSet_ThemeColor_Border_40);
             border-radius:    2px;
-            margin:           1px;
+            margin:           2px;
+            padding: 2px;
 
             .EditableList--Value {
                 height:     16px;
@@ -74,16 +75,38 @@
         width:           100%;
 
         .EditableList--Input {
-            background-color: var(--ColorSet_ThemeColor_Background_30);
-            border:           1px solid var(--ColorSet_ThemeColor_Border_30);
-            margin-left:      1px;
-            width:            calc(100% - 25px - 5px);
+            //background-color: var(--ColorSet_ThemeColor_Background_30);
+            //border:           1px solid var(--ColorSet_ThemeColor_Border_60);
+            margin:           0;
+            width:            calc(100% - 25px - 2px);
         }
 
         .EditableList--AddButton {
-            height:       25px;
-            margin-right: 1px;
-            width:        25px;
+            height: 25px;
+            width:  25px;
+        }
+    }
+
+    .EditableList--Validation {
+        align-items:     center;
+        //border-top:      1px solid var(--ColorSet_ThemeColor_Border_0);
+        display:         flex;
+        justify-content: space-between;
+        margin-top:      2px;
+        //padding-top:     3px;
+        //padding-bottom:     2px;
+
+        .EditableList--ValidationMark {
+            border-right: 1px solid var(--ColorSet_ThemeColor_Border_0);
+            height:       23px;
+
+            padding:      0 3px;
+            width:        23px;
+        }
+
+        .EditableList--ValidationText {
+            width: calc(100% - 23px - 6px - 1px - 3px);
+            font-family: var(--FontSet-MonospaceFont);
         }
     }
 }

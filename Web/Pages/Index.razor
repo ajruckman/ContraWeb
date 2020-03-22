@@ -2,6 +2,9 @@
 @using FT3
 @using FT3.Component
 @using Infrastructure.Schema
+@using Web.Services
+
+@inject LogActionService LogActionService
 
 <div class="Index_LogTableContainer">
 
@@ -52,6 +55,9 @@
                         </FlareTableCell>
                         <FlareTableCell T="Log" ID="ClientHostname">@row.ClientHostname</FlareTableCell>
                         <FlareTableCell T="Log" ID="ClientVendor">@row.ClientVendor</FlareTableCell>
+                        <FlareTableCell T="Log" ID="ActionButton">
+                            <button class="SS_Button" @onclick="_ => LogActionService.Invoke(row)">Invoke</button>
+                        </FlareTableCell>
                     </FlareTableBodyRow>
                 }
             </FlareTableBody>

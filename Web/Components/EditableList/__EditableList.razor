@@ -10,7 +10,37 @@
     </div>
 
     <div class="EditableList--New">
-        <input class="EditableList--Input SS_Input" @bind="@_newValue" type="text"/>
-        <button class="EditableList--AddButton SS_Button" @onclick="@Add">+</button>
+        <input class="EditableList--Input SS_Input" @bind-value="@NewValue" @bind-value:event="oninput" @onkeypress="OnKeyPress" type="text" placeholder="@EditableList.Placeholder"/>
+        <button class="EditableList--AddButton SS_Button" disabled="@(!CanAdd())" @onclick="@Add">+</button>
     </div>
+
+    @if (EditableList.Validated)
+    {
+        <div class="EditableList--Validation">
+            @{
+                if (_validation != null)
+                {
+                    <div class="EditableList--ValidationMark">
+                        @switch (_validation.Value.Item1)
+                        {
+                            case (Validation.Undefined):
+                                break;
+                            case (Validation.Invalid):
+                                <div class="XMark"></div>
+                                break;
+                            case (Validation.Warning):
+                                <div class="Exclamation"></div>
+                                break;
+                            case (Validation.Valid):
+                                <div class="CheckMark"></div>
+                                break;
+                        }
+                    </div>
+                    <div class="EditableList--ValidationText">
+                        @_validation.Value.Item2
+                    </div>
+                }
+            }
+        </div>
+    }
 </div>

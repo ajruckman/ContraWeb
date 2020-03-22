@@ -99,8 +99,7 @@ namespace Infrastructure.Controller
                 }
                 catch (Exception e)
                 {
-                    _logger.Warning("Failed to connect to server; retrying...", e: e, meta: new Fields {{"Hostname", hostname}},
-                        true);
+                    _logger.Warning("Failed to connect to server; retrying...", e: e, meta: new Fields {{"Hostname", hostname}});
                     Thread.Sleep(1000);
 
                     OnDisconnected?.Invoke();

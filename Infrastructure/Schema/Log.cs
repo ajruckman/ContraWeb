@@ -26,6 +26,8 @@ namespace Infrastructure.Schema
         public string ClientMAC { get; set; }
 
         public string ClientVendor { get; set; }
+        
+        public dynamic ActionButton { get; set; }
 
         public Log() { }
 

@@ -23,6 +23,7 @@ namespace Database.ContraDB
         public virtual DbSet<log_block_details> log_block_details { get; set; }
         public virtual DbSet<log_details_recent> log_details_recent { get; set; }
         public virtual DbSet<oui> oui { get; set; }
+        public virtual DbSet<oui_vendors> oui_vendors { get; set; }
         public virtual DbSet<reservation> reservation { get; set; }
         public virtual DbSet<whitelist> whitelist { get; set; }
 
@@ -154,6 +155,13 @@ namespace Database.ContraDB
                 entity.Property(e => e.mac)
                     .HasMaxLength(8)
                     .IsFixedLength();
+            });
+
+            modelBuilder.Entity<oui_vendors>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("oui_vendors", "contra");
             });
 
             modelBuilder.Entity<reservation>(entity =>

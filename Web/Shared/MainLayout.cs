@@ -29,7 +29,11 @@ namespace Web.Shared
                 new Space(),
                 new Separator(),
                 new Space(),
-                new PageLink("Rules",     "/rulegen"),
+                new PageLink("Rules",     "/rules"),
+                new Space(),
+                new Separator(),
+                new Space(),
+                new PageLink("Generate", "/rulegen"),
                 new Space(10)
             });
         }

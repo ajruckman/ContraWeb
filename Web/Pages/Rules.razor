@@ -1,0 +1,166 @@
+﻿@using Web.Services
+
+@inject LogActionService LogActionService
+
+@page "/rules"
+
+<div class="RuleGen_NewWhitelistContainer">
+    <h3>Create a whitelist rule</h3>
+
+    <table class="Inputs">
+        <tr>
+            <td>
+                <label for="NewWhitelist_Pattern">Pattern</label>
+            </td>
+            <td>
+                <input @oninput="@OnPatternChange" value="@_pattern" id="NewWhitelist_Pattern" type="text" class="SS_Input"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div class="EL_Validation">
+                    @if (string.IsNullOrEmpty(_newWhitelist.Pattern))
+                    {
+                        <div class="XMark"></div>
+                        <span>Required</span>
+                    }
+                    else if (_isPatternValid.HasValue)
+                    {
+                        if (_isPatternValid == true)
+                        {
+                            <div class="CheckMark"></div>
+                            <span>Valid regular expression</span>
+                        }
+                        else
+                        {
+                            <div class="XMark"></div>
+                            <span>Invalid regular expression</span>
+                        }
+                    }
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="Spacer" colspan="2"></td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="NewWhitelist_ExpiresDate">Expires</label>
+            </td>
+            <td>
+                @* <input type="date" @bind="@_expiresDate"/> *@
+                @* min="@DateTime.Now.ToString("yyyy-MM-dd")" *@
+                <input type="date" @oninput="@OnExpiresDateChange" value="@ExpiresDateValue()" class="SS_Input" id="NewWhitelist_ExpiresDate"/>
+                at
+                <input type="time" @oninput="@OnExpiresTimeChange" value="@ExpiresTimeValue()" class="SS_Input"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div class="ExpirationDateFuturesContainer">
+                    <label>In</label>
+                    <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromHours(1)))">1 hour</button>
+                    <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromHours(6)))">6 hours</button>
+                    <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromHours(12)))">12 hours</button>
+                    <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromDays(1)))">1 day</button>
+                    <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromDays(3)))">3 day</button>
+                    <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromDays(7)))">7 days</button>
+                    <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.Zero))">Never</button>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div class="EL_Validation">
+                    @{
+                        Console.WriteLine("---");
+                    }
+                    @if (_isExpiresValid.HasValue)
+                    {
+                        if (_isExpiresValid == true)
+                        {
+                            <div class="CheckMark"></div>
+                            <span>Expiration time is valid</span>
+                        }
+                        else
+                        {
+                            <div class="XMark"></div>
+                            <span>@_expiresInvalidReason</span>
+                        }
+                    }
+                    else
+                    {
+                        <div class="CheckMark"></div>
+                        <span>Rule will not expire</span>
+                    }
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="Spacer" colspan="2"></td>
+        </tr>
+
+        <tr>
+            <td>
+                <label>IPs</label>
+            </td>
+            <td>
+                @_newIPsList?.Render()
+            </td>
+        </tr>
+
+        <tr>
+            <td class="Spacer" colspan="2"></td>
+        </tr>
+
+        <tr>
+            <td>
+                <label>Subnets</label>
+            </td>
+            <td>
+                @_newSubnetsList?.Render()
+            </td>
+        </tr>
+
+        <tr>
+            <td class="Spacer" colspan="2"></td>
+        </tr>
+
+        <tr>
+            <td>
+                <label>Vendors</label>
+            </td>
+            <td>
+                @_vendorSelector?.Render()
+            </td>
+        </tr>
+
+        <tr>
+            <td class="Spacer" colspan="2"></td>
+        </tr>
+
+        <tr>
+            <td>
+                <label>Hostnames</label>
+            </td>
+            <td>
+                @_newHostnameList?.Render()
+            </td>
+        </tr>
+    </table>
+
+    @*     <input type="text" @bind-value="@_newHostname" @bind-value:event="oninput"/> *@
+    @*     <button @onclick="AddHostname">+</button> *@
+    @*     <div class="HostnameList"> *@
+    @*         @foreach (string hostname in _hostnames) *@
+    @*         { *@
+    @*             <span class="Hostname">@hostname<button @onclick="@(_ => RemoveHostname(hostname))">X</button></span> *@
+    @*         } *@
+    @*     </div> *@
+</div>

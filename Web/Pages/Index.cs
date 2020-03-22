@@ -34,6 +34,7 @@ namespace Web.Pages
             _flareTable1.RegisterColumn(nameof(Log.Answers),        width: "100px", shown: false);
             _flareTable1.RegisterColumn(nameof(Log.ClientHostname), "Hostname",     width: "160px");
             _flareTable1.RegisterColumn(nameof(Log.ClientVendor),   "Vendor",       width: "160px");
+            _flareTable1.RegisterColumn(nameof(Log.ActionButton),   "Action",       width: "100px");
         }
 
         private string ValueGetter(Log log, string id)

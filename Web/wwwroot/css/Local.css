@@ -6,18 +6,19 @@
   .EditableListContainer.Monospace .EditableList--Selected .EditableList--Value {
     font-family: var(--FontSet-MonospaceFont); }
   .EditableListContainer .EditableList--Selected {
-    border: 1px solid var(--ColorSet_ThemeColor_Border_30);
     background-color: var(--ColorSet_ThemeColor_Background_30);
+    border: 1px solid var(--ColorSet_ThemeColor_Border_30);
     border-radius: 2px;
     display: flex;
     flex-wrap: wrap;
-    min-height: 22px;
+    min-height: 26px;
     padding: 1px; }
     .EditableListContainer .EditableList--Selected .EditableList--Selection {
       background-color: var(--ColorSet_ThemeColor_Background_40);
       border: 1px solid var(--ColorSet_ThemeColor_Border_40);
       border-radius: 2px;
-      margin: 1px; }
+      margin: 2px;
+      padding: 2px; }
       .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--Value {
         height: 16px;
         margin: 1px;
@@ -50,14 +51,44 @@
     padding-top: 3px;
     width: 100%; }
     .EditableListContainer .EditableList--New .EditableList--Input {
-      background-color: var(--ColorSet_ThemeColor_Background_30);
-      border: 1px solid var(--ColorSet_ThemeColor_Border_30);
-      margin-left: 1px;
-      width: calc(100% - 25px - 5px); }
+      margin: 0;
+      width: calc(100% - 25px - 2px); }
     .EditableListContainer .EditableList--New .EditableList--AddButton {
       height: 25px;
-      margin-right: 1px;
       width: 25px; }
+  .EditableListContainer .EditableList--Validation {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px; }
+    .EditableListContainer .EditableList--Validation .EditableList--ValidationMark {
+      border-right: 1px solid var(--ColorSet_ThemeColor_Border_0);
+      height: 23px;
+      padding: 0 3px;
+      width: 23px; }
+    .EditableListContainer .EditableList--Validation .EditableList--ValidationText {
+      width: calc(100% - 23px - 6px - 1px - 3px);
+      font-family: var(--FontSet-MonospaceFont); }
+
+.Spinner {
+  height: 21px;
+  width: 21px; }
+  .Spinner:after {
+    animation: rotate 1s linear infinite;
+    border: 3px solid;
+    border-radius: 50%;
+    border-right-color: var(--ColorSet_ThemeColor_Border_50);
+    color: var(--ColorSet_ThemeColor_Accent_50);
+    content: '';
+    display: inline-block;
+    height: 15px;
+    width: 15px; }
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0); }
+  100% {
+    transform: rotate(360deg); } }
 
 #blazor-error-ui {
   display: none; }
@@ -71,37 +102,54 @@ body {
     font-family: var(--FontSet-SansSerifFont); }
   body h3 {
     margin: 4px 0; }
+  body .Spacer {
+    height: 25px; }
   body .CheckMark {
-    height: 12px;
+    height: 21px;
     position: relative;
-    width: 17px; }
+    width: 21px; }
     body .CheckMark:after {
       border-bottom: 3px solid #78b13f;
       border-right: 3px solid #78b13f;
-      bottom: 0.5px;
       content: '';
       display: inline-block;
-      height: 12px;
-      left: 3.5px;
+      height: 15px;
+      left: 27%;
       position: absolute;
       transform: rotate(45deg);
-      width: 6px; }
+      width: 7px; }
   body .XMark {
-    height: 12px;
+    height: 21px;
     position: relative;
-    width: 17px; }
+    width: 21px; }
     body .XMark:before, body .XMark:after {
       background-color: #ff0000;
       content: '';
-      height: 16px;
-      left: 4.5px;
+      height: 21px;
+      left: 43%;
       position: absolute;
-      top: -2px;
-      width: 3px; }
+      top: 1%;
+      width: 2.8px; }
     body .XMark:before {
       transform: rotate(45deg); }
     body .XMark:after {
       transform: rotate(-45deg); }
+  body .Exclamation {
+    border-color: transparent transparent var(--ColorSet_ThemeColor_SolidYellow_20) transparent;
+    border-style: solid;
+    border-width: 0 calc(21px / 2) 21px calc(21px / 2);
+    color: black;
+    font-family: "Arial", sans-serif;
+    font-size: 21px;
+    height: 0;
+    line-height: 21px;
+    position: relative;
+    width: 0; }
+    body .Exclamation:after {
+      content: '!';
+      left: -3.05px;
+      position: absolute;
+      top: 2px; }
   body .Index_LogTableContainer {
     padding: 5px; }
   body .Configure_SettingsContainer {
@@ -111,6 +159,11 @@ body {
       display: flex; }
       body .Configure_SettingsContainer .Options .CheckboxContainer .SS_CheckboxContainer {
         margin-right: 6px; }
+    body .Configure_SettingsContainer .SearchDomains {
+      margin-top: 15px; }
+      body .Configure_SettingsContainer .SearchDomains .EditableListContainer {
+        max-width: 400px;
+        width: 100%; }
     body .Configure_SettingsContainer .SpoofedResponseValues label {
       display: inline-block;
       width: 75px; }
@@ -140,27 +193,49 @@ body {
         display: flex; }
         body .Configure_SettingsContainer .CommitConfig .ResultContainer .Result > div {
           margin-right: 5px; }
-    body .Configure_SettingsContainer .Spacer {
-      height: 25px; }
   body .RuleGen_NewWhitelistContainer {
     padding: 5px 7px; }
-  body .RuleGen_RuleGenContainer {
-    padding: 5px 7px; }
-    body .RuleGen_RuleGenContainer .RuleStats tr td:first-child {
+    body .RuleGen_NewWhitelistContainer .Inputs tr td:first-child {
       color: var(--ColorSet_ThemeColor_Text_40);
       font-weight: 600;
       padding-right: 10px;
+      padding-top: 6px;
       vertical-align: top; }
-      body .RuleGen_RuleGenContainer .RuleStats tr td:first-child a {
+    body .RuleGen_NewWhitelistContainer .Inputs tr td #NewWhitelist_Pattern {
+      width: 247px; }
+    body .RuleGen_NewWhitelistContainer .Inputs tr td .EL_Validation {
+      align-items: center;
+      display: flex;
+      height: 21px;
+      margin-bottom: 5px; }
+      body .RuleGen_NewWhitelistContainer .Inputs tr td .EL_Validation span {
+        margin-left: 5px; }
+    body .RuleGen_NewWhitelistContainer .Inputs tr td .EditableListContainer {
+      max-width: 400px;
+      width: 100%; }
+  body .RuleGen_RuleGenContainer {
+    padding: 5px 7px; }
+    body .RuleGen_RuleGenContainer .RuleStats tr td {
+      vertical-align: top; }
+      body .RuleGen_RuleGenContainer .RuleStats tr td a {
         display: inline-block;
         text-decoration: none; }
-    body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a {
-      color: var(--ColorSet_ThemeColor_Text_80);
-      display: block;
-      font-family: var(--FontSet-MonospaceFont);
-      text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
-      body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a:hover {
-        text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }
+      body .RuleGen_RuleGenContainer .RuleStats tr td:first-child {
+        color: var(--ColorSet_ThemeColor_Text_40);
+        font-weight: 600;
+        padding-right: 10px; }
+      body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a {
+        color: var(--ColorSet_ThemeColor_Text_80);
+        display: block;
+        font-family: var(--FontSet-MonospaceFont);
+        text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
+        body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a:hover {
+          text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }
+    body .RuleGen_RuleGenContainer .GeneratingRulesNoticeContainer {
+      align-items: center;
+      display: flex; }
+      body .RuleGen_RuleGenContainer .GeneratingRulesNoticeContainer > * {
+        margin-right: 5px; }
     body .RuleGen_RuleGenContainer .ProgressContainer {
       background-color: var(--ColorSet_ThemeColor_Background_50);
       margin-top: 10px; }

@@ -1,10 +1,20 @@
-﻿using Web.Components.EditableList;
+﻿using Microsoft.AspNetCore.Components;
+using Web.Components.EditableList;
 
 namespace Web.Pages
 {
     public partial class EditableListDemo
     {
-        EditableList _hostnameList = new EditableList(true, true);
+        private EditableList _hostnameList = new EditableList(true, true, s =>
+        {
+            string msg = (s.Length % 5) switch
+            {
+                0 => "Some random message about 0",
+                2 => "You inputted " + s,
+                _ => ""
+            };
+            return ((Validation) (s.Length % 4), new MarkupString(msg));
+        });
 
         protected override void OnInitialized()
         {

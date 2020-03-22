@@ -18,7 +18,7 @@ namespace Infrastructure.Tests
 
             foreach (Whitelist rule in rules)
             {
-                Console.WriteLine($"{rule.ID,-10} | {rule.Pattern,-20} | {rule.RegexValid}");
+                Console.WriteLine($"{rule.ID,-10} | {rule.Pattern,-20} | {Utility.Utility.ValidateRegex(rule.Pattern)}");
             }
         }
 
@@ -94,7 +94,7 @@ namespace Infrastructure.Tests
             Assert.AreEqual(match.Vendors,   vendors);
             Assert.AreEqual(match.Hostnames, hostnames);
 
-            Assert.True(match.RegexValid);
+            Assert.True(Utility.Utility.ValidateRegex(pattern));
         }
     }
 

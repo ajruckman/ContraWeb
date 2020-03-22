@@ -10,22 +10,40 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Web.Components.EditableList
 {
+    public enum Validation
+    {
+        Undefined,
+        Invalid,
+        Warning,
+        Valid
+    }
+
     public class EditableList
     {
-        public event Action<string>? OnAdd;
-        public event Action<string>? OnRemove;
+        public delegate (Validation, MarkupString) Validator(string value);
 
-        public readonly bool Monospace;
+        public delegate string Transformer(string input);
 
-        private readonly bool _preventDuplicates;
-        private readonly bool _moveDuplicatesToEnd;
-
+        private readonly bool         _moveDuplicatesToEnd;
+        private readonly bool         _preventDuplicates;
+        private readonly Validator?   _validator;
+        private readonly Transformer? _transformer;
         private readonly List<string> _values = new List<string>();
 
-        public EditableList(bool monospace = true, bool preventDuplicates = true, bool moveDuplicatesToEnd = false)
-        {
-            Monospace = monospace;
+        public readonly string DefaultValue;
+        public readonly bool   Monospace;
+        public readonly string Placeholder;
 
+        public EditableList(
+            bool         preventDuplicates   = true,
+            bool         moveDuplicatesToEnd = false,
+            Validator?   validator           = null,
+            Transformer? transformer         = null,
+            bool         monospace           = true,
+            string       placeholder         = "",
+            string       defaultValue        = ""
+        )
+        {
             _preventDuplicates = preventDuplicates;
 
             if (!_preventDuplicates && _moveDuplicatesToEnd)
@@ -33,12 +51,31 @@ namespace Web.Components.EditableList
                     nameof(moveDuplicatesToEnd));
 
             _moveDuplicatesToEnd = moveDuplicatesToEnd;
+
+            _validator   = validator;
+            _transformer = transformer;
+
+            Monospace    = monospace;
+            Placeholder  = placeholder;
+            DefaultValue = defaultValue;
         }
 
         public ReadOnlyCollection<string> Values => _values.AsReadOnly();
 
+        public bool                  Validated => _validator != null;
+        public event Action<string>? OnAdd;
+        public event Action<string>? OnRemove;
+
         public void Add(string value)
         {
+            (Validation, MarkupString)? validation = _validator?.Invoke(value);
+            if (validation?.Item1 == Validation.Invalid)
+                return;
+
+            string? transformed = _transformer?.Invoke(value);
+            if (transformed != null)
+                value = transformed;
+
             if (_preventDuplicates && _values.Contains(value))
             {
                 if (_moveDuplicatesToEnd)
@@ -60,6 +97,11 @@ namespace Web.Components.EditableList
             OnRemove?.Invoke(value);
         }
 
+        public (Validation, MarkupString)? Validate(string value)
+        {
+            return _validator?.Invoke(value);
+        }
+
         public RenderFragment Render()
         {
             void Fragment(RenderTreeBuilder builder)
@@ -77,41 +119,9 @@ namespace Web.Components.EditableList
 
     public static class Tests
     {
-        private class ComplexObject : IEquatable<ComplexObject>
-        {
-            public int    A { get; }
-            public string B { get; }
-
-            public ComplexObject(int a, string b)
-            {
-                A = a;
-                B = b;
-            }
-
-            public bool Equals(ComplexObject? other)
-            {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
-                return A == other.A && B == other.B;
-            }
-
-            public override bool Equals(object? obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
-                return Equals((ComplexObject) obj);
-            }
-
-            public override int GetHashCode()
-            {
-                return HashCode.Combine(A, B);
-            }
-        }
-
         public static void Test()
         {
-            EditableList _editableList = new EditableList(true, true, true);
+            EditableList _editableList = new EditableList(true, true);
 
             _editableList.Add("1");
             _editableList.Add("2");
@@ -124,6 +134,38 @@ namespace Web.Components.EditableList
             _editableList.Add("2");
             Debug.Assert(_editableList.Values.Count  == 2);
             Debug.Assert(_editableList.Values.Last() == "2");
+        }
+
+        private class ComplexObject : IEquatable<ComplexObject>
+        {
+            public ComplexObject(int a, string b)
+            {
+                A = a;
+                B = b;
+            }
+
+            public int    A { get; }
+            public string B { get; }
+
+            public bool Equals(ComplexObject? other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return A == other.A && B == other.B;
+            }
+
+            public override bool Equals(object? obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != GetType()) return false;
+                return Equals((ComplexObject) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(A, B);
+            }
         }
     }
 }
