@@ -3,9 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Infrastructure.Controller;
+using Infrastructure.Model;
 using Infrastructure.Schema;
 using Superset.Logging;
+using Superset.Web.State;
 
 namespace Web.Pages
 {
@@ -13,13 +17,16 @@ namespace Web.Pages
     {
         private Config? Config { get; set; }
 
-        private readonly ConfigController _configController = new ConfigController();
-
+        private bool  _processing;
+        private bool  _userCommitted;
         private bool? _configCommitted;
+        private bool? _configReloaded;
+
+        private readonly UpdateTrigger _statusUpdated = new UpdateTrigger();
 
         protected override void OnInitialized()
         {
-            Config = ConfigController.Read();
+            Config = ConfigModel.Read();
 
             if (Config == null) return;
 
@@ -28,19 +35,49 @@ namespace Web.Pages
 
         private void Commit()
         {
-            if (Config != null)
+            _processing    = true;
+            _userCommitted = false;
+            _statusUpdated.Trigger();
+
+            Task.Run(async () =>
             {
-                Config.Sources = _sources.Select(v => v.URL).ToList();
+                Thread.Sleep(100);
 
-                Common.Logger.Info("Committing config.", new Fields {{"New config", Config.ToString()}});
-                bool success = ConfigController.Update(Config);
+                if (Config != null)
+                {
+                    Config.Sources = _sources.Select(v => v.URL).ToList();
 
-                _configCommitted = success;
-            }
-            else
-                Common.Logger.Error("Config is null and cannot be committed.",
-                    new ArgumentNullException(nameof(Config), "Config is null and cannot be committed."),
-                    printStacktrace: true);
+                    Common.Logger.Info("Committing config.", new Fields {{"New config", Config.ToString()}});
+
+                    try
+                    {
+                        bool commitSucceeded = ConfigModel.Update(Config);
+                        _configCommitted = commitSucceeded;
+                    }
+                    catch
+                    {
+                        _configCommitted = false;
+                    }
+
+                    try
+                    {
+                        bool reloadSucceeded = await Common.ContraCoreClient.ReloadConfig();
+                        _configReloaded = reloadSucceeded;
+                    }
+                    catch
+                    {
+                        _configReloaded = false;
+                    }
+
+                    _processing    = false;
+                    _userCommitted = true;
+                    _statusUpdated.Trigger();
+                }
+                else
+                    Common.Logger.Error("Config is null and cannot be committed.",
+                        new ArgumentNullException(nameof(Config), "Config is null and cannot be committed."),
+                        printStacktrace: true);
+            });
         }
 
         private List<Source> _sources = new List<Source>();

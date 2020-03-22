@@ -1,3 +1,5 @@
+@import "EditableList.scss";
+
 #blazor-error-ui {
     display: none;
 }
@@ -12,15 +14,54 @@ body {
         font-family: var(--FontSet-SansSerifFont);
     }
 
+
+    h3 {
+        margin: 4px 0;
+    }
+
     // https://codepen.io/gliesche/pen/ZQyPeV
-    .Check {
-        border-bottom: 3px solid #78b13f;
-        border-right:  3px solid #78b13f;
-        display:       inline-block;
-        height:        12px;
-        margin:        0 5px;
-        transform:     rotate(45deg);
-        width:         6px;
+    .CheckMark {
+        height:   12px;
+        position: relative;
+        width:    17px;
+
+        &:after {
+            border-bottom: 3px solid #78b13f;
+            border-right:  3px solid #78b13f;
+            bottom:        0.5px;
+            content:       '';
+            display:       inline-block;
+            height:        12px;
+            left:          3.5px;
+            position:      absolute;
+            transform:     rotate(45deg);
+            width:         6px;
+        }
+
+    }
+
+    .XMark {
+        height:   12px;
+        position: relative;
+        width:    17px;
+
+        &:before, &:after {
+            background-color: #ff0000;
+            content:          '';
+            height:           16px;
+            left:             4.5px;
+            position:         absolute;
+            top:              -2px;
+            width:            3px;
+        }
+
+        &:before {
+            transform: rotate(45deg);
+        }
+
+        &:after {
+            transform: rotate(-45deg);
+        }
     }
 
     .Index_LogTableContainer {
@@ -28,11 +69,7 @@ body {
     }
 
     .Configure_SettingsContainer {
-        padding: 5px;
-        
-        h3 {
-            margin: 4px 0;
-        }
+        padding: 5px 7px;
 
         .Options {
             .CheckboxContainer {
@@ -92,19 +129,97 @@ body {
             button {
 
             }
+
+            .ResultContainer {
+                border:  1px solid var(--ColorSet_ThemeColor_Border_20);
+                display: inline-block;
+                margin:  5px 0;
+                padding: 3px;
+
+                .Result {
+                    align-items: center;
+                    display:     flex;
+
+                    > div {
+                        margin-right: 5px;
+                    }
+                }
+            }
         }
 
         .Spacer {
             height: 25px;
         }
     }
+    
+    .RuleGen_NewWhitelistContainer {
+        padding: 5px 7px;
+        
+        table {
+            tr {
+                td {
+                    &:first-child {
+                        
+                    }
+                }
+            }
+        }
+    }
 
-    .RuleGen_ProgressContainer {
-        padding: 5px;
+    .RuleGen_RuleGenContainer {
+        padding: 5px 7px;
 
-        span {
-            display:     block;
-            font-family: var(--FontSet-MonospaceFont);
+        .RuleStats {
+            tr {
+                td {
+                    &:first-child {
+                        color:          var(--ColorSet_ThemeColor_Text_40);
+                        font-weight:    600;
+                        padding-right:  10px;
+                        vertical-align: top;
+
+                        a {
+                            display:         inline-block;
+                            text-decoration: none;
+                        }
+                    }
+
+                    &:nth-child(2) {
+                        a {
+                            color:                 var(--ColorSet_ThemeColor_Text_80);
+                            display:               block;
+                            font-family:           var(--FontSet-MonospaceFont);
+                            text-decoration-color: var(--ColorSet_ThemeColor_Text_0);
+
+                            &:hover {
+                                text-decoration-color: var(--ColorSet_ThemeColor_Text_80);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .ProgressContainer {
+            background-color: var(--ColorSet_ThemeColor_Background_50);
+            margin-top:       10px;
+
+            span {
+                border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50);
+                border-left:   1px solid var(--ColorSet_ThemeColor_Border_50);
+                border-right:  1px solid var(--ColorSet_ThemeColor_Border_50);
+                display:       block;
+                font-family:   var(--FontSet-MonospaceFont);
+                padding:       1px 3px;
+
+                &:first-child {
+                    border-top: 1px solid var(--ColorSet_ThemeColor_Border_50);
+                }
+
+                &:hover {
+                    background-color: var(--ColorSet_ThemeColor_Background_50_Hover);
+                }
+            }
         }
     }
 }

@@ -4,25 +4,88 @@
 
 @page "/rulegen"
 
-<div class="RuleGen_ProgressContainer">
+<div class="RuleGen_NewWhitelistContainer">
     <table>
         <tr>
-            <TriggerWrapper>
-                <td>Number of blacklist rules</td>
-                <td>@_blacklistRuleCount</td>
-            </TriggerWrapper>
+            <td>
+                <label for="NewWhitelist_Pattern">Pattern</label>
+            </td>
+            <td>
+                <input @oninput="@OnPatternChange" id="NewWhitelist_Pattern" type="text"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="NewWhitelist_ExpiresDate">Expires</label>
+            </td>
+            <td>
+                <input @oninput="@OnExpiresDateChange" id="NewWhitelist_ExpiresDate" type="date" value="@_expiresDate"/>
+                at
+                <input @oninput="@OnExpiresTimeChange" type="time" value="@_expiresTime"/>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Hostnames</label></td>
+            <td>
+                @_newHostnameList.Render()
+            </td>
         </tr>
     </table>
     
-    <button @onclick="@GenRules" disabled="@_processing" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
+@*     <input type="text" @bind-value="@_newHostname" @bind-value:event="oninput"/> *@
+@*     <button @onclick="AddHostname">+</button> *@
+@*     <div class="HostnameList"> *@
+@*         @foreach (string hostname in _hostnames) *@
+@*         { *@
+@*             <span class="Hostname">@hostname<button @onclick="@(_ => RemoveHostname(hostname))">X</button></span> *@
+@*         } *@
+@*     </div> *@
+</div>
+
+
+
+<div class="RuleGen_RuleGenContainer">
+    <h3>Rule stats</h3>
+    <table class="RuleStats">
+        <tr>
+            <TriggerWrapper Trigger="@_progressUpdated">
+                <td>Number of blacklist rules</td>
+                <td>@_blacklistRuleCount.ToString("n0")</td>
+            </TriggerWrapper>
+        </tr>
+
+        <tr>
+            <td>
+                Blacklist rule sources
+                <br>
+                <a href="/configure" class="SS_Button">EDIT</a>
+            </td>
+            <td>
+                @if (_blacklistRuleSources != null)
+                {
+                    @foreach (string source in _blacklistRuleSources)
+                    {
+                        <a href="@source" target="_blank">@source</a>
+                    }
+                }
+                else
+                {
+                    <span>Failed to read config</span>
+                }
+            </td>
+        </tr>
+    </table>
 
     <TriggerWrapper Trigger="@_progressUpdated">
-        @if (_processing)
-        {
+        <button @onclick="@GenRules" disabled="@Common.ContraCoreClient.GeneratingRules" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
+    </TriggerWrapper>
+
+    <div class="ProgressContainer">
+        <TriggerWrapper Trigger="@_progressUpdated">
             @for (var i = 0; i < _progress.Count; i++)
             {
                 <span @key="@($"RuleGen_ProgressLine_{i}")">@_progress[i]</span>
             }
-        }
-    </TriggerWrapper>
+        </TriggerWrapper>
+    </div>
 </div>

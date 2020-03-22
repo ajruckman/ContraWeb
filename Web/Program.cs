@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Web.Components.EditableList;
 
 namespace Web
 {
@@ -9,6 +10,8 @@ namespace Web
         {
             // ReSharper disable once AssignmentIsFullyDiscarded
             _ = Common.ContraCoreClient.Connected;
+            
+            Tests.Test();
             
             CreateHostBuilder(args).Build().Run();
         }

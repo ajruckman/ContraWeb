@@ -21,9 +21,10 @@ namespace Infrastructure.Controller
         private          TcpClient            _client;
         private          NetworkStream        _stream;
         private          StreamReader         _reader;
-        private readonly FixedSizedQueue<Log> _data         = new FixedSizedQueue<Log>(1000);
-        private readonly Channel<List<Log>>   _cacheChannel = Channel.CreateUnbounded<List<Log>>();
-        private readonly SemaphoreSlim        _pongEvent    = new SemaphoreSlim(1, 1);
+        private readonly FixedSizedQueue<Log> _data                      = new FixedSizedQueue<Log>(1000);
+        private readonly Channel<List<Log>>   _cacheChannel              = Channel.CreateUnbounded<List<Log>>();
+        private readonly SemaphoreSlim        _pongEvent                 = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim        _reloadConfigCompleteEvent = new SemaphoreSlim(1, 1);
 
         private readonly Logger _logger = new Logger();
 
@@ -147,13 +148,16 @@ namespace Infrastructure.Controller
                             case "gen_rules.recache_progress":
                             case "gen_rules.recached_in":
                                 string value = line.Substring(line.IndexOf(" ", StringComparison.Ordinal) + 1);
-                                _logger.Debug($"Rule gen progress: {cmd} {value}");
                                 OnGenRulesCallback?.Invoke(value);
                                 break;
 
                             case "gen_rules.complete":
                                 GeneratingRules = false;
                                 OnGenRulesChange?.Invoke();
+                                break;
+                            
+                            case "reload_config.complete":
+                                _reloadConfigCompleteEvent.Release();
                                 break;
 
                             default:
@@ -220,6 +224,30 @@ namespace Infrastructure.Controller
             _logger.Warning("Pong timeout occured " + caller);
             _pongEvent.Release();
 
+            return false;
+        }
+
+        public async Task<bool> ReloadConfig()
+        {
+            if (_client == null)
+                return false;
+
+            CancellationTokenSource source = new CancellationTokenSource();
+            OnDisconnected += source.Cancel;
+
+            await Send("reload_config");
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            Task task = _reloadConfigCompleteEvent.WaitAsync(source.Token);
+            if (await Task.WhenAny(task, Task.Delay(1000, source.Token)) == task)
+            {
+                _logger.Info("Reload config complete message received", new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
+                return true;
+            }
+
+            _logger.Warning("Reload config timeout occured");
+            _reloadConfigCompleteEvent.Release();
+            
             return false;
         }
 

@@ -1,0 +1,16 @@
+﻿<div class="EditableListContainer@(EditableList.Monospace ? " Monospace" : "")">
+    <div class="EditableList--Selected">
+        @foreach (string v in EditableList.Values)
+        {
+            <div class="EditableList--Selection">
+                <span class="EditableList--RemoveButton" @onclick="@(_ => EditableList.Remove(v))"></span>
+                <span class="EditableList--Value">@v</span>
+            </div>
+        }
+    </div>
+
+    <div class="EditableList--New">
+        <input class="EditableList--Input SS_Input" @bind="@_newValue" type="text"/>
+        <button class="EditableList--AddButton SS_Button" @onclick="@Add">+</button>
+    </div>
+</div>

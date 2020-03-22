@@ -4,9 +4,9 @@ using Database.ContraDB;
 using Infrastructure.Schema;
 using Superset.Logging;
 
-namespace Infrastructure.Controller
+namespace Infrastructure.Model
 {
-    public class ConfigController
+    public static class ConfigModel
     {
         public static Config? Read()
         {

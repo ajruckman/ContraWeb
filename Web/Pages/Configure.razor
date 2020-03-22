@@ -1,10 +1,10 @@
-@using ShapeSet.Components
 @using Microsoft.AspNetCore.Components.Web
+@using Superset.Web.State
+@using ShapeSet.Components
 
 @page "/configure"
 
 <div class="Configure_SettingsContainer">
-
     @if (Config != null)
     {
         <section class="Options">
@@ -73,11 +73,24 @@
         <div class="Spacer"></div>
 
         <section class="CommitConfig">
-            <button @onclick="@Commit" class="SS_Button SS_Button--Green">COMMIT</button>
-            @if (_configCommitted ?? false)
-            {
-                <div class="Check"></div>
-            }
+            <TriggerWrapper Trigger="@_statusUpdated">
+                <button @onclick="@Commit" disabled="@_processing" class="SS_Button SS_Button--Green">COMMIT</button>
+                <br>
+
+                @if (_userCommitted)
+                {
+                    <div class="ResultContainer">
+                        <div class="Result">
+                            <div class="@(_configCommitted ?? false ? "CheckMark" : "XMark")"></div>
+                            <span>Config committed to database</span>
+                        </div>
+                        <div class="Result">
+                            <div class="@(_configReloaded ?? false ? "CheckMark" : "XMark")"></div>
+                            <span>Config reloaded in ContraCore</span>
+                        </div>
+                    </div>
+                }
+            </TriggerWrapper>
         </section>
     }
     else

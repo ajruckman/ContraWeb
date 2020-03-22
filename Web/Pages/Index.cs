@@ -55,6 +55,7 @@ namespace Web.Pages
 
         public void Dispose()
         {
+            Common.Logger.Debug("Web.Pages.Index.Dispose()");
             Common.ContraCoreClient.OnNewLog -= _flareTable1.InvalidateData;
         }
     }

@@ -1,3 +1,64 @@
+.EditableListContainer {
+  background-color: var(--ColorSet_ThemeColor_Background_40);
+  border: 1px solid var(--ColorSet_ThemeColor_Border_40);
+  border-radius: 3px;
+  padding: 2px; }
+  .EditableListContainer.Monospace .EditableList--Selected .EditableList--Value {
+    font-family: var(--FontSet-MonospaceFont); }
+  .EditableListContainer .EditableList--Selected {
+    border: 1px solid var(--ColorSet_ThemeColor_Border_30);
+    background-color: var(--ColorSet_ThemeColor_Background_30);
+    border-radius: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 22px;
+    padding: 1px; }
+    .EditableListContainer .EditableList--Selected .EditableList--Selection {
+      background-color: var(--ColorSet_ThemeColor_Background_40);
+      border: 1px solid var(--ColorSet_ThemeColor_Border_40);
+      border-radius: 2px;
+      margin: 1px; }
+      .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--Value {
+        height: 16px;
+        margin: 1px;
+        word-break: break-word; }
+      .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton {
+        cursor: pointer;
+        float: right;
+        height: 16px;
+        margin-right: 3px;
+        position: relative;
+        width: 8px; }
+        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:hover:before, .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:hover:after {
+          background-color: var(--ColorSet_ThemeColor_Border_190); }
+        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:before, .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:after {
+          background-color: var(--ColorSet_ThemeColor_Border_160);
+          content: '';
+          height: 10px;
+          position: absolute;
+          right: 2.5px;
+          top: 3px;
+          width: 1px; }
+        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:before {
+          transform: rotate(45deg); }
+        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:after {
+          transform: rotate(-45deg); }
+  .EditableListContainer .EditableList--New {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 3px;
+    width: 100%; }
+    .EditableListContainer .EditableList--New .EditableList--Input {
+      background-color: var(--ColorSet_ThemeColor_Background_30);
+      border: 1px solid var(--ColorSet_ThemeColor_Border_30);
+      margin-left: 1px;
+      width: calc(100% - 25px - 5px); }
+    .EditableListContainer .EditableList--New .EditableList--AddButton {
+      height: 25px;
+      margin-right: 1px;
+      width: 25px; }
+
 #blazor-error-ui {
   display: none; }
 
@@ -8,20 +69,43 @@ body {
   margin: 0; }
   body * {
     font-family: var(--FontSet-SansSerifFont); }
-  body .Check {
-    border-bottom: 3px solid #78b13f;
-    border-right: 3px solid #78b13f;
-    display: inline-block;
+  body h3 {
+    margin: 4px 0; }
+  body .CheckMark {
     height: 12px;
-    margin: 0 5px;
-    transform: rotate(45deg);
-    width: 6px; }
+    position: relative;
+    width: 17px; }
+    body .CheckMark:after {
+      border-bottom: 3px solid #78b13f;
+      border-right: 3px solid #78b13f;
+      bottom: 0.5px;
+      content: '';
+      display: inline-block;
+      height: 12px;
+      left: 3.5px;
+      position: absolute;
+      transform: rotate(45deg);
+      width: 6px; }
+  body .XMark {
+    height: 12px;
+    position: relative;
+    width: 17px; }
+    body .XMark:before, body .XMark:after {
+      background-color: #ff0000;
+      content: '';
+      height: 16px;
+      left: 4.5px;
+      position: absolute;
+      top: -2px;
+      width: 3px; }
+    body .XMark:before {
+      transform: rotate(45deg); }
+    body .XMark:after {
+      transform: rotate(-45deg); }
   body .Index_LogTableContainer {
     padding: 5px; }
   body .Configure_SettingsContainer {
-    padding: 5px; }
-    body .Configure_SettingsContainer h3 {
-      margin: 4px 0; }
+    padding: 5px 7px; }
     body .Configure_SettingsContainer .Options .CheckboxContainer {
       align-items: center;
       display: flex; }
@@ -46,10 +130,48 @@ body {
     body .Configure_SettingsContainer .RuleSources table tfoot tr td button {
       height: 25px;
       width: 25px; }
+    body .Configure_SettingsContainer .CommitConfig .ResultContainer {
+      border: 1px solid var(--ColorSet_ThemeColor_Border_20);
+      display: inline-block;
+      margin: 5px 0;
+      padding: 3px; }
+      body .Configure_SettingsContainer .CommitConfig .ResultContainer .Result {
+        align-items: center;
+        display: flex; }
+        body .Configure_SettingsContainer .CommitConfig .ResultContainer .Result > div {
+          margin-right: 5px; }
     body .Configure_SettingsContainer .Spacer {
       height: 25px; }
-  body .RuleGen_ProgressContainer {
-    padding: 5px; }
-    body .RuleGen_ProgressContainer span {
+  body .RuleGen_NewWhitelistContainer {
+    padding: 5px 7px; }
+  body .RuleGen_RuleGenContainer {
+    padding: 5px 7px; }
+    body .RuleGen_RuleGenContainer .RuleStats tr td:first-child {
+      color: var(--ColorSet_ThemeColor_Text_40);
+      font-weight: 600;
+      padding-right: 10px;
+      vertical-align: top; }
+      body .RuleGen_RuleGenContainer .RuleStats tr td:first-child a {
+        display: inline-block;
+        text-decoration: none; }
+    body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a {
+      color: var(--ColorSet_ThemeColor_Text_80);
       display: block;
-      font-family: var(--FontSet-MonospaceFont); }
+      font-family: var(--FontSet-MonospaceFont);
+      text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
+      body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a:hover {
+        text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }
+    body .RuleGen_RuleGenContainer .ProgressContainer {
+      background-color: var(--ColorSet_ThemeColor_Background_50);
+      margin-top: 10px; }
+      body .RuleGen_RuleGenContainer .ProgressContainer span {
+        border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50);
+        border-left: 1px solid var(--ColorSet_ThemeColor_Border_50);
+        border-right: 1px solid var(--ColorSet_ThemeColor_Border_50);
+        display: block;
+        font-family: var(--FontSet-MonospaceFont);
+        padding: 1px 3px; }
+        body .RuleGen_RuleGenContainer .ProgressContainer span:first-child {
+          border-top: 1px solid var(--ColorSet_ThemeColor_Border_50); }
+        body .RuleGen_RuleGenContainer .ProgressContainer span:hover {
+          background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
