@@ -1,6 +1,6 @@
-#nullable enable
+
 using System.Linq;
-using Database.ContraDB;
+using Database.ContraCoreDB;
 using Infrastructure.Schema;
 using Superset.Logging;
 
@@ -10,7 +10,7 @@ namespace Infrastructure.Model
     {
         public static Config? Read()
         {
-            using ContraDBContext contraDB = new ContraDBContext();
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
 
             if (!contraDB.config.Any())
                 return null;
@@ -32,7 +32,7 @@ namespace Infrastructure.Model
 
         public static bool Update(Config config)
         {
-            using ContraDBContext contraDB = new ContraDBContext();
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
 
             Config? current = Read();
             if (current != null)
@@ -69,7 +69,7 @@ namespace Infrastructure.Model
 
         public static int BlacklistRuleCount()
         {
-            using ContraDBContext contraDB = new ContraDBContext();
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
             return contraDB.blacklist.Count();
         }
     }

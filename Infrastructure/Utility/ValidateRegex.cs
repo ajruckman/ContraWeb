@@ -15,7 +15,7 @@ namespace Infrastructure.Utility
                 Regex.Match("", regex);
                 return true;
             }
-            catch (ArgumentException)
+            catch (Exception)
             {
                 return false;
             }

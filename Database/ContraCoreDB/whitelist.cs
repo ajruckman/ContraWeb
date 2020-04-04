@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 
-namespace Database.ContraDB
+namespace Database.ContraCoreDB
 {
     public partial class whitelist
     {
@@ -12,8 +12,8 @@ namespace Database.ContraDB
         public DateTime? expires { get; set; }
         public IPAddress[] ips { get; set; }
         public ValueTuple<IPAddress, int>[] subnets { get; set; }
+        public string[] hostnames { get; set; }
         public PhysicalAddress[] macs { get; set; }
         public string[] vendors { get; set; }
-        public string[] hostnames { get; set; }
     }
 }

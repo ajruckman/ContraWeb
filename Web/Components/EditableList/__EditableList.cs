@@ -1,5 +1,6 @@
-﻿#nullable enable
+﻿
 
+using Infrastructure.Schema;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 

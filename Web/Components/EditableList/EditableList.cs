@@ -1,23 +1,14 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Infrastructure.Schema;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Web.Components.EditableList
 {
-    public enum Validation
-    {
-        Undefined,
-        Invalid,
-        Warning,
-        Valid
-    }
-
     public class EditableList
     {
         public delegate (Validation, MarkupString) Validator(string value);
@@ -62,9 +53,10 @@ namespace Web.Components.EditableList
 
         public ReadOnlyCollection<string> Values => _values.AsReadOnly();
 
-        public bool                  Validated => _validator != null;
-        public event Action<string>? OnAdd;
-        public event Action<string>? OnRemove;
+        public bool                        Validated => _validator != null;
+        public event Action<string>?       OnAdd;
+        public event Action<string>?       OnRemove;
+        public event Action<List<string>>? OnUpdate;
 
         public void Add(string value)
         {
@@ -89,12 +81,14 @@ namespace Web.Components.EditableList
 
             _values.Add(value);
             OnAdd?.Invoke(value);
+            OnUpdate?.Invoke(_values);
         }
 
         public void Remove(string value)
         {
             _values.Remove(value);
             OnRemove?.Invoke(value);
+            OnUpdate?.Invoke(_values);
         }
 
         public (Validation, MarkupString)? Validate(string value)

@@ -1,244 +1,128 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
-using FlareSelect;
+using System.Threading;
+using System.Threading.Tasks;
+using FS3;
+using FT3;
+using Infrastructure.Controller;
 using Infrastructure.Model;
 using Infrastructure.Schema;
-using Infrastructure.Utility;
 using Microsoft.AspNetCore.Components;
+using Superset.Utilities;
+using Superset.Web.State;
 using Web.Components.EditableList;
 
 namespace Web.Pages
 {
     public partial class Rules
     {
-        // https://stackoverflow.com/a/106223/9911189
-        private readonly Regex _matchIPv4Regex =
-            new Regex(
-                @"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
-                RegexOptions.Compiled);
+        private WhitelistController _whitelistController;
 
-        private readonly Regex _matchIPv6Regex =
-            new Regex(
-                @"^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$",
-                RegexOptions.Compiled);
-
-        // https://stackoverflow.com/a/106223/9911189
-        private readonly Regex _validHostnameRegex =
-            new Regex(
-                @"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$",
-                RegexOptions.Compiled);
-
-        private string _pattern = "";
-        
-        private DateTime? _expiresDate; // = DateTime.Now.Add(TimeSpan.FromDays(7));
-        private string?   _expiresInvalidReason;
-        private TimeSpan? _expiresTime; // = DateTime.Now.Add(TimeSpan.FromMinutes(5)).TimeOfDay;
-        private bool?     _isExpiresValid;
-
-        private bool?         _isPatternValid;
-        private EditableList? _newHostnameList;
         private EditableList? _newIPsList;
         private EditableList? _newSubnetsList;
-        private Whitelist     _newWhitelist = new Whitelist();
+        private EditableList? _newHostnameList;
 
-        private FlareSelector? _vendorSelector;
+        private readonly UpdateTrigger _onPostLoad = new UpdateTrigger();
+        private          bool          _doPostLoad;
 
-        private void OnPatternChange(ChangeEventArgs args)
+        private FlareSelector<string>? _vendorSelector;
+
+        private FlareTable<Whitelist> _whitelistTable;
+
+        // private string     _newPattern             = "";
+        private Debouncer<string>? _patternChangeDebouncer = null;
+
+        private async Task OnPatternChange(ChangeEventArgs args)
         {
-            _pattern = args.Value?.ToString() ?? ""; 
-            ValidatePattern();
-            Console.WriteLine("=> " + args.Value);
-        }
-
-        private void ValidatePattern()
-        {
-            if (string.IsNullOrEmpty(_pattern))
-                _isPatternValid = null;
-            else
-                _isPatternValid = Utility.ValidateRegex(_pattern);
-
-            _newWhitelist.Pattern = _pattern;
+            // _newPattern = args.Value?.ToString() ?? "";
+            _patternChangeDebouncer.Reset(args.Value?.ToString() ?? "");
         }
 
         private void OnExpiresDateChange(ChangeEventArgs args)
         {
-            Console.WriteLine("=> " + args.Value);
-            string? date = args.Value.ToString();
-            if (string.IsNullOrEmpty(date))
-            {
-                _expiresDate = null;
-            }
-            else
-            {
-                _expiresDate = DateTime.Parse(date);
-            }
-
-            ValidateExpirationDateTime();
-            StateHasChanged();
-        }
-
-        private string ExpiresDateValue()
-        {
-            return _expiresDate == null
-                ? ""
-                : _expiresDate.Value.ToString("yyyy-MM-dd");
+            _whitelistController.UpdateExpiresDate(args.Value?.ToString() ?? "");
         }
 
         private void OnExpiresTimeChange(ChangeEventArgs args)
         {
-            Console.WriteLine("=> " + args.Value);
-            string? time = args.Value.ToString();
-            if (string.IsNullOrEmpty(time))
-            {
-                _expiresTime = null;
-            }
-            else
-            {
-                _expiresTime = DateTime.Parse(time).TimeOfDay;
-            }
-
-            ValidateExpirationDateTime();
-            StateHasChanged();
-        }
-
-        private string ExpiresTimeValue()
-        {
-            return _expiresTime == null
-                ? ""
-                : DateTime.MinValue.Add(_expiresTime.Value).ToString("HH:mm");
-        }
-
-        private void SetExpirationAfterTimespan(TimeSpan timeSpan)
-        {
-            if (timeSpan != TimeSpan.Zero)
-            {
-                _expiresDate = DateTime.Now.Add(timeSpan).Date;
-                _expiresTime = DateTime.Now.Add(timeSpan).TimeOfDay;
-            }
-            else
-            {
-                _expiresDate = null;
-                _expiresTime = null;
-            }
-
-            ValidateExpirationDateTime();
-        }
-
-        private void ValidateExpirationDateTime()
-        {
-            if (_expiresDate == null)
-            {
-                if (_expiresTime != null)
-                {
-                    _isExpiresValid       = false;
-                    _expiresInvalidReason = "Time is set but date is not";
-                    return;
-                }
-
-                _isExpiresValid = null;
-                return;
-            }
-
-            if (_expiresDate.Value.Date < DateTime.Now.Date)
-            {
-                _isExpiresValid       = false;
-                _expiresInvalidReason = "Date is in the past";
-                return;
-            }
-
-            if (_expiresTime == null)
-            {
-                if (_expiresDate != null)
-                {
-                    _isExpiresValid       = false;
-                    _expiresInvalidReason = "Date is set but time is not";
-                    return;
-                }
-
-                _isExpiresValid = null;
-                return;
-            }
-
-            DateTime composite = _expiresDate.Value.Add(_expiresTime.Value);
-
-            if (composite < DateTime.Now)
-            {
-                _isExpiresValid       = false;
-                _expiresInvalidReason = "Time is in the past";
-            }
-            else
-            {
-                _isExpiresValid = true;
-            }
+            _whitelistController.UpdateExpiresTime(args.Value?.ToString());
         }
 
         protected override void OnInitialized()
         {
-            _newIPsList = new EditableList(validator: s =>
-                {
-                    if (s.Length == 0)
-                        return (Validation.Undefined, new MarkupString(""));
+            _whitelistController = new WhitelistController(StateHasChanged);
 
-                    if (_matchIPv4Regex.IsMatch(s))
-                        return (Validation.Valid, new MarkupString("Valid IP"));
+            _patternChangeDebouncer = new Debouncer<string>(pattern =>
+            {
+                Console.WriteLine("New value: " + pattern);
+                _whitelistController.UpdatePattern(pattern);
+                InvokeAsync(StateHasChanged);
+            }, "", 200);
 
-                    if (_matchIPv6Regex.IsMatch(s))
-                        return (Validation.Valid, new MarkupString("Valid IP"));
-
-                    return (Validation.Invalid, new MarkupString("Invalid IP"));
-                },
+            _newIPsList = new EditableList(validator: _whitelistController.ValidateIP,
                 placeholder: "Add an IP to whitelist");
+            _newIPsList.OnUpdate += ips => _whitelistController.UpdateIPList(ips);
 
             _newSubnetsList = new EditableList(
-                validator: s =>
-                {
-                    if (s.Length == 0)
-                        return (Validation.Undefined, new MarkupString(""));
-
-                    bool valid = IPNetwork.TryParse(s, out IPNetwork parsed);
-
-                    if (valid)
-                        return (Validation.Valid, new MarkupString($"Parsed: {parsed}"));
-
-                    return (Validation.Invalid, new MarkupString("Parse failure"));
-                },
+                validator: _whitelistController.ValidateSubnet,
                 transformer: s => IPNetwork.Parse(s).ToString(),
                 placeholder: "Add a subnet to whitelist"
             );
+            _newSubnetsList.OnUpdate += subnets => _whitelistController.UpdateSubnetList(subnets);
 
-            _newHostnameList = new EditableList(validator: s =>
-                {
-                    if (s.Length == 0)
-                        return (Validation.Undefined, new MarkupString(""));
-
-                    if (_validHostnameRegex.IsMatch(s))
-                        return (Validation.Valid, new MarkupString("Valid hostname"));
-
-                    return (Validation.Warning, new MarkupString("Invalid hostname"));
-                },
+            _newHostnameList = new EditableList(validator: _whitelistController.ValidateHostname,
                 placeholder: "Add a hostname to whitelist");
-
-            _vendorSelector = new FlareSelector(
-                _ => OUIModel.Options(),
-                multiple: true,
-                minSearchTermLength: 2
-            );
-
-            ValidateExpirationDateTime();
-
-            //
+            _newHostnameList.OnUpdate += hostnames => _whitelistController.UpdateHostnameList(hostnames);
 
             Log fromLog = LogActionService.GetAndUnset();
             if (fromLog != null)
             {
-                Console.WriteLine("From log: " + fromLog.Question);
+                Console.WriteLine("From log: "                                        + fromLog.Question);
                 string pattern = @"(?:^|.+\.)" + fromLog.Question.Replace(".", @"\.") + "$";
-                _pattern = pattern;
-                ValidatePattern();
+                _whitelistController.UpdatePattern(pattern);
             }
+
+            //
+
+            _whitelistTable = new FlareTable<Whitelist>(WhitelistModel.List, sessionStorage: SessionStorageService,
+                identifier: "Rules.WhitelistTable");
+
+            _whitelistTable.RegisterColumn(nameof(Whitelist.ID));
+            _whitelistTable.RegisterColumn(nameof(Whitelist.Pattern));
+            _whitelistTable.RegisterColumn(nameof(Whitelist.Expires));
+
+            _whitelistTable.OnRowClick += whitelist => { };
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!firstRender) return;
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                _vendorSelector = new FlareSelector<string>(
+                    OUIModel.Options,
+                    multiple: true,
+                    minFilterValueLength: 3,
+                    emptyPlaceholder: "Add an OUI to whitelist (ex: Apple, Cisco Systems Inc.)"
+                );
+                _vendorSelector.OnSelect += selected =>
+                {
+                    _whitelistController.UpdateVendorList(selected.Select(v => v.ID).ToList());
+                };
+                _doPostLoad = true;
+                _onPostLoad.Trigger();
+            });
+
+            await _whitelistTable.LoadSessionValues();
+        }
+
+        private void Commit()
+        {
+            _whitelistController.Commit();
         }
     }
 }

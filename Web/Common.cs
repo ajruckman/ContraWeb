@@ -10,7 +10,7 @@ namespace Web
 
         static Common()
         {
-            Logger           = new Logger();
+            Logger           = new Logger(printSourceInfo: true);
             ContraCoreClient = new ContraCoreClient("127.0.0.1");
         }
     }

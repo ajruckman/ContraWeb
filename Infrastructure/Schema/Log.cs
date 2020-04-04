@@ -1,32 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Database.ContraDB;
+using Database.ContraCoreDB;
 
 namespace Infrastructure.Schema
 {
     public class Log
     {
-        public long ID { get; set; }
+        public long ID { get; set; } = 0;
 
-        public DateTime Time { get; set; }
+        public DateTime Time { get; set; } = DateTime.MinValue;
 
-        public string Client { get; set; }
+        public string Client { get; set; } = "";
 
-        public string Question { get; set; }
+        public string Question { get; set; } = "";
 
-        public string QuestionType { get; set; }
+        public string QuestionType { get; set; } = "";
 
-        public string Action { get; set; }
+        public string Action { get; set; } = "";
 
         public List<string> Answers { get; set; }
 
-        public string ClientHostname { get; set; }
+        public string ClientHostname { get; set; } = "";
 
-        public string ClientMAC { get; set; }
+        public string ClientMAC { get; set; } = "";
 
-        public string ClientVendor { get; set; }
-        
+        public string ClientVendor { get; set; } = "";
+
         public dynamic ActionButton { get; set; }
 
         public Log() { }

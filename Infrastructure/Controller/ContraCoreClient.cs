@@ -26,8 +26,6 @@ namespace Infrastructure.Controller
         private readonly SemaphoreSlim        _pongEvent                 = new SemaphoreSlim(1, 1);
         private readonly SemaphoreSlim        _reloadConfigCompleteEvent = new SemaphoreSlim(1, 1);
 
-        private readonly Logger _logger = new Logger();
-
         public event Action         OnConnected;
         public event Action         OnDisconnected;
         public event Action         OnStatusChange; // OnConnected + OnDisconnected
@@ -52,14 +50,14 @@ namespace Infrastructure.Controller
             OnConnected += () =>
             {
                 Connected = true;
-                _logger.Info("Connected to ContraCore");
+                Common.Logger.Info("Connected to ContraCore");
                 ConnectionComplete.Set();
                 OnStatusChange?.Invoke();
             };
             OnDisconnected += () =>
             {
                 Connected = false;
-                _logger.Info("Disconnected from ContraCore");
+                Common.Logger.Info("Disconnected from ContraCore");
                 OnStatusChange?.Invoke();
             };
         }
@@ -69,13 +67,13 @@ namespace Infrastructure.Controller
             Task.Run(async () =>
             {
                 await Ping("Setup.1");
-                _logger.Info("Begin loading initial log data");
+                Common.Logger.Info("Begin loading initial log data");
                 Stopwatch       stopwatch = Stopwatch.StartNew();
                 Task<List<Log>> cacheTask = GetCache();
                 List<Log>       cache     = cacheTask.GetAwaiter().GetResult();
                 _data.Enqueue(cache);
                 stopwatch.Stop();
-                _logger.Info("Initial log data loaded",
+                Common.Logger.Info("Initial log data loaded",
                     new Fields {{"Count", cache.Count}, {"Time (ms)", stopwatch.ElapsedMilliseconds}});
                 OnNewLog?.Invoke();
             });
@@ -99,7 +97,7 @@ namespace Infrastructure.Controller
                 }
                 catch (Exception e)
                 {
-                    _logger.Warning("Failed to connect to server; retrying...", e: e, meta: new Fields {{"Hostname", hostname}});
+                    Common.Logger.Warning("Failed to connect to server; retrying...", e: e, meta: new Fields {{"Hostname", hostname}});
                     Thread.Sleep(1000);
 
                     OnDisconnected?.Invoke();
@@ -112,10 +110,14 @@ namespace Infrastructure.Controller
                     string line;
                     while ((line = await _reader.ReadLineAsync()) != null)
                     {
-                        string[] parts = line.Split();
-                        string   cmd   = parts[0];
+                        // string[] parts = line.Split();
+                        // string   cmd   = parts[0];
 
-                        _logger.Debug($"NetMgr <- {cmd}");
+                        string cmd = line.Contains(" ") ? line.Substring(0, line.IndexOf(" ")) : line;
+                        string val = line.Substring(line.IndexOf(" ") + 1);
+                        
+                        if (cmd != "query")
+                            Common.Logger.Debug($"NetMgr <- {cmd}");
 
                         switch (cmd)
                         {
@@ -128,13 +130,13 @@ namespace Infrastructure.Controller
                                 break;
 
                             case "get_cache.cache":
-                                List<Log> logs = JsonConvert.DeserializeObject<List<Log>>(parts[1]);
+                                List<Log> logs = JsonConvert.DeserializeObject<List<Log>>(val);
                                 await _cacheChannel.Writer.WriteAsync(logs);
                                 break;
 
                             case "query":
-                                Log log = JsonConvert.DeserializeObject<Log>(parts[1]);
-                                _logger.Debug($"Incoming: {log}");
+                                Log log = JsonConvert.DeserializeObject<Log>(val);
+                                Common.Logger.Debug($"Incoming: {log}");
                                 _data.Enqueue(log);
 
                                 OnNewLog?.Invoke();
@@ -146,8 +148,7 @@ namespace Infrastructure.Controller
                             case "gen_rules.saved_in":
                             case "gen_rules.recache_progress":
                             case "gen_rules.recached_in":
-                                string value = line.Substring(line.IndexOf(" ", StringComparison.Ordinal) + 1);
-                                OnGenRulesCallback?.Invoke(value);
+                                OnGenRulesCallback?.Invoke(val);
                                 break;
 
                             case "gen_rules.complete":
@@ -160,7 +161,7 @@ namespace Infrastructure.Controller
                                 break;
 
                             default:
-                                _logger.Error(
+                                Common.Logger.Error(
                                     $"Unmatched command received from NetManagerClient: {cmd}",
                                     new InvalidOperationException()
                                 );
@@ -170,7 +171,7 @@ namespace Infrastructure.Controller
                 }
                 catch (Exception e)
                 {
-                    _logger.Warning("Failed to read from server; reconnecting...", e, new Fields {{"Hostname", hostname}}, true);
+                    Common.Logger.Warning("Failed to read from server; reconnecting...", e, new Fields {{"Hostname", hostname}});
                     Thread.Sleep(1000);
 
                     OnDisconnected?.Invoke();
@@ -178,7 +179,20 @@ namespace Infrastructure.Controller
             }
         }
 
-        public IEnumerable<Log> Data() => _data.Queue.Any() ? _data.Queue.Reverse() : new List<Log>();
+        // public IEnumerable<Log> Data() => _data.Queue.Any() ? _data.Queue.Reverse() : new List<Log>();
+
+        public IEnumerable<Log> Data()
+        {
+            if (_data.Queue.Count == 0)
+            {
+                yield break;
+            }
+
+            for (int i = _data.Queue.Count - 1; i >= 0; i--)
+            {
+                yield return _data.Queue.ElementAt(i);
+            }
+        }
 
         public void Dispose()
         {
@@ -216,11 +230,11 @@ namespace Infrastructure.Controller
             Task task = _pongEvent.WaitAsync(source.Token);
             if (await Task.WhenAny(task, Task.Delay(1000, source.Token)) == task)
             {
-                _logger.Info("Pong received " + caller, new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
+                Common.Logger.Info("Pong received " + caller, new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
                 return true;
             }
 
-            _logger.Warning("Pong timeout occured " + caller);
+            Common.Logger.Warning("Pong timeout occured " + caller);
             _pongEvent.Release();
 
             return false;
@@ -240,11 +254,11 @@ namespace Infrastructure.Controller
             Task task = _reloadConfigCompleteEvent.WaitAsync(source.Token);
             if (await Task.WhenAny(task, Task.Delay(1000, source.Token)) == task)
             {
-                _logger.Info("Reload config complete message received", new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
+                Common.Logger.Info("Reload config complete message received", new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
                 return true;
             }
 
-            _logger.Warning("Reload config timeout occured");
+            Common.Logger.Warning("Reload config timeout occured");
             _reloadConfigCompleteEvent.Release();
             
             return false;
@@ -252,7 +266,7 @@ namespace Infrastructure.Controller
 
         private async Task Send(string msg)
         {
-            _logger.Debug($"NetMgr -> {msg}");
+            Common.Logger.Debug($"NetMgr -> {msg}");
             byte[] b = Encoding.ASCII.GetBytes(msg + "\n");
             await _stream.WriteAsync(b, 0, b.Length);
         }

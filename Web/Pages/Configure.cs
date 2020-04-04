@@ -1,7 +1,6 @@
-#nullable enable
+
+
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -49,7 +48,7 @@ namespace Web.Pages
                 },
                 placeholder: "Add a search domain"
             );
-            
+
             Config.SearchDomains.ForEach(_searchDomainList.Add);
         }
 
@@ -58,7 +57,6 @@ namespace Web.Pages
             new Regex(
                 @"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$",
                 RegexOptions.Compiled);
-
 
         private void Commit()
         {

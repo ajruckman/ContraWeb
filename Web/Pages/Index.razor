@@ -8,7 +8,7 @@
 
 <div class="Index_LogTableContainer">
 
-    <FlareTableContainer FlareTable="@_flareTable1">
+    <FlareTableContainer FlareTable="@_queryLogTable">
 
         <FlareTableControlRow>
             <FlareTableColumnToggles T="Log"/>
@@ -27,23 +27,23 @@
         <FlareTableTable>
             <FlareTableHead>
                 <FlareTableHeadingRow>
-                    @foreach (Column column in _flareTable1.Columns)
+                    @foreach (Column column in _queryLogTable.Columns)
                     {
                         <FlareTableHeading T="Log" ID="@column.ID"/>
                     }
                 </FlareTableHeadingRow>
                 <FlareTableFilterRow>
-                    @foreach (Column column in _flareTable1.Columns)
+                    @foreach (Column column in _queryLogTable.Columns)
                     {
                         <FlareTableFilter T="Log" ID="@column.ID"/>
                     }
                 </FlareTableFilterRow>
             </FlareTableHead>
             <FlareTableBody T="Log">
-                @foreach (Log row in _flareTable1.Rows())
+                @foreach (Log row in _queryLogTable.Rows())
                 {
                     <FlareTableBodyRow T="Log" Value="@row">
-                        <FlareTableCell T="Log" ID="Time">@row.Time.ToString("HH:mm:ss.fff")</FlareTableCell>
+                        <FlareTableCell T="Log" ID="Time">@(row.Time.ToString("HH:mm:ss.fff"))</FlareTableCell>
                         <FlareTableCell T="Log" ID="Client">@row.Client</FlareTableCell>
                         <FlareTableCell T="Log" ID="Question">@row.Question</FlareTableCell>
                         <FlareTableCell T="Log" ID="Action">@row.Action</FlareTableCell>

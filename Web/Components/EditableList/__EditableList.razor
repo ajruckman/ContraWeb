@@ -1,4 +1,5 @@
-﻿<div class="EditableListContainer@(EditableList.Monospace ? " Monospace" : "")">
+﻿@using Infrastructure.Schema
+<div class="EditableListContainer@(EditableList.Monospace ? " Monospace" : "")">
     <div class="EditableList--Selected">
         @foreach (string v in EditableList.Values)
         {

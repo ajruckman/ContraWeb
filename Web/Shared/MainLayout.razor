@@ -1,9 +1,10 @@
 ﻿@using Superset.Web.Resources
 @using Blazored.LocalStorage
 
+@inject AuthenticationStateProvider ContraWebAuthStateProvider
 @inject ILocalStorageService LocalStorage
 
-@inherits LayoutComponentBase
+@inherits Microsoft.AspNetCore.Components.LayoutComponentBase
 
 <style>
     #blazor-error-ui {
@@ -17,6 +18,28 @@
 {
     @_themeLoader.RenderLink()
     @_header.Render()
-    @Body
+    
+    <AuthorizeView>
+        <Authorized>
+            <h1>Hello, @context.User.Identity.Name!</h1>
+            <p>You can only see this content if you're authenticated.</p>
+            @Body
+            <button @onclick="LogOut">Log out</button>
+        </Authorized>
+        <NotAuthorized>
+            <Login/>
+
+            <h1>Authentication Failure!</h1>
+            <p>You're not signed in.</p>
+        </NotAuthorized>
+        <Authorizing>
+            <h1>Authorizing</h1>
+        </Authorizing>
+    </AuthorizeView>
+}
+
+
+@if (_themeLoader.Complete)
+{
     @_themeLoader.RenderDropdown()
 }

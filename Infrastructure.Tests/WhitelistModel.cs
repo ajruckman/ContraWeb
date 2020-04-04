@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -73,7 +73,7 @@ namespace Infrastructure.Tests
                 Hostnames = hostnames
             };
 
-            Model.WhitelistModel.Create(whitelist);
+            Model.WhitelistModel.Submit(whitelist);
 
             Assert.AreNotEqual(whitelist.ID, 0);
 

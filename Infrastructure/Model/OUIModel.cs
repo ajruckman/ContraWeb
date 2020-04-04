@@ -1,26 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Database.ContraDB;
-using FlareSelect;
+using Database.ContraCoreDB;
+using FS3;
 using Superset.Common;
 
 namespace Infrastructure.Model
 {
     public static class OUIModel
     {
-        private static IEnumerable<IOption> _cache;
+        private static IEnumerable<IOption<string>> _cache;
 
-        public static IEnumerable<IOption> Options()
+        public static IEnumerable<IOption<string>> Options()
         {
-            using ContraDBContext contraDB = new ContraDBContext();
-            return _cache ??=
-                contraDB.oui_vendors
-                        .Select(v => new Option
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
+            if (_cache == null)
+                _cache = contraDB.oui_vendors
+                        .Select(v => new Option<string>
                          {
                              ID           = v.vendor,
-                             Text         = v.vendor,
+                             OptionText   = v.vendor,
                              SelectedText = v.vendor
                          }).ToList();
+
+            return _cache;
         }
     }
 }

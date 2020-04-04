@@ -103,7 +103,7 @@ body {
   body h3 {
     margin: 4px 0; }
   body .Spacer {
-    height: 25px; }
+    height: 20px; }
   body .CheckMark {
     height: 21px;
     position: relative;
@@ -201,18 +201,24 @@ body {
       padding-right: 10px;
       padding-top: 6px;
       vertical-align: top; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td #NewWhitelist_Pattern {
-      width: 247px; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td .EL_Validation {
+    body .RuleGen_NewWhitelistContainer .Inputs tr td .CenterRow {
       align-items: center;
       display: flex;
-      height: 21px;
-      margin-bottom: 5px; }
-      body .RuleGen_NewWhitelistContainer .Inputs tr td .EL_Validation span {
+      height: 21px; }
+      body .RuleGen_NewWhitelistContainer .Inputs tr td .CenterRow span {
         margin-left: 5px; }
+    body .RuleGen_NewWhitelistContainer .Inputs tr td .VendorSelectorContainer {
+      min-height: 62px; }
     body .RuleGen_NewWhitelistContainer .Inputs tr td .EditableListContainer {
       max-width: 400px;
       width: 100%; }
+    body .RuleGen_NewWhitelistContainer .Inputs tr td .FlareSelect_Container {
+      max-width: 405px; }
+    body .RuleGen_NewWhitelistContainer .Inputs tr td .SubmitWrapper {
+      display: flex;
+      align-items: center; }
+      body .RuleGen_NewWhitelistContainer .Inputs tr td .SubmitWrapper .CenterRow {
+        margin-left: 10px; }
   body .RuleGen_RuleGenContainer {
     padding: 5px 7px; }
     body .RuleGen_RuleGenContainer .RuleStats tr td {

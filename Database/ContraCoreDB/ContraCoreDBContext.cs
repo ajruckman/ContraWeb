@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Database.ContraDB
+namespace Database.ContraCoreDB
 {
-    public partial class ContraDBContext : DbContext
+    public partial class ContraCoreDBContext : DbContext
     {
-        public ContraDBContext()
+        public ContraCoreDBContext()
         {
         }
 
-        public ContraDBContext(DbContextOptions<ContraDBContext> options)
+        public ContraCoreDBContext(DbContextOptions<ContraCoreDBContext> options)
             : base(options)
         {
         }
@@ -32,15 +32,17 @@ namespace Database.ContraDB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Server=127.0.0.1;Port=5432;User Id=contra_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
+                optionsBuilder.UseNpgsql("Server=127.0.0.1;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresEnum("contraweb", "user_role", new[] { "restricted", "privileged", "administrator" });
+
             modelBuilder.Entity<blacklist>(entity =>
             {
-                entity.ToTable("blacklist", "contra");
+                entity.ToTable("blacklist", "contracore");
 
                 entity.Property(e => e.id).HasDefaultValueSql("nextval('blacklist_id_seq'::regclass)");
 
@@ -51,7 +53,7 @@ namespace Database.ContraDB
 
             modelBuilder.Entity<config>(entity =>
             {
-                entity.ToTable("config", "contra");
+                entity.ToTable("config", "contracore");
 
                 entity.Property(e => e.id).HasDefaultValueSql("nextval('config_id_seq'::regclass)");
 
@@ -86,7 +88,7 @@ namespace Database.ContraDB
 
             modelBuilder.Entity<lease>(entity =>
             {
-                entity.ToTable("lease", "contra");
+                entity.ToTable("lease", "contracore");
 
                 entity.Property(e => e.id).HasDefaultValueSql("nextval('lease_id_seq'::regclass)");
 
@@ -108,7 +110,7 @@ namespace Database.ContraDB
             {
                 entity.HasNoKey();
 
-                entity.ToTable("lease_details", "contra");
+                entity.ToTable("lease_details", "contracore");
 
                 entity.Property(e => e.op)
                     .HasMaxLength(3)
@@ -117,7 +119,7 @@ namespace Database.ContraDB
 
             modelBuilder.Entity<log>(entity =>
             {
-                entity.ToTable("log", "contra");
+                entity.ToTable("log", "contracore");
 
                 entity.Property(e => e.id).HasDefaultValueSql("nextval('log_id_seq'::regclass)");
 
@@ -136,21 +138,21 @@ namespace Database.ContraDB
             {
                 entity.HasNoKey();
 
-                entity.ToTable("log_block_details", "contra");
+                entity.ToTable("log_block_details", "contracore");
             });
 
             modelBuilder.Entity<log_details_recent>(entity =>
             {
                 entity.HasNoKey();
 
-                entity.ToTable("log_details_recent", "contra");
+                entity.ToTable("log_details_recent", "contracore");
             });
 
             modelBuilder.Entity<oui>(entity =>
             {
                 entity.HasNoKey();
 
-                entity.ToTable("oui", "contra");
+                entity.ToTable("oui", "contracore");
 
                 entity.Property(e => e.mac)
                     .HasMaxLength(8)
@@ -161,12 +163,12 @@ namespace Database.ContraDB
             {
                 entity.HasNoKey();
 
-                entity.ToTable("oui_vendors", "contra");
+                entity.ToTable("oui_vendors", "contracore");
             });
 
             modelBuilder.Entity<reservation>(entity =>
             {
-                entity.ToTable("reservation", "contra");
+                entity.ToTable("reservation", "contracore");
 
                 entity.Property(e => e.id).HasDefaultValueSql("nextval('reservation_id_seq'::regclass)");
 
@@ -183,7 +185,7 @@ namespace Database.ContraDB
 
             modelBuilder.Entity<whitelist>(entity =>
             {
-                entity.ToTable("whitelist", "contra");
+                entity.ToTable("whitelist", "contracore");
 
                 entity.Property(e => e.id).HasDefaultValueSql("nextval('whitelist_id_seq'::regclass)");
 

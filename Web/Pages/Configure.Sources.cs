@@ -1,15 +1,24 @@
-﻿#nullable enable
+﻿
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Web.Pages
 {
     public partial class Configure
     {
-        private List<Source> _sources = new List<Source>();
-        private string?      _newSource;
+        private List<Source>     _sources = new List<Source>();
+        private string?          _newSource;
+        private ElementReference _newSourceInput;
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (!firstRender) return;
+        }
 
         [SuppressMessage("ReSharper", "UnusedMember.Local")]
         private string? NewSource
@@ -22,12 +31,14 @@ namespace Web.Pages
             }
         }
 
-        private void RemoveSource(Source source)
+        private async Task RemoveSource(Source source)
         {
-            _sources.Remove(source);
+            var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] {$"Delete source '{source.URL}'?"});
+            if (confirmed)
+                _sources.Remove(source);
         }
 
-        private void AddSource()
+        private async Task AddSource()
         {
             if (_newSource == null) return;
 
@@ -40,6 +51,8 @@ namespace Web.Pages
             }
 
             _newSource = null;
+
+            await Superset.Web.Utilities.Utilities.FocusElement(JSRuntime, _newSourceInput);
         }
 
         private class Source : IEquatable<Source>
@@ -70,6 +83,11 @@ namespace Web.Pages
             {
                 return URL.GetHashCode();
             }
+        }
+
+        private void OnNewSourceKeyUp(KeyboardEventArgs args)
+        {
+            if (args.Key == "Enter") AddSource();
         }
     }
 }

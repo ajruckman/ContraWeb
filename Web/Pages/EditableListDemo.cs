@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Infrastructure.Schema;
+using Microsoft.AspNetCore.Components;
 using Web.Components.EditableList;
 
 namespace Web.Pages

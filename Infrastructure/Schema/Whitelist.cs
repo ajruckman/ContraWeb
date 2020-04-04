@@ -1,10 +1,10 @@
-﻿#nullable enable
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using Database.ContraDB;
+using Database.ContraCoreDB;
 
 namespace Infrastructure.Schema
 {
@@ -15,9 +15,11 @@ namespace Infrastructure.Schema
         public DateTime?              Expires   { get; set; }
         public List<IPAddress>?       IPs       { get; set; }
         public List<IPNetwork>?       Subnets   { get; set; }
+        public List<string>?          Hostnames { get; set; }
         public List<PhysicalAddress>? MACs      { get; set; }
         public List<string>?          Vendors   { get; set; }
-        public List<string>?          Hostnames { get; set; }
+        
+        public dynamic RemoveButton { get; set; }
 
         public Whitelist() { }
 

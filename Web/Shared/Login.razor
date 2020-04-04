@@ -1,0 +1,15 @@
+﻿@using Blazored.LocalStorage
+
+@inject AuthenticationStateProvider ContraWebAuthStateProvider
+@inject ILocalStorageService LocalStorage
+
+
+<div class="Authentication_LoginContainer">
+
+    <input type="text" @bind="@_username"/>
+    <input type="password" @bind="@_password"/>
+
+    <button @onclick="@LogIn">Log in</button>
+    <button @onclick="@LogOut">Log out</button>
+
+</div>

@@ -8,6 +8,8 @@ namespace Web
         public readonly List<ResourceManifest> ResourceManifests = new List<ResourceManifest>
         {
             Superset.Web.ResourceManifests.LocalCSS,
+            Superset.Web.ResourceManifests.Listeners,
+            Superset.Web.ResourceManifests.FocusElement,
             
             Subsegment.Resources.ResourceManifest,
 
@@ -16,13 +18,14 @@ namespace Web
             FontSet.ResourceManifests.Inter,
             FontSet.ResourceManifests.JetBrainsMono,
 
-            FlareSelect.Resources.FocusScript,
+            // FlareSelect.Resources.FocusScript,
+            FS3.ResourceManifests.FlareSelect,
             FT3.ResourceManifests.FlareTables,
             
-            Fundament.Resources.ResourceManifest,
-            Rudiment.Resources.ResourceManifest,
+            // Fundament.Resources.ResourceManifest,
+            // Rudiment.Resources.ResourceManifest,
             
-            ShapeSet.ResourceManifests.Composite,
+            ShapeSet.ResourceManifests.ShapeSet,
         };
     }
 }

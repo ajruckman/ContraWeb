@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace Database.ContraDB
+namespace Database.ContraCoreDB
 {
     public partial class log_block_details
     {

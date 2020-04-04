@@ -20,7 +20,7 @@ body {
     }
 
     .Spacer {
-        height: 25px;
+        height: 20px;
     }
 
     // https://codepen.io/gliesche/pen/ZQyPeV
@@ -185,7 +185,6 @@ body {
         padding: 5px 7px;
 
         .Inputs {
-
             tr {
                 td {
                     &:first-child {
@@ -196,19 +195,18 @@ body {
                         vertical-align: top;
                     }
 
-                    #NewWhitelist_Pattern {
-                        width: 247px;
-                    }
-
-                    .EL_Validation {
+                    .CenterRow {
                         align-items:   center;
                         display:       flex;
                         height:        21px;
-                        margin-bottom: 5px;
 
                         span {
                             margin-left: 5px;
                         }
+                    }
+                    
+                    .VendorSelectorContainer {
+                        min-height: 62px;
                     }
 
                     .ExpirationDateFuturesContainer {
@@ -218,6 +216,19 @@ body {
                     .EditableListContainer {
                         max-width: 400px;
                         width:     100%;
+                    }
+                    
+                    .FlareSelect_Container {
+                        max-width: 405px;
+                    }
+                    
+                    .SubmitWrapper {
+                        display: flex;
+                        align-items: center;
+                        
+                        .CenterRow {
+                            margin-left: 10px;
+                        }
                     }
                 }
             }

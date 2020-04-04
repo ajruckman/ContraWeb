@@ -4,11 +4,6 @@ namespace Infrastructure
 {
     internal static class Common
     {
-        internal static readonly Logger Logger;
-
-        static Common()
-        {
-            Logger = new Logger();
-        }
+        internal static readonly Logger Logger = new Logger(printSourceInfo: true, projectRoot: "Infrastructure");
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 
-namespace Database.ContraDB
+namespace Database.ContraCoreDB
 {
     public partial class log_details_recent
     {
