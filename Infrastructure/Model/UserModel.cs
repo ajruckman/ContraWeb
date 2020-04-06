@@ -27,11 +27,11 @@ namespace Infrastructure.Model
                 password = user.Password,
                 role = user.Role switch
                 {
-                    UserRole.Restricted    => "restricted",
-                    UserRole.Privileged    => "privileged",
-                    UserRole.Administrator => "administrator",
-                    UserRole.Undefined     => throw new Exception(),
-                    _                      => throw new Exception(),
+                    UserRole.Roles.Restricted    => "restricted",
+                    UserRole.Roles.Privileged    => "privileged",
+                    UserRole.Roles.Administrator => "administrator",
+                    UserRole.Roles.Undefined     => throw new Exception(),
+                    _                            => throw new Exception(),
                 }
             });
 
@@ -46,7 +46,7 @@ namespace Infrastructure.Model
 
             return match != null ? new User(match) : null;
         }
-        
+
         public static void Remove(User user)
         {
             using ContraWebDBContext contraDB = new ContraWebDBContext();

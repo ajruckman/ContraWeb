@@ -9,6 +9,7 @@ using FT3;
 using Infrastructure.Controller;
 using Infrastructure.Model;
 using Infrastructure.Schema;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Superset.Utilities;
 using Superset.Web.State;
@@ -16,6 +17,7 @@ using Web.Components.EditableList;
 
 namespace Web.Pages
 {
+    [Authorize(Roles="Privileged, Administrator")]
     public partial class Rules
     {
         private WhitelistController _whitelistController;

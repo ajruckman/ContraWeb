@@ -9,16 +9,10 @@ namespace Infrastructure.Schema
             Username = user.username;
             Salt     = user.salt;
             Password = user.password;
-            Role = user.role switch
-            {
-                "restricted"    => UserRole.Restricted,
-                "privileged"    => UserRole.Privileged,
-                "administrator" => UserRole.Administrator,
-                _               => UserRole.Undefined
-            };
+            Role     = UserRole.NameToUserRole(user.role);
         }
 
-        public User(string username, string salt, string hash, UserRole role)
+        public User(string username, string salt, string hash, UserRole.Roles role)
         {
             Username = username;
             Salt     = salt;
@@ -26,17 +20,9 @@ namespace Infrastructure.Schema
             Role     = role;
         }
 
-        public string   Username { get; set; }
-        public string   Salt     { get; set; }
-        public string   Password { get; set; }
-        public UserRole Role     { get; set; }
-    }
-
-    public enum UserRole
-    {
-        Undefined,
-        Restricted,
-        Privileged,
-        Administrator
+        public string         Username { get; set; }
+        public string         Salt     { get; set; }
+        public string         Password { get; set; }
+        public UserRole.Roles Role     { get; set; }
     }
 }

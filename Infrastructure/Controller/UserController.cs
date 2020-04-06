@@ -9,7 +9,7 @@ namespace Infrastructure.Controller
 {
     public static class UserController
     {
-        public static User Create(string username, string password, UserRole role)
+        public static User Create(string username, string password, UserRole.Roles role)
         {
             (string salt, string hash) = Hash(password);
 

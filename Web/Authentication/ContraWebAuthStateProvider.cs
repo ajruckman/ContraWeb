@@ -7,7 +7,6 @@ using Infrastructure.Controller;
 using Infrastructure.Model;
 using Infrastructure.Schema;
 using Microsoft.AspNetCore.Components.Authorization;
-using Web.Services;
 
 namespace Web.Authentication
 {
@@ -77,7 +76,8 @@ namespace Web.Authentication
             ClaimsIdentity identity = IsAuthenticated
                 ? new ClaimsIdentity(new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, User.Username)
+                    new Claim(ClaimTypes.Name, User.Username),
+                    new Claim(ClaimTypes.Role, User.Role.ToString())
                 }, "ContraWebAuthStateProvider")
                 : new ClaimsIdentity();
 

@@ -93,7 +93,6 @@ namespace Infrastructure.Controller
                     _reader = new StreamReader(_stream);
 
                     OnConnected?.Invoke();
-                    // ConnectionComplete.SetResult(true);
                 }
                 catch (Exception e)
                 {
@@ -110,9 +109,6 @@ namespace Infrastructure.Controller
                     string line;
                     while ((line = await _reader.ReadLineAsync()) != null)
                     {
-                        // string[] parts = line.Split();
-                        // string   cmd   = parts[0];
-
                         string cmd = line.Contains(" ") ? line.Substring(0, line.IndexOf(" ")) : line;
                         string val = line.Substring(line.IndexOf(" ") + 1);
                         

@@ -215,8 +215,8 @@ body {
     body .RuleGen_NewWhitelistContainer .Inputs tr td .FlareSelect_Container {
       max-width: 405px; }
     body .RuleGen_NewWhitelistContainer .Inputs tr td .SubmitWrapper {
-      display: flex;
-      align-items: center; }
+      align-items: center;
+      display: flex; }
       body .RuleGen_NewWhitelistContainer .Inputs tr td .SubmitWrapper .CenterRow {
         margin-left: 10px; }
   body .RuleGen_RuleGenContainer {
@@ -256,3 +256,10 @@ body {
           border-top: 1px solid var(--ColorSet_ThemeColor_Border_50); }
         body .RuleGen_RuleGenContainer .ProgressContainer span:hover {
           background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
+  body .Users_AddContainer {
+    padding: 5px 7px; }
+    body .Users_AddContainer .Inputs tr td:nth-child(2) input {
+      width: 500px; }
+  body .Users_ListContainer {
+    max-width: 500px;
+    padding: 5px 7px; }

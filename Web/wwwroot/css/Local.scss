@@ -196,15 +196,15 @@ body {
                     }
 
                     .CenterRow {
-                        align-items:   center;
-                        display:       flex;
-                        height:        21px;
+                        align-items: center;
+                        display:     flex;
+                        height:      21px;
 
                         span {
                             margin-left: 5px;
                         }
                     }
-                    
+
                     .VendorSelectorContainer {
                         min-height: 62px;
                     }
@@ -217,15 +217,15 @@ body {
                         max-width: 400px;
                         width:     100%;
                     }
-                    
+
                     .FlareSelect_Container {
                         max-width: 405px;
                     }
-                    
+
                     .SubmitWrapper {
-                        display: flex;
                         align-items: center;
-                        
+                        display:     flex;
+
                         .CenterRow {
                             margin-left: 10px;
                         }
@@ -300,5 +300,26 @@ body {
                 }
             }
         }
+    }
+
+    .Users_AddContainer {
+        padding: 5px 7px;
+
+        .Inputs {
+            tr td:nth-child(2) {
+                input {
+                    width: 500px;
+                }
+
+                .FlareSelect_Container {
+                    //width: 499px;
+                }
+            }
+        }
+    }
+
+    .Users_ListContainer {
+        max-width: 500px;
+        padding:   5px 7px;
     }
 }

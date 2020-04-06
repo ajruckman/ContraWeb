@@ -3,6 +3,7 @@
 
 @inject AuthenticationStateProvider ContraWebAuthStateProvider
 @inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
 
 @inherits Microsoft.AspNetCore.Components.LayoutComponentBase
 
@@ -17,14 +18,16 @@
 @if (_themeLoader.Complete)
 {
     @_themeLoader.RenderLink()
-    @_header.Render()
+    
+    <TriggerWrapper Trigger="@_updateHeader" Protected="true">
+        @Header().Render()
+    </TriggerWrapper>
     
     <AuthorizeView>
         <Authorized>
             <h1>Hello, @context.User.Identity.Name!</h1>
             <p>You can only see this content if you're authenticated.</p>
             @Body
-            <button @onclick="LogOut">Log out</button>
         </Authorized>
         <NotAuthorized>
             <Login/>

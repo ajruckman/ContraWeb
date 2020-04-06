@@ -3,12 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure.Model;
+using Infrastructure.Schema;
+using Infrastructure.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Superset.Web.State;
 
 namespace Web.Pages
 {
-    public partial class RuleGen : IDisposable
+    [Authorize(Roles ="Privileged, Administrator")]
+    public partial class Generate : IDisposable
     {
+        [CascadingParameter]
+        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+        
         private readonly UpdateTrigger _progressUpdated = new UpdateTrigger();
 
         private int           _blacklistRuleCount;
@@ -52,11 +61,18 @@ namespace Web.Pages
             await Common.ContraCoreClient.GenRules();
         }
 
-        private bool CanGenRules => Common.ContraCoreClient.Connected && !Common.ContraCoreClient.GeneratingRules;
+        private bool DisableRuleGenButton()
+        {
+            UserRole.Roles role = Utility.GetRole(AuthenticationStateTask).Result;
+            if (role != UserRole.Roles.Administrator) 
+                return true;
+
+            return !Common.ContraCoreClient.Connected || Common.ContraCoreClient.GeneratingRules;
+        }
 
         public void Dispose()
         {
-            Common.Logger.Debug("Web.Pages.RuleGen.Dispose()");
+            Common.Logger.Debug("Web.Pages.Generate.Dispose()");
             Common.ContraCoreClient.OnGenRulesCallback -= OnGenRulesCallback;
             Common.ContraCoreClient.OnGenRulesChange   -= OnGenRulesChange;
         }

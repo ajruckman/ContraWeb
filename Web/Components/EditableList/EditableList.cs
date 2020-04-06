@@ -20,6 +20,7 @@ namespace Web.Components.EditableList
         private readonly Validator?   _validator;
         private readonly Transformer? _transformer;
         private readonly List<string> _values = new List<string>();
+        private readonly string       _uid;
 
         public readonly string DefaultValue;
         public readonly bool   Monospace;
@@ -45,6 +46,7 @@ namespace Web.Components.EditableList
 
             _validator   = validator;
             _transformer = transformer;
+            _uid         = Guid.NewGuid().ToString().Replace("-", "");
 
             Monospace    = monospace;
             Placeholder  = placeholder;
@@ -103,6 +105,7 @@ namespace Web.Components.EditableList
                 int seq = -1;
 
                 builder.OpenComponent<__EditableList>(++seq);
+                builder.SetKey(_uid);
                 builder.AddAttribute(++seq, "EditableList", this);
                 builder.CloseComponent();
             }
@@ -138,8 +141,8 @@ namespace Web.Components.EditableList
                 B = b;
             }
 
-            public int    A { get; }
-            public string B { get; }
+            private int    A { get; }
+            private string B { get; }
 
             public bool Equals(ComplexObject? other)
             {

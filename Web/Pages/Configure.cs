@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Model;
 using Infrastructure.Schema;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Superset.Logging;
 using Superset.Web.State;
@@ -14,6 +13,7 @@ using Web.Components.EditableList;
 
 namespace Web.Pages
 {
+    [Authorize(Roles ="Administrator")]
     public partial class Configure
     {
         private Config? Config { get; set; }

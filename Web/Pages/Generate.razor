@@ -2,7 +2,7 @@
 @using Superset.Web.State
 @using Infrastructure.Controller
 
-@page "/rulegen"
+@page "/generate"
 
 <div class="RuleGen_RuleGenContainer">
     <h3>Rule stats</h3>
@@ -42,7 +42,7 @@
     <TriggerWrapper Trigger="@_progressUpdated">
         <div class="GeneratingRulesNoticeContainer">
 
-            <button @onclick="@GenRules" disabled="@(!CanGenRules)" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
+            <button @onclick="@GenRules" disabled="@DisableRuleGenButton()" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
             @if (!Common.ContraCoreClient.Connected)
             {
                 <span>ContraCore is disconnected</span>

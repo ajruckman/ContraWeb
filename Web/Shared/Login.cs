@@ -21,20 +21,26 @@ namespace Web.Shared
 
         private async Task LogIn()
         {
-            Console.WriteLine(_username);
-            Console.WriteLine(_password);
-
-            User? match = await UserController.LogIn(_username, _password);
+            User? match = await UserController.LogIn("ajruckman", "123");
             Console.WriteLine(match);
-
-            if (match != null)
-            {
-                string token = await UserController.CreateUserSession(match);
-                await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogIn(token);
-            }
             
-            // await UserController.RefreshSession(_user);
-            // await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).Login(token);
+            string token = await UserController.CreateUserSession(match);
+            
+            await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogIn(token);
+            
+            return;
+            
+            // Console.WriteLine(_username);
+            // Console.WriteLine(_password);
+            //
+            // User? match = await UserController.LogIn(_username, _password);
+            // Console.WriteLine(match);
+            //
+            // if (match != null)
+            // {
+            //     string token = await UserController.CreateUserSession(match);
+            //     await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogIn(token);
+            // }
         }
 
         private async Task LogOut()
@@ -46,7 +52,7 @@ namespace Web.Shared
         {
             try
             {
-                _user = await UserModel.Find("ajruckman") ?? UserController.Create("ajruckman", "123", UserRole.Administrator);
+                _user = await UserModel.Find("ajruckman") ?? UserController.Create("ajruckman", "123", UserRole.Roles.Administrator);
                 Console.WriteLine(_user.Username);
             }
             catch (Exception e)

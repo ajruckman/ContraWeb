@@ -1,3 +1,78 @@
-﻿@page "/users/
+﻿@page "/users"
 
+@using FT3
+@using FT3.Component
+@using Infrastructure.Schema
 
+<div class="Users_AddContainer">
+    <table class="Inputs">
+        <tr>
+            <td>
+                <label>Username</label>
+            </td>
+            <td>
+                <input type="text" @bind="@_newUsername" class="SS_Input"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Password</label>
+            </td>
+            <td>
+                <input type="password" @bind="@_newPassword" class="SS_Input"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Role</label>
+            </td>
+            <td>@_newRoleSelector.Render()</td>
+        </tr>
+    </table>
+</div>
+
+<div class="Users_ListContainer">
+
+    <FlareTableContainer FlareTable="@_userTable">
+
+        <FlareTableControlRow>
+            <FlareTablePaginationSize T="User"/>
+            <FlareTableControlFiller/>
+            <FlareTablePaginationButtons T="User" ID="1"/>
+        </FlareTableControlRow>
+
+        <FlareTableTable>
+            <FlareTableHead>
+                <FlareTableHeadingRow>
+                    @foreach (Column column in _userTable.Columns)
+                    {
+                        <FlareTableHeading T="User" ID="@column.ID"/>
+                    }
+                </FlareTableHeadingRow>
+                <FlareTableFilterRow>
+                    @foreach (Column column in _userTable.Columns)
+                    {
+                        <FlareTableFilter T="User" ID="@column.ID"/>
+                    }
+                </FlareTableFilterRow>
+            </FlareTableHead>
+            <FlareTableBody T="User">
+                @foreach (User row in _userTable.Rows())
+                {
+                    <FlareTableBodyRow T="User" Value="@row">
+                        <FlareTableCell T="User" ID="Username">@row.Username</FlareTableCell>
+                        <FlareTableCell T="User" ID="Role">@row.Role</FlareTableCell>
+                    </FlareTableBodyRow>
+                }
+            </FlareTableBody>
+        </FlareTableTable>
+
+        <FlareTableControlRow>
+            <FlareTablePaginationInfo T="User"/>
+            <FlareTableControlFiller/>
+            <FlareTablePaginationButtons T="User" ID="2"/>
+        </FlareTableControlRow>
+
+    </FlareTableContainer>
+
+</div>
