@@ -13,6 +13,7 @@ namespace Web.Shared
 
         private string _username;
         private string _password;
+        private string _loginMessage;
 
         protected override async Task OnInitializedAsync()
         {
@@ -21,15 +22,16 @@ namespace Web.Shared
 
         private async Task LogIn()
         {
-            User? match = await UserController.LogIn("ajruckman", "123");
+            User? match = await UserController.LogIn(_username, _password);
             Console.WriteLine(match);
-            
-            string token = await UserController.CreateUserSession(match);
-            
-            await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogIn(token);
-            
-            return;
-            
+
+            if (match != null)
+            {
+                string token = await UserController.CreateUserSession(match);
+                
+                await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogIn(token);
+                
+            }
             // Console.WriteLine(_username);
             // Console.WriteLine(_password);
             //

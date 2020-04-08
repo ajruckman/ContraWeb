@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FS3;
 using Superset.Common;
 
@@ -6,14 +7,26 @@ namespace Infrastructure.Schema
 {
     public static class UserRole
     {
-        public static Roles NameToUserRole(string roleName) =>
-            roleName.ToLower() switch
+        public static Roles NameToUserRole(string? roleName) =>
+            (roleName?.ToLower() ?? "") switch
             {
                 "restricted"    => Roles.Restricted,
                 "privileged"    => Roles.Privileged,
                 "administrator" => Roles.Administrator,
                 _               => Roles.Undefined
             };
+
+        public static string RoleToDatabaseName(Roles role)
+        {
+            return role switch
+            {
+                Roles.Restricted    => "restricted",
+                Roles.Privileged    => "privileged",
+                Roles.Administrator => "administrator",
+                Roles.Undefined     => throw new Exception(),
+                _                   => throw new Exception(),
+            };
+        }
 
         public enum Roles
         {

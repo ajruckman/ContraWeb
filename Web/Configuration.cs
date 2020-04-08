@@ -26,6 +26,7 @@ namespace Web
             // Rudiment.Resources.ResourceManifest,
             
             ShapeSet.ResourceManifests.ShapeSet,
+            ShapeSet.ResourceManifests.BlazorErrorUIStyle
         };
     }
 }

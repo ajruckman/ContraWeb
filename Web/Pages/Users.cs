@@ -10,7 +10,7 @@ using Infrastructure.Schema;
 using Infrastructure.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
+using Superset.Utilities;
 using Web.Authentication;
 
 namespace Web.Pages
@@ -18,30 +18,34 @@ namespace Web.Pages
     [Authorize(Roles = "Administrator")]
     public partial class Users
     {
-        [CascadingParameter]
-        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-
         private User? _user;
 
-        private FlareTable<User> _userTable;
+        private FlareTable<User>? _userTable;
 
-        private string          _newUsername;
-        private string          _newPassword;
-        private string          _editedPassword;
-        private UserRole.Roles? _newRole;
-        private UserRole.Roles? _editedRole;
-        private Validator       _newUserValidator  = new Validator();
-        private Validator       _editUserValidator = new Validator();
-        private List<User>?     _users;
+        private string             _newUsername = "";
+        Debouncer<string>?         _newUsernameDebouncer;
+        private string             _newPassword = "";
+        private Debouncer<string>? _newPasswordDebouncer;
+        private UserRole.Roles     _newRole          = UserRole.Roles.Undefined;
+        private Validator          _newUserValidator = new Validator();
 
-        private User? _editing;
+        private string         _editedPassword    = "";
+        private UserRole.Roles _editedRole        = UserRole.Roles.Undefined;
+        private Validator      _editUserValidator = new Validator();
 
-        private FlareSelector<string> _newRoleSelector;
-        private FlareSelector<string> _editedRoleSelector;
+        private User?       _editing;
+        private List<User>? _users;
+
+        private FlareSelector<string>? _newRoleSelector;
+        private FlareSelector<string>? _editedRoleSelector;
 
         protected override void OnInitialized()
         {
             LoadUsers();
+
+            _user = ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).User;
+            if (_user == null)
+                throw new Exception("User is not authenticated; access to this page should not have been permitted.");
 
             _userTable = new FlareTable<User>(
                 () => _users ?? new List<User>());
@@ -49,18 +53,34 @@ namespace Web.Pages
             _userTable.RegisterColumn(nameof(User.Username));
             _userTable.RegisterColumn(nameof(User.Role));
 
-            _userTable.RegisterColumn("_Edit",   sortable: false, filterable: false, displayName: "", width: "57px");
-            _userTable.RegisterColumn("_Remove", sortable: false, filterable: false, displayName: "", width: "83px");
+            _userTable.RegisterColumn("_Edit",   sortable: false, filterable: false, displayName: "", width: "56px");
+            _userTable.RegisterColumn("_Remove", sortable: false, filterable: false, displayName: "", width: "82px");
 
             //
+
+            _newUsernameDebouncer = new Debouncer<string>(value =>
+            {
+                Console.WriteLine("--");
+                _newUsername = value;
+                _newUserValidator.Refresh();
+                InvokeAsync(StateHasChanged);
+            }, _newUsername);
+            
+            _newPasswordDebouncer = new Debouncer<string>(value =>
+            {
+                _newPassword = value;
+                _newUserValidator.Refresh();
+                InvokeAsync(StateHasChanged);
+            }, _newPassword);
 
             _newRoleSelector = new FlareSelector<string>(
                 () => UserRole.Options(),
                 false
             );
+
             _newRoleSelector.OnSelect += selected =>
             {
-                _newRole = UserRole.NameToUserRole(selected.First().ID);
+                _newRole = UserRole.NameToUserRole(selected.FirstOrDefault()?.ID);
                 StateHasChanged();
             };
 
@@ -68,6 +88,7 @@ namespace Web.Pages
                 () => UserRole.Options(_editing?.Role),
                 false,
                 isDisabled: () => _editing.Username == _user.Username);
+
             _editedRoleSelector.OnSelect += selected =>
             {
                 _editedRole = UserRole.NameToUserRole(selected.FirstOrDefault()?.ID);
@@ -81,10 +102,14 @@ namespace Web.Pages
                 if (string.IsNullOrEmpty(_newUsername))
                     return new Validation(ValidationResult.Invalid, "Username is required");
 
+                User? found = UserModel.Find(_newUsername).Result;
+                if (found != null)
+                    return new Validation(ValidationResult.Invalid, "Username is already registered");
+
                 if (string.IsNullOrEmpty(_newPassword))
                     return new Validation(ValidationResult.Invalid, "Password is required");
 
-                if (_newRole == null || _newRole == UserRole.Roles.Undefined || _newRole == UserRole.Roles.Restricted)
+                if (_newRole == UserRole.Roles.Undefined || _newRole == UserRole.Roles.Restricted)
                     return new Validation(ValidationResult.Invalid, "Role is invalid");
 
                 return new Validation(ValidationResult.Valid, "User is valid");
@@ -95,18 +120,11 @@ namespace Web.Pages
                 // if (string.IsNullOrEmpty(_editedPassword))
                 // return new Validation(ValidationResult.Invalid, "Password is required");
 
-                if (_editedRole == null || _editedRole == UserRole.Roles.Undefined || _editedRole == UserRole.Roles.Restricted)
+                if (_editedRole == UserRole.Roles.Undefined || _editedRole == UserRole.Roles.Restricted)
                     return new Validation(ValidationResult.Invalid, "Role is invalid");
 
                 return new Validation(ValidationResult.Valid, "Edits are valid");
             });
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
-            _user = ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).User;
-            if (_user == null)
-                throw new Exception("User is not authenticated; access to this page should not have been permitted.");
         }
 
         private void LoadUsers()
@@ -118,13 +136,12 @@ namespace Web.Pages
         {
             return !string.IsNullOrEmpty(_newUsername) &&
                    !string.IsNullOrEmpty(_newPassword) &&
-                   _newRole != null                    &&
                    (_newRole == UserRole.Roles.Privileged || _newRole == UserRole.Roles.Administrator);
         }
 
-        private async Task Add() => _editing = null;
+        private void Add() => _editing = null;
 
-        private async Task Edit(User user)
+        private void Edit(User user)
         {
             _editing = user;
             _editedRoleSelector.InvalidateData();
@@ -143,8 +160,42 @@ namespace Web.Pages
 
         private async Task Submit()
         {
-            User newUser = UserController.Create(_newUsername, _newPassword, _newRole.Value);
-            await Add();
+            if (_editing == null)
+            {
+                User newUser = UserController.Create(_newUsername, _newPassword, _newRole);
+
+                _newUsername = "";
+                _newPassword = "";
+                _newRole     = UserRole.Roles.Undefined;
+
+                LoadUsers();
+                _userTable.InvalidateData();
+                _newRoleSelector.InvalidateData(true);
+            }
+            else
+            {
+                if (_editedRole != UserRole.Roles.Undefined)
+                {
+                    _editing.Role = _editedRole;
+                    await UserModel.UpdateRole(_editing);
+                }
+
+                if (_editedPassword != null)
+                {
+                    _editing.Password = _editedPassword;
+                    await UserModel.UpdatePassword(_editing);
+                }
+
+                _editedRole     = UserRole.Roles.Undefined;
+                _editedPassword = "";
+                _editing        = null;
+
+                LoadUsers();
+                _userTable.InvalidateData();
+                _newRoleSelector.InvalidateData(true);
+            }
+
+            Add();
         }
 
         private bool CanRemoveUser(User user)

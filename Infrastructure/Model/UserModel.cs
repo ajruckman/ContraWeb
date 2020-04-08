@@ -25,14 +25,7 @@ namespace Infrastructure.Model
                 username = user.Username,
                 salt     = user.Salt,
                 password = user.Password,
-                role = user.Role switch
-                {
-                    UserRole.Roles.Restricted    => "restricted",
-                    UserRole.Roles.Privileged    => "privileged",
-                    UserRole.Roles.Administrator => "administrator",
-                    UserRole.Roles.Undefined     => throw new Exception(),
-                    _                            => throw new Exception(),
-                }
+                role     = UserRole.RoleToDatabaseName(user.Role)
             });
 
             contraDB.SaveChanges();
@@ -56,6 +49,28 @@ namespace Infrastructure.Model
             contraDB.user.Remove(match);
 
             contraDB.SaveChanges();
+        }
+
+        public static async Task UpdatePassword(User user)
+        {
+            await using ContraWebDBContext contraDB = new ContraWebDBContext();
+
+            user match = contraDB.user.Single(v => v.username == user.Username);
+
+            match.password = user.Password;
+
+            await contraDB.SaveChangesAsync();
+        }
+
+        public static async Task UpdateRole(User user)
+        {
+            await using ContraWebDBContext contraDB = new ContraWebDBContext();
+
+            user match = contraDB.user.Single(v => v.username == user.Username);
+
+            match.role = UserRole.RoleToDatabaseName(user.Role);
+
+            await contraDB.SaveChangesAsync();
         }
     }
 }

@@ -65,9 +65,9 @@ namespace Web.Pages
         {
             UserRole.Roles role = Utility.GetRole(AuthenticationStateTask).Result;
             if (role != UserRole.Roles.Administrator) 
-                return true;
+                return false;
 
-            return !Common.ContraCoreClient.Connected || Common.ContraCoreClient.GeneratingRules;
+            return Common.ContraCoreClient.Connected && !Common.ContraCoreClient.GeneratingRules;
         }
 
         public void Dispose()

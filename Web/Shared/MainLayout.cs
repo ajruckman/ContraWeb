@@ -56,6 +56,11 @@ namespace Web.Shared
                     header.Add(new Separator());
                     header.Add(new Space());
 
+                    header.Add(new PageLink("Users", "/users"));
+                    header.Add(new Space());
+                    header.Add(new Separator());
+                    header.Add(new Space());
+
                     goto case UserRole.Roles.Privileged;
 
                 case UserRole.Roles.Privileged:
@@ -87,6 +92,8 @@ namespace Web.Shared
             }
             else
             {
+                header.Add(new Chip(user.Username));
+                header.Add(new Space());
                 header.Add(new Button("Log out",
                     async () => { await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogOut(); }));
             }

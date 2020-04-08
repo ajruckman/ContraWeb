@@ -7,12 +7,6 @@
 
 @inherits Microsoft.AspNetCore.Components.LayoutComponentBase
 
-<style>
-    #blazor-error-ui {
-    display: none;
-    }
-</style>
-
 @ResourceManifest.RenderScripts(new Configuration().ResourceManifests)
 
 @if (_themeLoader.Complete)
@@ -25,9 +19,8 @@
     
     <AuthorizeView>
         <Authorized>
-            <h1>Hello, @context.User.Identity.Name!</h1>
-            <p>You can only see this content if you're authenticated.</p>
             @Body
+            <div style="margin: 9px;">User: @context.User.Identity.Name</div>
         </Authorized>
         <NotAuthorized>
             <Login/>

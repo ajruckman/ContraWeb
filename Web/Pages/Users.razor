@@ -78,11 +78,11 @@
                 <td>
                     @if (_editing == null)
                     {
-                        <input type="text" @bind="@_newUsername" class="SS_Input"/>
+                        <input type="text" value="@_newUsername" @oninput="@(args => _newUsernameDebouncer.Reset(args.Value?.ToString() ?? ""))" class="SS_Input"/>
                     }
                     else
                     {
-                        <input type="text" value="@_editing.Username" disabled="true" class="SS_Input"/>
+                        <input type="text" value="@_editing.Username" disabled="disabled" class="SS_Input"/>
                     }
                 </td>
             </tr>
@@ -93,7 +93,7 @@
                 <td>
                     @if (_editing == null)
                     {
-                        <input type="password" @bind="@_newPassword" class="SS_Input"/>
+                        <input type="password" value="@_newPassword" @oninput="@(args => _newPasswordDebouncer.Reset(args.Value?.ToString() ?? ""))" class="SS_Input"/>
                     }
                     else
                     {
