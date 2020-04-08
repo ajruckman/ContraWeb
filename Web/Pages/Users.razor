@@ -4,75 +4,140 @@
 @using FT3.Component
 @using Infrastructure.Schema
 
-<div class="Users_AddContainer">
-    <table class="Inputs">
-        <tr>
-            <td>
-                <label>Username</label>
-            </td>
-            <td>
-                <input type="text" @bind="@_newUsername" class="SS_Input"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Password</label>
-            </td>
-            <td>
-                <input type="password" @bind="@_newPassword" class="SS_Input"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Role</label>
-            </td>
-            <td>@_newRoleSelector.Render()</td>
-        </tr>
-    </table>
-</div>
+@inject AuthenticationStateProvider ContraWebAuthStateProvider
+@inject IJSRuntime JSRuntime
 
-<div class="Users_ListContainer">
+<div class="Users_LayoutContainer">
+    <div class="Users_ListContainer">
+        <h2>Users</h2>
 
-    <FlareTableContainer FlareTable="@_userTable">
+        <FlareTableContainer FlareTable="@_userTable">
 
-        <FlareTableControlRow>
-            <FlareTablePaginationSize T="User"/>
-            <FlareTableControlFiller/>
-            <FlareTablePaginationButtons T="User" ID="1"/>
-        </FlareTableControlRow>
+            <FlareTableControlRow>
+                <FlareTablePaginationSize T="User"/>
+                <FlareTableControlFiller/>
+                <FlareTablePaginationButtons T="User" ID="1"/>
+            </FlareTableControlRow>
 
-        <FlareTableTable>
-            <FlareTableHead>
-                <FlareTableHeadingRow>
-                    @foreach (Column column in _userTable.Columns)
+            <FlareTableTable>
+                <FlareTableHead>
+                    <FlareTableHeadingRow>
+                        @foreach (Column column in _userTable.Columns)
+                        {
+                            <FlareTableHeading T="User" ID="@column.ID"/>
+                        }
+                    </FlareTableHeadingRow>
+                    <FlareTableFilterRow>
+                        @foreach (Column column in _userTable.Columns)
+                        {
+                            <FlareTableFilter T="User" ID="@column.ID"/>
+                        }
+                    </FlareTableFilterRow>
+                </FlareTableHead>
+                <FlareTableBody T="User">
+                    @foreach (User row in _userTable.Rows())
                     {
-                        <FlareTableHeading T="User" ID="@column.ID"/>
+                        <FlareTableBodyRow T="User" Value="@row">
+                            <FlareTableCell T="User" ID="Username">@row.Username</FlareTableCell>
+                            <FlareTableCell T="User" ID="Role">@row.Role</FlareTableCell>
+
+                            <FlareTableCell T="User" ID="_Edit">
+                                <button class="SS_Button--Blue" @onclick="@(_ => Edit(row))" disabled="@(_editing != null)">EDIT</button>
+                            </FlareTableCell>
+                            <FlareTableCell T="User" ID="_Remove">
+                                <button class="SS_Button--Red" @onclick="@(_ => Remove(row))" disabled="@(!CanRemoveUser(row))">REMOVE</button>
+                            </FlareTableCell>
+                        </FlareTableBodyRow>
                     }
-                </FlareTableHeadingRow>
-                <FlareTableFilterRow>
-                    @foreach (Column column in _userTable.Columns)
+                </FlareTableBody>
+            </FlareTableTable>
+
+            <FlareTableControlRow>
+                <FlareTablePaginationInfo T="User"/>
+                <FlareTableControlFiller/>
+                <FlareTablePaginationButtons T="User" ID="2"/>
+            </FlareTableControlRow>
+
+        </FlareTableContainer>
+
+    </div>
+
+    <div class="Users_InputContainer">
+        <div class="VerticallyCenteredContainer Users_InputHeader">
+            <h2>@(_editing == null ? "Add new user" : "Edit user")</h2>
+            @if (_editing != null)
+            {
+                <button class="SS_Button--Red" @onclick="@(_ => Add())">CANCEL</button>
+            }
+        </div>
+        <table class="Inputs">
+            <tr>
+                <td>
+                    <label>Username</label>
+                </td>
+                <td>
+                    @if (_editing == null)
                     {
-                        <FlareTableFilter T="User" ID="@column.ID"/>
+                        <input type="text" @bind="@_newUsername" class="SS_Input"/>
                     }
-                </FlareTableFilterRow>
-            </FlareTableHead>
-            <FlareTableBody T="User">
-                @foreach (User row in _userTable.Rows())
-                {
-                    <FlareTableBodyRow T="User" Value="@row">
-                        <FlareTableCell T="User" ID="Username">@row.Username</FlareTableCell>
-                        <FlareTableCell T="User" ID="Role">@row.Role</FlareTableCell>
-                    </FlareTableBodyRow>
-                }
-            </FlareTableBody>
-        </FlareTableTable>
+                    else
+                    {
+                        <input type="text" value="@_editing.Username" disabled="true" class="SS_Input"/>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Password</label>
+                </td>
+                <td>
+                    @if (_editing == null)
+                    {
+                        <input type="password" @bind="@_newPassword" class="SS_Input"/>
+                    }
+                    else
+                    {
+                        <input type="password" @bind="@_editedPassword" class="SS_Input"/>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Role</label>
+                </td>
+                <td>
+                    @if (_editing == null)
+                    {
+                        @_newRoleSelector.Render()
+                    }
+                    else
+                    {
+                        @_editedRoleSelector.Render()
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="Spacer"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="VerticallyCenteredContainer">
+                        <button class="SS_Button--Green" @onclick="@Submit" disabled="@(!AllowSubmit())">SUBMIT</button>
+                        @if (_editing == null)
+                        {
+                            @_newUserValidator.RenderOverallResult()
+                        }
+                        else
+                        {
+                            @_editUserValidator.RenderOverallResult()
+                        }
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-        <FlareTableControlRow>
-            <FlareTablePaginationInfo T="User"/>
-            <FlareTableControlFiller/>
-            <FlareTablePaginationButtons T="User" ID="2"/>
-        </FlareTableControlRow>
-
-    </FlareTableContainer>
-
+    @{
+        _newUserValidator.Refresh();
+    }
 </div>

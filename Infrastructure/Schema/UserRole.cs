@@ -23,30 +23,27 @@ namespace Infrastructure.Schema
             Administrator
         }
 
-        private static List<IOption<string>>? _options;
-
-        public static List<IOption<string>> Options()
+        public static IEnumerable<IOption<string>> Options(Roles? selected = null)
         {
-            if (_options == null)
+            var options = new List<IOption<string>>
             {
-                _options = new List<IOption<string>>();
-                
-                _options.Add(new Option<string>
+                new Option<string>
                 {
                     ID           = "Privileged",
                     OptionText   = "Privileged - View global log, and manage personal rules",
-                    SelectedText = "Privileged"
-                });
-                
-                _options.Add(new Option<string>
+                    SelectedText = "Privileged",
+                    Selected     = selected?.ToString() == "Privileged"
+                },
+                new Option<string>
                 {
                     ID           = "Administrator",
                     OptionText   = "Administrator - Manage global rules, system settings, and users",
-                    SelectedText = "Administrator"
-                });
-            }
+                    SelectedText = "Administrator",
+                    Selected     = selected?.ToString() == "Administrator"
+                }
+            };
 
-            return _options;
+            return options;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Infrastructure.Schema;
+using Infrastructure.Validation;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
@@ -11,7 +12,7 @@ namespace Web.Components.EditableList
 {
     public class EditableList
     {
-        public delegate (Validation, MarkupString) Validator(string value);
+        public delegate (ValidationResult, MarkupString) Validator(string value);
 
         public delegate string Transformer(string input);
 
@@ -62,8 +63,8 @@ namespace Web.Components.EditableList
 
         public void Add(string value)
         {
-            (Validation, MarkupString)? validation = _validator?.Invoke(value);
-            if (validation?.Item1 == Validation.Invalid)
+            (ValidationResult, MarkupString)? validation = _validator?.Invoke(value);
+            if (validation?.Item1 == ValidationResult.Invalid)
                 return;
 
             string? transformed = _transformer?.Invoke(value);
@@ -93,7 +94,7 @@ namespace Web.Components.EditableList
             OnUpdate?.Invoke(_values);
         }
 
-        public (Validation, MarkupString)? Validate(string value)
+        public (ValidationResult, MarkupString)? Validate(string value)
         {
             return _validator?.Invoke(value);
         }

@@ -61,7 +61,7 @@ namespace Web.Pages
             await Common.ContraCoreClient.GenRules();
         }
 
-        private bool DisableRuleGenButton()
+        private bool AllowRuleGen()
         {
             UserRole.Roles role = Utility.GetRole(AuthenticationStateTask).Result;
             if (role != UserRole.Roles.Administrator) 

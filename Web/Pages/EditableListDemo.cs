@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Schema;
+using Infrastructure.Validation;
 using Microsoft.AspNetCore.Components;
 using Web.Components.EditableList;
 
@@ -14,7 +15,7 @@ namespace Web.Pages
                 2 => "You inputted " + s,
                 _ => ""
             };
-            return ((Validation) (s.Length % 4), new MarkupString(msg));
+            return ((ValidationResult) (s.Length % 4), new MarkupString(msg));
         });
 
         protected override void OnInitialized()

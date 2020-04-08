@@ -96,7 +96,7 @@
 body {
   background-color: var(--ColorSet_ThemeColor_Background_20);
   color: var(--ColorSet_ThemeColor_Text_80);
-  font-size: 13px;
+  font-size: 15px;
   margin: 0; }
   body * {
     font-family: var(--FontSet-SansSerifFont); }
@@ -104,6 +104,22 @@ body {
     margin: 4px 0; }
   body .Spacer {
     height: 20px; }
+  body .CenterRow {
+    align-items: center;
+    display: flex;
+    height: 21px; }
+    body .CenterRow span {
+      margin-left: 5px; }
+  body .VerticallyCenteredContainer {
+    align-items: center;
+    display: flex; }
+  body .ValidationResultContainer {
+    align-items: center;
+    display: inline-flex;
+    margin-left: 15px;
+    min-height: 21px; }
+    body .ValidationResultContainer .ValidationText {
+      margin-left: 5px; }
   body .CheckMark {
     height: 21px;
     position: relative;
@@ -201,12 +217,6 @@ body {
       padding-right: 10px;
       padding-top: 6px;
       vertical-align: top; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td .CenterRow {
-      align-items: center;
-      display: flex;
-      height: 21px; }
-      body .RuleGen_NewWhitelistContainer .Inputs tr td .CenterRow span {
-        margin-left: 5px; }
     body .RuleGen_NewWhitelistContainer .Inputs tr td .VendorSelectorContainer {
       min-height: 62px; }
     body .RuleGen_NewWhitelistContainer .Inputs tr td .EditableListContainer {
@@ -256,10 +266,30 @@ body {
           border-top: 1px solid var(--ColorSet_ThemeColor_Border_50); }
         body .RuleGen_RuleGenContainer .ProgressContainer span:hover {
           background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
-  body .Users_AddContainer {
-    padding: 5px 7px; }
-    body .Users_AddContainer .Inputs tr td:nth-child(2) input {
-      width: 500px; }
-  body .Users_ListContainer {
-    max-width: 500px;
-    padding: 5px 7px; }
+  body .Users_LayoutContainer {
+    display: flex;
+    flex-wrap: wrap; }
+    body .Users_LayoutContainer h2 {
+      margin-top: 0; }
+    body .Users_LayoutContainer .Users_ListContainer {
+      padding: 5px 14px 0 7px;
+      flex-grow: 10; }
+      body .Users_LayoutContainer .Users_ListContainer .FlareTableCell {
+        padding: 5px 7px !important; }
+    body .Users_LayoutContainer .Users_InputContainer {
+      padding: 5px 7px 0 14px;
+      border-left: 1px solid var(--ColorSet_ThemeColor_Border_40); }
+      body .Users_LayoutContainer .Users_InputContainer .Users_InputHeader {
+        justify-content: space-between; }
+        body .Users_LayoutContainer .Users_InputContainer .Users_InputHeader .SS_Button--Red {
+          margin-right: 5px; }
+      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td {
+        vertical-align: middle; }
+      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(1) {
+        color: var(--ColorSet_ThemeColor_Text_40);
+        font-weight: bold;
+        padding-right: 7px; }
+      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) input {
+        width: 300px; }
+      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) .FlareSelect_Container {
+        margin: 1px 0; }

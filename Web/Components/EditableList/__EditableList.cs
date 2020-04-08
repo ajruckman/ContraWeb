@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Schema;
+using Infrastructure.Validation;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -8,7 +9,7 @@ namespace Web.Components.EditableList
     {
         private string                      _newValue = "";
         private bool                        _hasInitialized;
-        private (Validation, MarkupString)? _validation;
+        private (ValidationResult, MarkupString)? _validation;
 
         [Parameter]
         public EditableList EditableList { get; set; }
@@ -46,8 +47,8 @@ namespace Web.Components.EditableList
 
             if (EditableList.Validated)
             {
-                (Validation, MarkupString)? validation = EditableList.Validate(_newValue);
-                if (validation?.Item1 == Validation.Invalid)
+                (ValidationResult, MarkupString)? validation = EditableList.Validate(_newValue);
+                if (validation?.Item1 == ValidationResult.Invalid)
                     return false;
             }
 

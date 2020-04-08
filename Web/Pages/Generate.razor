@@ -42,7 +42,7 @@
     <TriggerWrapper Trigger="@_progressUpdated">
         <div class="GeneratingRulesNoticeContainer">
 
-            <button @onclick="@GenRules" disabled="@DisableRuleGenButton()" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
+            <button @onclick="@GenRules" disabled="@(!AllowRuleGen())" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
             @if (!Common.ContraCoreClient.Connected)
             {
                 <span>ContraCore is disconnected</span>

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Model;
 using Infrastructure.Schema;
+using Infrastructure.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Superset.Logging;
@@ -39,12 +40,12 @@ namespace Web.Pages
                 validator: s =>
                 {
                     if (string.IsNullOrEmpty(s))
-                        return (Validation.Undefined, new MarkupString());
+                        return (ValidationResult.Undefined, new MarkupString());
 
                     if (_validHostnameRegex.IsMatch(s))
-                        return (Validation.Valid, new MarkupString("Valid search domain"));
+                        return (ValidationResult.Valid, new MarkupString("Valid search domain"));
 
-                    return (Validation.Invalid, new MarkupString("Invalid search domain"));
+                    return (ValidationResult.Invalid, new MarkupString("Invalid search domain"));
                 },
                 placeholder: "Add a search domain"
             );

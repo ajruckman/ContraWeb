@@ -8,7 +8,7 @@
 body {
     background-color: var(--ColorSet_ThemeColor_Background_20);
     color:            var(--ColorSet_ThemeColor_Text_80);
-    font-size:        13px;
+    font-size:        15px;
     margin:           0;
 
     * {
@@ -21,6 +21,32 @@ body {
 
     .Spacer {
         height: 20px;
+    }
+
+    .CenterRow {
+        align-items: center;
+        display:     flex;
+        height:      21px;
+
+        span {
+            margin-left: 5px;
+        }
+    }
+
+    .VerticallyCenteredContainer {
+        align-items: center;
+        display:     flex;
+    }
+
+    .ValidationResultContainer {
+        align-items: center;
+        display:     inline-flex;
+        margin-left: 15px;
+        min-height:  21px;
+
+        .ValidationText {
+            margin-left: 5px;
+        }
     }
 
     // https://codepen.io/gliesche/pen/ZQyPeV
@@ -195,16 +221,6 @@ body {
                         vertical-align: top;
                     }
 
-                    .CenterRow {
-                        align-items: center;
-                        display:     flex;
-                        height:      21px;
-
-                        span {
-                            margin-left: 5px;
-                        }
-                    }
-
                     .VendorSelectorContainer {
                         min-height: 62px;
                     }
@@ -302,24 +318,59 @@ body {
         }
     }
 
-    .Users_AddContainer {
-        padding: 5px 7px;
+    .Users_LayoutContainer {
+        display:   flex;
+        flex-wrap: wrap;
 
-        .Inputs {
-            tr td:nth-child(2) {
-                input {
-                    width: 500px;
+        h2 {
+            margin-top: 0;
+        }
+
+        .Users_ListContainer {
+            padding:   5px 14px 0 7px;
+            flex-grow: 10;
+
+            .FlareTableCell {
+                padding: 5px 7px !important;
+            }
+        }
+
+        .Users_InputContainer {
+            padding:     5px 7px 0 14px;
+            border-left: 1px solid var(--ColorSet_ThemeColor_Border_40);
+
+            .Users_InputHeader {
+                justify-content: space-between;
+
+                .SS_Button--Red {
+                    margin-right: 5px;
                 }
+            }
 
-                .FlareSelect_Container {
-                    //width: 499px;
+            .Inputs {
+                tr {
+                    td {
+                        vertical-align: middle;
+                    }
+
+                    td:nth-child(1) {
+                        color:         var(--ColorSet_ThemeColor_Text_40);
+                        font-weight:   bold;
+                        padding-right: 7px;
+                    }
+
+                    td:nth-child(2) {
+                        input {
+                            width: 300px;
+                        }
+
+                        .FlareSelect_Container {
+                            margin: 1px 0;
+                            //width: 499px;
+                        }
+                    }
                 }
             }
         }
-    }
-
-    .Users_ListContainer {
-        max-width: 500px;
-        padding:   5px 7px;
     }
 }

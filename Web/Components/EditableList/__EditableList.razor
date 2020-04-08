@@ -1,4 +1,5 @@
 ﻿@using Infrastructure.Schema
+@using Infrastructure.Validation
 <div class="EditableListContainer@(EditableList.Monospace ? " Monospace" : "")">
     <div class="EditableList--Selected">
         @foreach (string v in EditableList.Values)
@@ -24,15 +25,15 @@
                     <div class="EditableList--ValidationMark">
                         @switch (_validation.Value.Item1)
                         {
-                            case (Validation.Undefined):
+                            case (ValidationResult.Undefined):
                                 break;
-                            case (Validation.Invalid):
+                            case (ValidationResult.Invalid):
                                 <div class="XMark"></div>
                                 break;
-                            case (Validation.Warning):
+                            case (ValidationResult.Warning):
                                 <div class="Exclamation"></div>
                                 break;
-                            case (Validation.Valid):
+                            case (ValidationResult.Valid):
                                 <div class="CheckMark"></div>
                                 break;
                         }

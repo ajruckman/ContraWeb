@@ -173,7 +173,7 @@ namespace Infrastructure.Controller
 
             _newWhitelist.IPs = new List<IPAddress>();
             foreach (string ip in ips)
-                if (ip != "" && ValidateIP(ip).Item1 == Validation.Valid)
+                if (ip != "" && ValidateIP(ip).Item1 == Validation.ValidationResult.Valid)
                     _newWhitelist.IPs.Add(IPAddress.Parse(ip));
 
             OnValidation.Invoke();
@@ -189,7 +189,7 @@ namespace Infrastructure.Controller
 
             _newWhitelist.Hostnames = new List<string>();
             foreach (string hostname in hostnames)
-                if (hostname != "" && ValidateHostname(hostname).Item1 != Validation.Invalid)
+                if (hostname != "" && ValidateHostname(hostname).Item1 != Validation.ValidationResult.Invalid)
                     _newWhitelist.Hostnames.Add(hostname);
 
             OnValidation.Invoke();
@@ -260,42 +260,42 @@ namespace Infrastructure.Controller
             _newWhitelist = new Whitelist();
         }
 
-        public (Validation, MarkupString) ValidateIP(string s)
+        public (Validation.ValidationResult, MarkupString) ValidateIP(string s)
         {
             if (s.Length == 0)
-                return (Validation.Undefined, new MarkupString(""));
+                return (Validation.ValidationResult.Undefined, new MarkupString(""));
 
             if (_matchIPv4Regex.IsMatch(s))
-                return (Validation.Valid, new MarkupString("Valid IP"));
+                return (Validation.ValidationResult.Valid, new MarkupString("Valid IP"));
 
             if (_matchIPv6Regex.IsMatch(s))
-                return (Validation.Valid, new MarkupString("Valid IP"));
+                return (Validation.ValidationResult.Valid, new MarkupString("Valid IP"));
 
-            return (Validation.Invalid, new MarkupString("Invalid IP"));
+            return (Validation.ValidationResult.Invalid, new MarkupString("Invalid IP"));
         }
 
-        public (Validation, MarkupString) ValidateSubnet(string s)
+        public (Validation.ValidationResult, MarkupString) ValidateSubnet(string s)
         {
             if (s.Length == 0)
-                return (Validation.Undefined, new MarkupString(""));
+                return (Validation.ValidationResult.Undefined, new MarkupString(""));
 
             bool valid = IPNetwork.TryParse(s, out IPNetwork parsed);
 
             if (valid)
-                return (Validation.Valid, new MarkupString($"Parsed: {parsed}"));
+                return (Validation.ValidationResult.Valid, new MarkupString($"Parsed: {parsed}"));
 
-            return (Validation.Invalid, new MarkupString("Parse failure"));
+            return (Validation.ValidationResult.Invalid, new MarkupString("Parse failure"));
         }
 
-        public (Validation, MarkupString) ValidateHostname(string s)
+        public (Validation.ValidationResult, MarkupString) ValidateHostname(string s)
         {
             if (s.Length == 0)
-                return (Validation.Undefined, new MarkupString(""));
+                return (Validation.ValidationResult.Undefined, new MarkupString(""));
 
             if (_validHostnameRegex.IsMatch(s))
-                return (Validation.Valid, new MarkupString("Valid hostname"));
+                return (Validation.ValidationResult.Valid, new MarkupString("Valid hostname"));
 
-            return (Validation.Warning, new MarkupString("Invalid hostname"));
+            return (Validation.ValidationResult.Warning, new MarkupString("Invalid hostname"));
         }
     }
 }
