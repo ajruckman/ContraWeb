@@ -24,5 +24,11 @@ namespace Infrastructure.Model
 
             return _cache;
         }
+
+        public static int OUICount()
+        {
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
+            return contraDB.oui.Count();
+        }
     }
 }

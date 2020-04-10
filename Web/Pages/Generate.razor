@@ -4,12 +4,17 @@
 
 @page "/generate"
 
-<div class="RuleGen_RuleGenContainer">
-    <h2>Rule stats</h2>
-    
-    <table class="RuleStats">
+<div class="Generate_GenerateContainer">
+    <h2>Blacklist and OUI list generation</h2>
+
+    <div class="VerticallyCenteredContainer">
+        <h3>Blacklist rules</h3>
+        <a href="/configure" class="SS_Button">EDIT SOURCES</a>
+    </div>
+
+    <table class="GenStats">
         <tr>
-            <TriggerWrapper Trigger="@_progressUpdated">
+            <TriggerWrapper Trigger="@_ruleGenProgressTrigger">
                 <td>Number of blacklist rules</td>
                 <td>@_blacklistRuleCount.ToString("n0")</td>
             </TriggerWrapper>
@@ -32,18 +37,15 @@
                     <span>Failed to read config</span>
                 }
             </td>
-            <td>
-                <a href="/configure" class="SS_Button">EDIT</a>
-            </td>
         </tr>
     </table>
 
     <br>
 
-    <TriggerWrapper Trigger="@_progressUpdated">
+    <TriggerWrapper Trigger="@_ruleGenProgressTrigger">
         <div class="GeneratingRulesNoticeContainer">
 
-            <button @onclick="@GenRules" disabled="@(!AllowRuleGen())" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
+            <button @onclick="@GenRules" disabled="@(!AllowGenRule())" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
             @if (!Common.ContraCoreClient.Connected)
             {
                 <span>ContraCore is disconnected</span>
@@ -57,10 +59,53 @@
     </TriggerWrapper>
 
     <div class="ProgressContainer">
-        <TriggerWrapper Trigger="@_progressUpdated">
-            @for (var i = 0; i < _progress.Count; i++)
+        <TriggerWrapper Trigger="@_ruleGenProgressTrigger">
+            @for (var i = 0; i < _ruleGenProgress.Count; i++)
             {
-                <span @key="@($"RuleGen_ProgressLine_{i}")">@_progress[i]</span>
+                <span @key="@($"Generate_ProgressLine_{i}")">@_ruleGenProgress[i]</span>
+            }
+        </TriggerWrapper>
+    </div>
+    
+    <br>
+    <br>
+    <div class="DividerLine"></div>
+    <br>
+
+    <h3>OUI list</h3>
+
+    <table class="GenStats">
+        <tr>
+            <TriggerWrapper Trigger="@_ruleGenProgressTrigger">
+                <td>Number of OUI entries</td>
+                <td>@_ouiCount.ToString("n0")</td>
+            </TriggerWrapper>
+        </tr>
+    </table>
+
+    <br>
+
+    <TriggerWrapper Trigger="@_ouiGenProgressTrigger">
+        <div class="GeneratingOUINoticeContainer">
+
+            <button @onclick="@GenOUI" disabled="@(!AllowGenOUI())" class="SS_Button SS_Button--Blue">GENERATE OUI LIST</button>
+            @if (!Common.ContraCoreClient.Connected)
+            {
+                <span>ContraCore is disconnected</span>
+            }
+            else if (Common.ContraCoreClient.GeneratingOUI)
+            {
+                <div class="Spinner"></div>
+                <span>Generating OUI table...</span>
+            }
+        </div>
+    </TriggerWrapper>
+
+    <div class="ProgressContainer">
+        <TriggerWrapper Trigger="@_ouiGenProgressTrigger">
+            @for (var i = 0; i < _ouiGenProgress.Count; i++)
+            {
+                <span @key="@($"Generate_ProgressLine_{i}")">@_ouiGenProgress[i]</span>
             }
         </TriggerWrapper>
     </div>

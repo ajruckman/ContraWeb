@@ -11,7 +11,7 @@ namespace Web
         static Common()
         {
             Logger           = new Logger(printSourceInfo: true);
-            ContraCoreClient = new ContraCoreClient("127.0.0.1");
+            ContraCoreClient = new ContraCoreClient("10.3.0.16");
         }
     }
 }

@@ -31,9 +31,12 @@ namespace Infrastructure.Controller
         public event Action         OnStatusChange; // OnConnected + OnDisconnected
         public event Action         OnNewLog;
         public event Action<string> OnGenRulesCallback;
+        public event Action<string> OnGenOUICallback;
 
         public bool         GeneratingRules { get; private set; }
         public event Action OnGenRulesChange;
+        public bool         GeneratingOUI { get; private set; }
+        public event Action OnGenOUIChange;
 
         public readonly ManualResetEventSlim ConnectionComplete = new ManualResetEventSlim();
 
@@ -56,7 +59,11 @@ namespace Infrastructure.Controller
             };
             OnDisconnected += () =>
             {
-                Connected = false;
+                Connected       = false;
+                GeneratingRules = false;
+                GeneratingOUI   = false;
+                OnGenRulesChange.Invoke();
+                OnGenOUIChange?.Invoke();
                 Common.Logger.Info("Disconnected from ContraCore");
                 OnStatusChange?.Invoke();
             };
@@ -96,7 +103,8 @@ namespace Infrastructure.Controller
                 }
                 catch (Exception e)
                 {
-                    Common.Logger.Warning("Failed to connect to server; retrying...", e: e, meta: new Fields {{"Hostname", hostname}});
+                    Common.Logger.Warning("Failed to connect to server; retrying...", e: e,
+                        meta: new Fields {{"Hostname", hostname}});
                     Thread.Sleep(1000);
 
                     OnDisconnected?.Invoke();
@@ -111,8 +119,8 @@ namespace Infrastructure.Controller
                     {
                         string cmd = line.Contains(" ") ? line.Substring(0, line.IndexOf(" ")) : line;
                         string val = line.Substring(line.IndexOf(" ") + 1);
-                        
-                        if (cmd != "query")
+
+                        if (cmd != "query" && cmd != "gen_oui.gen_progress")
                             Common.Logger.Debug($"NetMgr <- {cmd}");
 
                         switch (cmd)
@@ -151,7 +159,16 @@ namespace Infrastructure.Controller
                                 GeneratingRules = false;
                                 OnGenRulesChange?.Invoke();
                                 break;
-                            
+
+                            case "gen_oui.gen_progress":
+                                OnGenOUICallback?.Invoke(val);
+                                break;
+
+                            case "gen_oui.generated_in":
+                                GeneratingOUI = false;
+                                OnGenOUIChange?.Invoke();
+                                break;
+
                             case "reload_config.complete":
                                 _reloadConfigCompleteEvent.Release();
                                 break;
@@ -212,6 +229,13 @@ namespace Infrastructure.Controller
             await Send("gen_rules");
         }
 
+        public async Task GenOUI()
+        {
+            GeneratingOUI = true;
+            OnGenOUIChange?.Invoke();
+            await Send("gen_oui");
+        }
+
         public async Task<bool> Ping(string caller)
         {
             if (_client == null)
@@ -250,13 +274,14 @@ namespace Infrastructure.Controller
             Task task = _reloadConfigCompleteEvent.WaitAsync(source.Token);
             if (await Task.WhenAny(task, Task.Delay(1000, source.Token)) == task)
             {
-                Common.Logger.Info("Reload config complete message received", new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
+                Common.Logger.Info("Reload config complete message received",
+                    new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
                 return true;
             }
 
             Common.Logger.Warning("Reload config timeout occured");
             _reloadConfigCompleteEvent.Release();
-            
+
             return false;
         }
 

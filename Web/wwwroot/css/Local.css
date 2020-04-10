@@ -90,6 +90,12 @@
   100% {
     transform: rotate(360deg); } }
 
+.Stats_StatsContainer {
+  padding: 5px 7px; }
+  .Stats_StatsContainer #Stats_LogActionsPerHour {
+    height: 500px;
+    width: 100%; }
+
 #blazor-error-ui {
   display: none; }
 
@@ -113,6 +119,10 @@ body {
   body .VerticallyCenteredContainer {
     align-items: center;
     display: flex; }
+  body .DividerLine {
+    width: 100%;
+    height: 0;
+    border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50); }
   body .ValidationResultContainer {
     align-items: center;
     display: inline-flex;
@@ -209,62 +219,62 @@ body {
         display: flex; }
         body .Configure_SettingsContainer .CommitConfig .ResultContainer .Result > div {
           margin-right: 5px; }
-  body .RuleGen_NewWhitelistContainer {
+  body .Rules_NewWhitelistContainer {
     padding: 5px 7px; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td:first-child {
+    body .Rules_NewWhitelistContainer .Inputs tr td:first-child {
       color: var(--ColorSet_ThemeColor_Text_40);
       font-weight: 600;
       padding-right: 10px;
       padding-top: 6px;
       vertical-align: top; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td .VendorSelectorContainer {
+    body .Rules_NewWhitelistContainer .Inputs tr td .VendorSelectorContainer {
       min-height: 62px; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td .EditableListContainer {
+    body .Rules_NewWhitelistContainer .Inputs tr td .EditableListContainer {
       max-width: 400px;
       width: 100%; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td .FlareSelect_Container {
+    body .Rules_NewWhitelistContainer .Inputs tr td .FlareSelect_Container {
       max-width: 405px; }
-    body .RuleGen_NewWhitelistContainer .Inputs tr td .SubmitWrapper {
+    body .Rules_NewWhitelistContainer .Inputs tr td .SubmitWrapper {
       align-items: center;
       display: flex; }
-      body .RuleGen_NewWhitelistContainer .Inputs tr td .SubmitWrapper .CenterRow {
+      body .Rules_NewWhitelistContainer .Inputs tr td .SubmitWrapper .CenterRow {
         margin-left: 10px; }
-  body .RuleGen_RuleGenContainer {
+  body .Generate_GenerateContainer {
     padding: 5px 7px; }
-    body .RuleGen_RuleGenContainer .RuleStats tr td {
+    body .Generate_GenerateContainer .VerticallyCenteredContainer h3 ~ a {
+      text-decoration: none;
+      margin-left: 15px; }
+    body .Generate_GenerateContainer .GenStats tr td {
       vertical-align: top; }
-      body .RuleGen_RuleGenContainer .RuleStats tr td a {
-        display: inline-block;
-        text-decoration: none; }
-      body .RuleGen_RuleGenContainer .RuleStats tr td:first-child {
+      body .Generate_GenerateContainer .GenStats tr td:first-child {
         color: var(--ColorSet_ThemeColor_Text_40);
         font-weight: 600;
         padding-right: 10px; }
-      body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a {
+      body .Generate_GenerateContainer .GenStats tr td:nth-child(2) a {
         color: var(--ColorSet_ThemeColor_Text_80);
         display: block;
         font-family: var(--FontSet-MonospaceFont);
         text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
-        body .RuleGen_RuleGenContainer .RuleStats tr td:nth-child(2) a:hover {
+        body .Generate_GenerateContainer .GenStats tr td:nth-child(2) a:hover {
           text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }
-    body .RuleGen_RuleGenContainer .GeneratingRulesNoticeContainer {
+    body .Generate_GenerateContainer .GeneratingRulesNoticeContainer, body .Generate_GenerateContainer .GeneratingOUINoticeContainer {
       align-items: center;
       display: flex; }
-      body .RuleGen_RuleGenContainer .GeneratingRulesNoticeContainer > * {
+      body .Generate_GenerateContainer .GeneratingRulesNoticeContainer > *, body .Generate_GenerateContainer .GeneratingOUINoticeContainer > * {
         margin-right: 5px; }
-    body .RuleGen_RuleGenContainer .ProgressContainer {
+    body .Generate_GenerateContainer .ProgressContainer {
       background-color: var(--ColorSet_ThemeColor_Background_50);
-      margin-top: 10px; }
-      body .RuleGen_RuleGenContainer .ProgressContainer span {
-        border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50);
-        border-left: 1px solid var(--ColorSet_ThemeColor_Border_50);
-        border-right: 1px solid var(--ColorSet_ThemeColor_Border_50);
+      margin-top: 10px;
+      height: 500px;
+      overflow-y: scroll;
+      border: 1px solid var(--ColorSet_ThemeColor_Border_80); }
+      body .Generate_GenerateContainer .ProgressContainer span {
         display: block;
         font-family: var(--FontSet-MonospaceFont);
         padding: 1px 3px; }
-        body .RuleGen_RuleGenContainer .ProgressContainer span:first-child {
+        body .Generate_GenerateContainer .ProgressContainer span:not(:first-child) {
           border-top: 1px solid var(--ColorSet_ThemeColor_Border_50); }
-        body .RuleGen_RuleGenContainer .ProgressContainer span:hover {
+        body .Generate_GenerateContainer .ProgressContainer span:hover {
           background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
   body .Users_LayoutContainer {
     display: flex;

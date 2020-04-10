@@ -31,25 +31,25 @@ namespace Infrastructure.Tests
             Assert.AreEqual(computed, hash);
         }
 
-        [Test]
-        public void TestCreate()
-        {
-            User? old = UserModel.Find("ajruckman");
-            if (old != null)
-                UserModel.Remove(old);
-
-            User user = UserController.Create("ajruckman", "password", UserRole.Administrator);
-
-            UserModel.Submit(user);
-
-            User? match = UserModel.Find("ajruckman");
-            Assert.NotNull(match);
-
-            bool passwordCorrect = UserController.ComparePassword(match, "password");
-            Assert.True(passwordCorrect);
-
-            bool passwordIncorrect = !UserController.ComparePassword(match, "wrong");
-            Assert.True(passwordIncorrect);
-        }
+        // [Test]
+        // public void TestCreate()
+        // {
+        //     User? old = UserModel.Find("ajruckman");
+        //     if (old != null)
+        //         UserModel.Remove(old);
+        //
+        //     User user = UserController.Create("ajruckman", "password", UserRole.Administrator);
+        //
+        //     UserModel.Submit(user);
+        //
+        //     User? match = UserModel.Find("ajruckman");
+        //     Assert.NotNull(match);
+        //
+        //     bool passwordCorrect = UserController.ComparePassword(match, "password");
+        //     Assert.True(passwordCorrect);
+        //
+        //     bool passwordIncorrect = !UserController.ComparePassword(match, "wrong");
+        //     Assert.True(passwordIncorrect);
+        // }
     }
 }

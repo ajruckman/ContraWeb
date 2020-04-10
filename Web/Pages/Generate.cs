@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure.Model;
@@ -12,17 +11,21 @@ using Superset.Web.State;
 
 namespace Web.Pages
 {
-    [Authorize(Roles ="Privileged, Administrator")]
+    [Authorize(Roles = "Privileged, Administrator")]
     public partial class Generate : IDisposable
     {
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-        
-        private readonly UpdateTrigger _progressUpdated = new UpdateTrigger();
+
+        private readonly UpdateTrigger _ruleGenProgressTrigger = new UpdateTrigger();
+        private readonly UpdateTrigger _ouiGenProgressTrigger  = new UpdateTrigger();
 
         private int           _blacklistRuleCount;
         private List<string>? _blacklistRuleSources;
-        private List<string>  _progress = new List<string>();
+        private List<string>  _ruleGenProgress = new List<string>();
+
+        private int          _ouiCount;
+        private List<string> _ouiGenProgress = new List<string>();
 
         protected override void OnInitialized()
         {
@@ -31,43 +34,79 @@ namespace Web.Pages
 
             Common.ContraCoreClient.OnGenRulesCallback += OnGenRulesCallback;
             Common.ContraCoreClient.OnGenRulesChange   += OnGenRulesChange;
+
+            _ouiCount = OUIModel.OUICount();
+
+            Common.ContraCoreClient.OnGenOUICallback += OnGenOUICallback;
+            Common.ContraCoreClient.OnGenOUIChange   += OnGenOUIChange;
         }
 
         private void OnGenRulesCallback(string s)
         {
-            _progress.Add(s);
-            _progressUpdated.Trigger();
+            _ruleGenProgress.Add(s);
+            _ruleGenProgressTrigger.Trigger();
         }
 
         private void OnGenRulesChange()
         {
-            _progressUpdated.Trigger();
+            _ruleGenProgressTrigger.Trigger();
+            if (!Common.ContraCoreClient.GeneratingRules)
+            {
+                _blacklistRuleCount = ConfigModel.BlacklistRuleCount();
+            }
         }
 
         private async Task GenRules()
         {
-            _progress = new List<string>();
+            if (!AllowGenRule())
+                return;
 
-            Common.ContraCoreClient.OnGenRulesChange += () =>
-            {
-                if (!Common.ContraCoreClient.GeneratingRules)
-                {
-                    _blacklistRuleCount = ConfigModel.BlacklistRuleCount();
-                }
-
-                _progressUpdated.Trigger();
-            };
+            _ruleGenProgress = new List<string>();
 
             await Common.ContraCoreClient.GenRules();
         }
 
-        private bool AllowRuleGen()
+        private void OnGenOUICallback(string s)
+        {
+            _ouiGenProgress.Add(s);
+            _ouiGenProgressTrigger.Trigger();
+        }
+
+        private void OnGenOUIChange()
+        {
+            _ouiGenProgressTrigger.Trigger();
+            if (!Common.ContraCoreClient.GeneratingRules)
+            {
+                _ouiCount = OUIModel.OUICount();
+            }
+        }
+
+        private async Task GenOUI()
+        {
+            if (!AllowGenOUI())
+                return;
+
+            _ouiGenProgress = new List<string>();
+
+            await Common.ContraCoreClient.GenOUI();
+        }
+
+        private bool AllowGenRule()
         {
             UserRole.Roles role = Utility.GetRole(AuthenticationStateTask).Result;
-            if (role != UserRole.Roles.Administrator) 
+            if (role != UserRole.Roles.Administrator)
                 return false;
 
             return Common.ContraCoreClient.Connected && !Common.ContraCoreClient.GeneratingRules;
+        }
+
+        private bool AllowGenOUI()
+        {
+            UserRole.Roles role = Utility.GetRole(AuthenticationStateTask).Result;
+            if (role != UserRole.Roles.Administrator)
+                return false;
+
+            return Common.ContraCoreClient.Connected && !Common.ContraCoreClient.GeneratingOUI;
         }
 
         public void Dispose()
@@ -75,6 +114,8 @@ namespace Web.Pages
             Common.Logger.Debug("Web.Pages.Generate.Dispose()");
             Common.ContraCoreClient.OnGenRulesCallback -= OnGenRulesCallback;
             Common.ContraCoreClient.OnGenRulesChange   -= OnGenRulesChange;
+            Common.ContraCoreClient.OnGenOUICallback   -= OnGenOUICallback;
+            Common.ContraCoreClient.OnGenOUIChange     -= OnGenOUIChange;
         }
     }
 }

@@ -17,15 +17,15 @@
     <ItemGroup>
         <PackageReference Include="Blazored.LocalStorage" Version="2.1.5" />
         <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
-        <PackageReference Include="FS3" Version="3.4.5-alpha" />
-        <PackageReference Include="FT3" Version="3.6.6-alpha" />
+        <PackageReference Include="FS3" Version="3.4.8-alpha" />
+        <PackageReference Include="FT3" Version="3.6.8-alpha" />
 <!--        <PackageReference Include="Integrant.Rudiment" Version="2.42.1-alpha" />-->
-        <PackageReference Include="Integrant.Subsegment" Version="1.4.1-alpha" />
+        <PackageReference Include="Integrant.Subsegment" Version="1.5.0-alpha" />
         <PackageReference Include="IPNetwork2" Version="2.5.194" />
-        <PackageReference Include="Superset" Version="1.14.2-alpha" />
-        <PackageReference Include="UISet.ColorSet" Version="1.1.4-alpha" />
-        <PackageReference Include="UISet.FontSet" Version="1.1.4-alpha" />
-        <PackageReference Include="UISet.ShapeSet" Version="1.2.8-alpha" />
+        <PackageReference Include="Superset" Version="1.15.1-alpha" />
+        <PackageReference Include="UISet.ColorSet" Version="1.1.6-alpha" />
+        <PackageReference Include="UISet.FontSet" Version="1.1.6-alpha" />
+        <PackageReference Include="UISet.ShapeSet" Version="1.2.12-alpha" />
     </ItemGroup>
 
     <ItemGroup>
@@ -34,6 +34,17 @@
       </Content>
       <Content Update="Pages\Users.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Stats.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="wwwroot\js\Stats.js">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\Stats.scss">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
     </ItemGroup>
 

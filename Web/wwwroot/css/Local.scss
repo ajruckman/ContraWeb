@@ -1,5 +1,6 @@
 @import "EditableList.scss";
 @import "Loader.scss";
+@import 'Stats.scss';
 
 #blazor-error-ui {
     display: none;
@@ -19,6 +20,12 @@ body {
         margin: 4px 0;
     }
 
+    .SS_Button {
+        //font-size: 13.333px;
+        //    box-sizing: border-box !important;
+        //line-height: calc(23px - 2 * 2px - 2 * 0.8px);
+    }
+
     .Spacer {
         height: 20px;
     }
@@ -36,6 +43,12 @@ body {
     .VerticallyCenteredContainer {
         align-items: center;
         display:     flex;
+    }
+
+    .DividerLine {
+        width:         100%;
+        height:        0;
+        border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50);
     }
 
     .ValidationResultContainer {
@@ -207,7 +220,7 @@ body {
         }
     }
 
-    .RuleGen_NewWhitelistContainer {
+    .Rules_NewWhitelistContainer {
         padding: 5px 7px;
 
         .Inputs {
@@ -251,18 +264,20 @@ body {
         }
     }
 
-    .RuleGen_RuleGenContainer {
+    .Generate_GenerateContainer {
         padding: 5px 7px;
 
-        .RuleStats {
+        .VerticallyCenteredContainer {
+            h3 ~ a {
+                text-decoration: none;
+                margin-left:     15px;
+            }
+        }
+
+        .GenStats {
             tr {
                 td {
                     vertical-align: top;
-
-                    a {
-                        display:         inline-block;
-                        text-decoration: none;
-                    }
 
                     &:first-child {
                         color:         var(--ColorSet_ThemeColor_Text_40);
@@ -286,7 +301,7 @@ body {
             }
         }
 
-        .GeneratingRulesNoticeContainer {
+        .GeneratingRulesNoticeContainer, .GeneratingOUINoticeContainer {
             align-items: center;
             display:     flex;
 
@@ -299,15 +314,19 @@ body {
             background-color: var(--ColorSet_ThemeColor_Background_50);
             margin-top:       10px;
 
-            span {
-                border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50);
-                border-left:   1px solid var(--ColorSet_ThemeColor_Border_50);
-                border-right:  1px solid var(--ColorSet_ThemeColor_Border_50);
-                display:       block;
-                font-family:   var(--FontSet-MonospaceFont);
-                padding:       1px 3px;
+            height:           500px;
+            overflow-y:       scroll;
 
-                &:first-child {
+            border:           1px solid var(--ColorSet_ThemeColor_Border_80);
+
+            span {
+                //border-left:   1px solid var(--ColorSet_ThemeColor_Border_50);
+                //border-right:  1px solid var(--ColorSet_ThemeColor_Border_50);
+                display:     block;
+                font-family: var(--FontSet-MonospaceFont);
+                padding:     1px 3px;
+
+                &:not(:first-child) {
                     border-top: 1px solid var(--ColorSet_ThemeColor_Border_50);
                 }
 

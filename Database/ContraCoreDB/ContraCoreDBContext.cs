@@ -19,9 +19,6 @@ namespace Database.ContraCoreDB
         public virtual DbSet<config> config { get; set; }
         public virtual DbSet<lease> lease { get; set; }
         public virtual DbSet<lease_details> lease_details { get; set; }
-        public virtual DbSet<log> log { get; set; }
-        public virtual DbSet<log_block_details> log_block_details { get; set; }
-        public virtual DbSet<log_details_recent> log_details_recent { get; set; }
         public virtual DbSet<oui> oui { get; set; }
         public virtual DbSet<oui_vendors> oui_vendors { get; set; }
         public virtual DbSet<reservation> reservation { get; set; }
@@ -32,19 +29,17 @@ namespace Database.ContraCoreDB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Server=127.0.0.1;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
+                optionsBuilder.UseNpgsql("Server=10.3.0.16;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasPostgresEnum("contraweb", "user_role", new[] { "restricted", "privileged", "administrator" });
-
             modelBuilder.Entity<blacklist>(entity =>
             {
                 entity.ToTable("blacklist", "contracore");
 
-                entity.Property(e => e.id).HasDefaultValueSql("nextval('blacklist_id_seq'::regclass)");
+                entity.Property(e => e.id).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e._class).HasColumnName("class");
 
@@ -55,7 +50,7 @@ namespace Database.ContraCoreDB
             {
                 entity.ToTable("config", "contracore");
 
-                entity.Property(e => e.id).HasDefaultValueSql("nextval('config_id_seq'::regclass)");
+                entity.Property(e => e.id).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.domain_needed)
                     .IsRequired()
@@ -90,7 +85,7 @@ namespace Database.ContraCoreDB
             {
                 entity.ToTable("lease", "contracore");
 
-                entity.Property(e => e.id).HasDefaultValueSql("nextval('lease_id_seq'::regclass)");
+                entity.Property(e => e.id).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.ip).IsRequired();
 
@@ -117,37 +112,6 @@ namespace Database.ContraCoreDB
                     .IsFixedLength();
             });
 
-            modelBuilder.Entity<log>(entity =>
-            {
-                entity.ToTable("log", "contracore");
-
-                entity.Property(e => e.id).HasDefaultValueSql("nextval('log_id_seq'::regclass)");
-
-                entity.Property(e => e.action).IsRequired();
-
-                entity.Property(e => e.client).IsRequired();
-
-                entity.Property(e => e.question).IsRequired();
-
-                entity.Property(e => e.question_type).IsRequired();
-
-                entity.Property(e => e.time).HasDefaultValueSql("now()");
-            });
-
-            modelBuilder.Entity<log_block_details>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("log_block_details", "contracore");
-            });
-
-            modelBuilder.Entity<log_details_recent>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("log_details_recent", "contracore");
-            });
-
             modelBuilder.Entity<oui>(entity =>
             {
                 entity.HasNoKey();
@@ -170,7 +134,7 @@ namespace Database.ContraCoreDB
             {
                 entity.ToTable("reservation", "contracore");
 
-                entity.Property(e => e.id).HasDefaultValueSql("nextval('reservation_id_seq'::regclass)");
+                entity.Property(e => e.id).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.active)
                     .IsRequired()
@@ -187,7 +151,7 @@ namespace Database.ContraCoreDB
             {
                 entity.ToTable("whitelist", "contracore");
 
-                entity.Property(e => e.id).HasDefaultValueSql("nextval('whitelist_id_seq'::regclass)");
+                entity.Property(e => e.id).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.pattern).IsRequired();
             });

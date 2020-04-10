@@ -31,18 +31,18 @@ namespace Infrastructure.Schema
 
         public Log() { }
 
-        public Log(log log)
-        {
-            Time           = log.time;
-            Client         = log.client.ToString();
-            Question       = log.question;
-            QuestionType   = log.question_type;
-            Action         = log.action;
-            Answers        = log.answers?.ToList() ?? new List<string>();
-            ClientHostname = log.client_hostname;
-            ClientMAC      = log.client_mac?.ToString();
-            ClientVendor   = log.client_vendor;
-        }
+        // public Log(log log)
+        // {
+        //     Time           = log.time;
+        //     Client         = log.client.ToString();
+        //     Question       = log.question;
+        //     QuestionType   = log.question_type;
+        //     Action         = log.action;
+        //     Answers        = log.answers?.ToList() ?? new List<string>();
+        //     ClientHostname = log.client_hostname;
+        //     ClientMAC      = log.client_mac?.ToString();
+        //     ClientVendor   = log.client_vendor;
+        // }
 
         public override string ToString()
         {
