@@ -1,6 +1,5 @@
-﻿window.initChart = function (dataSerialized, actionsSerialized) {
+﻿window.initLogActionsPerHourChart = function (dataSerialized, actionsSerialized) {
     const inputData = JSON.parse(dataSerialized);
-    console.log(inputData);
 
     const actions = JSON.parse(actionsSerialized);
 
@@ -10,9 +9,6 @@
     for (let hour in inputData) {
         data.push(inputData[hour]);
     }
-
-    console.log(labels);
-    console.log(data[data.length - 1]);
 
     //
 
@@ -28,9 +24,12 @@
     chart.paddingRight = 20;
 
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    // dateAxis.tooltip.color = am4core.color("#F00");
+    dateAxis.renderer.labels.template.opacity = 0.75;
 
     const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.title.text = "Count";
+    valueAxis.renderer.labels.template.opacity = 0.75;
     // valueAxis.tooltip.disabled = true;
 
     dateAxis.title.text = "Hour";
@@ -46,8 +45,6 @@
     chart.scrollbarX = new am4core.Scrollbar();
 
     for (let action of actions) {
-        console.log('-> ' + action);
-
         let series = chart.series.push(new am4charts.LineSeries());
 
         series.name = action;
@@ -83,4 +80,85 @@
             series.tooltip.label.fill = am4core.color("#000");
         }
     }
+
+    // console.log("-------")
+    // document.getElementById("Stats_LogActionsPerHour_LoadingIndicator").display = "none";
 };
+
+window.initLogActionCountsChart = function (dataSerialized) {
+    const inputData = JSON.parse(dataSerialized);
+
+    let data = [];
+
+    for (let action in inputData) {
+        if (!inputData.hasOwnProperty(action)) {
+            continue;
+        }
+
+        let color = "";
+
+        if (action.startsWith('pass')) {
+            color = am4core.color("#0F0");
+        } else if (action.startsWith('respond')) {
+            color = am4core.color("#00F");
+        } else if (action.startsWith('block')) {
+            color = am4core.color("#F00");
+        }
+
+        data.push({
+            action: action,
+            count: inputData[action],
+            color: color,
+        });
+    }
+
+    const chart = am4core.create("Stats_LogActionCounts", am4charts.PieChart);
+
+    chart.data = data;
+
+    const pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "count";
+    pieSeries.dataFields.category = "action";
+
+    pieSeries.fillOpacity = 0.75;
+    pieSeries.slices.template.fillOpacity = 0.3;
+    pieSeries.slices.template.propertyFields.fill = "color";
+    
+    pieSeries.tooltip.background.opacity = 0.8;
+    pieSeries.tooltip.getStrokeFromObject = true;
+};
+
+
+window.initLeaseVendorCounts = function (dataSerialized) {
+    const inputData = JSON.parse(dataSerialized);
+    console.log(inputData);
+
+    let data = [];
+
+    for (let vendor in inputData) {
+        if (!inputData.hasOwnProperty(vendor)) {
+            continue;
+        }
+
+        data.push({
+            vendor: vendor,
+            c: inputData[vendor],
+        });
+    }
+
+    const chart = am4core.create("Stats_LeaseVendorCounts", am4charts.PieChart);
+
+    chart.data = data;
+
+    const pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "c";
+    pieSeries.dataFields.category = "vendor";
+    
+    pieSeries.fillOpacity = 0.75;
+    pieSeries.slices.template.fillOpacity = 0.3;
+    
+    pieSeries.tooltip.background.opacity = 0.8;
+    pieSeries.tooltip.getStrokeFromObject = true;
+};
+
+

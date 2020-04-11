@@ -49,11 +49,11 @@ namespace Web.Pages
 
         private void OnGenRulesChange()
         {
-            _ruleGenProgressTrigger.Trigger();
             if (!Common.ContraCoreClient.GeneratingRules)
             {
                 _blacklistRuleCount = ConfigModel.BlacklistRuleCount();
             }
+            _ruleGenProgressTrigger.Trigger();
         }
 
         private async Task GenRules()
@@ -74,11 +74,11 @@ namespace Web.Pages
 
         private void OnGenOUIChange()
         {
-            _ouiGenProgressTrigger.Trigger();
             if (!Common.ContraCoreClient.GeneratingRules)
             {
                 _ouiCount = OUIModel.OUICount();
             }
+            _ouiGenProgressTrigger.Trigger();
         }
 
         private async Task GenOUI()

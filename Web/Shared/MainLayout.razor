@@ -18,21 +18,22 @@
         @Header().Render()
     </TriggerWrapper>
     
-    <AuthorizeView>
-        <Authorized>
-            @Body
-            <div style="margin: 9px;">User: @context.User.Identity.Name</div>
-        </Authorized>
-        <NotAuthorized>
-            <Login/>
-
-            <h1>Authentication Failure!</h1>
-            <p>You're not signed in.</p>
-        </NotAuthorized>
-        <Authorizing>
-            <h1>Authorizing</h1>
-        </Authorizing>
-    </AuthorizeView>
+    @Body
+    
+@*     <AuthorizeView> *@
+@*         <Authorized> *@
+@*             <div style="margin: 9px;">User: @context.User.Identity.Name</div> *@
+@*         </Authorized> *@
+@*         <NotAuthorized> *@
+@*             <Login/> *@
+@* *@
+@*             <h1>Authentication Failure!</h1> *@
+@*             <p>You're not signed in.</p> *@
+@*         </NotAuthorized> *@
+@*         <Authorizing> *@
+@*             <h1>Authorizing</h1> *@
+@*         </Authorizing> *@
+@*     </AuthorizeView> *@
 }
 
 

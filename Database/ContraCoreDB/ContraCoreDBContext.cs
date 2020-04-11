@@ -17,8 +17,10 @@ namespace Database.ContraCoreDB
 
         public virtual DbSet<blacklist> blacklist { get; set; }
         public virtual DbSet<config> config { get; set; }
+        public virtual DbSet<distinct_lease_clients> distinct_lease_clients { get; set; }
         public virtual DbSet<lease> lease { get; set; }
         public virtual DbSet<lease_details> lease_details { get; set; }
+        public virtual DbSet<lease_vendor_counts> lease_vendor_counts { get; set; }
         public virtual DbSet<oui> oui { get; set; }
         public virtual DbSet<oui_vendors> oui_vendors { get; set; }
         public virtual DbSet<reservation> reservation { get; set; }
@@ -81,6 +83,13 @@ namespace Database.ContraCoreDB
                     .HasDefaultValueSql("'-'::text");
             });
 
+            modelBuilder.Entity<distinct_lease_clients>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("distinct_lease_clients", "contracore");
+            });
+
             modelBuilder.Entity<lease>(entity =>
             {
                 entity.ToTable("lease", "contracore");
@@ -110,6 +119,13 @@ namespace Database.ContraCoreDB
                 entity.Property(e => e.op)
                     .HasMaxLength(3)
                     .IsFixedLength();
+            });
+
+            modelBuilder.Entity<lease_vendor_counts>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("lease_vendor_counts", "contracore");
             });
 
             modelBuilder.Entity<oui>(entity =>

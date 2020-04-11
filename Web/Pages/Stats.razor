@@ -5,8 +5,51 @@
 <div class="Stats_StatsContainer">
     <h2>Server statistics</h2>
 
-    <h3>Query action counts by hour</h3>
-    <div class="DividerLine"></div>
+    <div class="Row">
 
-    <div id="Stats_LogActionsPerHour"></div>
+        <div class="FullWidth">
+            <div class="HeadingWrapper">
+                <h3>Query action counts by hour</h3>
+                <div class="DividerLine"></div>
+            </div>
+            
+            <div class="Stats_StatGraphic" id="Stats_LogActionsPerHour">
+                <br>
+                <div class="StatsLoadingIndicator Spinner--125"></div>
+                <div class="LoadingText">Loading</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="Row">
+
+        <div class="HalfWidth">
+            <div class="HeadingWrapper">
+                <h3>Query action counts</h3>
+                <div class="DividerLine"></div>
+            </div>
+
+            <div class="Stats_StatGraphic" id="Stats_LogActionCounts">
+                <br>
+                <div class="StatsLoadingIndicator Spinner--125"></div>
+                <div class="LoadingText">Loading</div>
+            </div>
+        </div>
+
+        <div class="HalfWidth">
+            <div class="HeadingWrapper">
+                <h3>Lease vendor counts</h3>
+                <div class="DividerLine"></div>
+            </div>
+
+            <div class="Stats_StatGraphic" id="Stats_LeaseVendorCounts">
+                <br>
+                <div class="StatsLoadingIndicator Spinner--125"></div>
+                <div class="LoadingText">Loading</div>
+            </div>
+        </div>
+
+    </div>
+
 </div>

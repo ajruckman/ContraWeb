@@ -75,14 +75,32 @@
   width: 21px; }
   .Spinner:after {
     animation: rotate 1s linear infinite;
-    border: 3px solid;
     border-radius: 50%;
-    border-right-color: var(--ColorSet_ThemeColor_Border_50);
     color: var(--ColorSet_ThemeColor_Accent_50);
     content: '';
     display: inline-block;
+    border-style: solid;
+    border-right-color: var(--ColorSet_ThemeColor_Border_50); }
+  .Spinner:after {
+    border-width: 3px;
     height: 15px;
     width: 15px; }
+
+.Spinner--125 {
+  height: 125px;
+  width: 125px; }
+  .Spinner--125:after {
+    animation: rotate 1s linear infinite;
+    border-radius: 50%;
+    color: var(--ColorSet_ThemeColor_Accent_50);
+    content: '';
+    display: inline-block;
+    border-style: solid;
+    border-right-color: var(--ColorSet_ThemeColor_Border_50); }
+  .Spinner--125:after {
+    border-width: 3px;
+    height: 125px;
+    width: 125px; }
 
 @keyframes rotate {
   0% {
@@ -91,10 +109,36 @@
     transform: rotate(360deg); } }
 
 .Stats_StatsContainer {
-  padding: 5px 7px; }
-  .Stats_StatsContainer #Stats_LogActionsPerHour {
-    height: 500px;
-    width: 100%; }
+  padding: 5px 9px; }
+  .Stats_StatsContainer .Row {
+    display: flex;
+    flex-wrap: wrap; }
+    .Stats_StatsContainer .Row .FullWidth {
+      width: 100%; }
+    .Stats_StatsContainer .Row .HalfWidth {
+      flex-grow: 1; }
+    .Stats_StatsContainer .Row .Stats_StatGraphic {
+      align-content: center;
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%; }
+      .Stats_StatsContainer .Row .Stats_StatGraphic .LoadingText {
+        font-weight: bold;
+        margin-top: 30px;
+        text-align: center;
+        width: 100%; }
+      .Stats_StatsContainer .Row .Stats_StatGraphic *:not(.LoadingText) {
+        font-family: var(--FontSet-MonospaceFont), monospace; }
+    .Stats_StatsContainer .Row #Stats_LogActionsPerHour {
+      height: 500px; }
+    .Stats_StatsContainer .Row #Stats_LogActionCounts {
+      height: 325px;
+      min-width: 775px; }
+    .Stats_StatsContainer .Row #Stats_LeaseVendorCounts {
+      height: 325px;
+      min-width: 950px; }
 
 #blazor-error-ui {
   display: none; }
@@ -108,6 +152,8 @@ body {
     font-family: var(--FontSet-SansSerifFont); }
   body h3 {
     margin: 4px 0; }
+  body .SUBSEG_Header .SUBSEG_LinearLayout .SS_Button, body .SUBSEG_Header .SUBSEG_LinearLayout .SS_Button--Red, body .SUBSEG_Header .SUBSEG_LinearLayout .SS_Button--Green, body .SUBSEG_Header .SUBSEG_LinearLayout .SS_Button--Blue, body .SUBSEG_Header .SUBSEG_LinearLayout .SS_Button--Inverted, body .SUBSEG_Subheader .SUBSEG_LinearLayout .SS_Button, body .SUBSEG_Subheader .SUBSEG_LinearLayout .SS_Button--Red, body .SUBSEG_Subheader .SUBSEG_LinearLayout .SS_Button--Green, body .SUBSEG_Subheader .SUBSEG_LinearLayout .SS_Button--Blue, body .SUBSEG_Subheader .SUBSEG_LinearLayout .SS_Button--Inverted {
+    line-height: unset !important; }
   body .Spacer {
     height: 20px; }
   body .CenterRow {
@@ -120,9 +166,9 @@ body {
     align-items: center;
     display: flex; }
   body .DividerLine {
-    width: 100%;
+    border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50);
     height: 0;
-    border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_50); }
+    width: 100%; }
   body .ValidationResultContainer {
     align-items: center;
     display: inline-flex;
@@ -242,8 +288,8 @@ body {
   body .Generate_GenerateContainer {
     padding: 5px 7px; }
     body .Generate_GenerateContainer .VerticallyCenteredContainer h3 ~ a {
-      text-decoration: none;
-      margin-left: 15px; }
+      margin-left: 15px;
+      text-decoration: none; }
     body .Generate_GenerateContainer .GenStats tr td {
       vertical-align: top; }
       body .Generate_GenerateContainer .GenStats tr td:first-child {
@@ -264,10 +310,10 @@ body {
         margin-right: 5px; }
     body .Generate_GenerateContainer .ProgressContainer {
       background-color: var(--ColorSet_ThemeColor_Background_50);
-      margin-top: 10px;
+      border: 1px solid var(--ColorSet_ThemeColor_Border_80);
       height: 500px;
-      overflow-y: scroll;
-      border: 1px solid var(--ColorSet_ThemeColor_Border_80); }
+      margin-top: 10px;
+      overflow-y: scroll; }
       body .Generate_GenerateContainer .ProgressContainer span {
         display: block;
         font-family: var(--FontSet-MonospaceFont);
@@ -303,3 +349,16 @@ body {
         width: 300px; }
       body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) .FlareSelect_Container {
         margin: 1px 0; }
+  body .NotAuthorizedContainer, body .AuthorizingContainer {
+    padding: 5px 25px; }
+    body .NotAuthorizedContainer .Authentication_LoginContainer table tr td:first-child, body .AuthorizingContainer .Authentication_LoginContainer table tr td:first-child {
+      color: var(--ColorSet_ThemeColor_Text_40);
+      font-weight: 600;
+      padding-right: 10px; }
+    body .NotAuthorizedContainer .Authentication_LoginContainer table tr td:nth-child(2) a, body .AuthorizingContainer .Authentication_LoginContainer table tr td:nth-child(2) a {
+      color: var(--ColorSet_ThemeColor_Text_80);
+      display: block;
+      font-family: var(--FontSet-MonospaceFont);
+      text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
+      body .NotAuthorizedContainer .Authentication_LoginContainer table tr td:nth-child(2) a:hover, body .AuthorizingContainer .Authentication_LoginContainer table tr td:nth-child(2) a:hover {
+        text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }

@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="Shared\Login.razor">
+      <Content Update="Shared\LogInForm.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
       <Content Update="Pages\Users.razor">
@@ -45,6 +45,9 @@
       <Content Update="wwwroot\css\Stats.scss">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="Pages\LogIn.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
     </ItemGroup>
 

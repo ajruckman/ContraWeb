@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure.Controller;
+using Infrastructure.Model;
+using Infrastructure.Schema;
 using Newtonsoft.Json;
 
 namespace Web.Pages
@@ -22,11 +25,28 @@ namespace Web.Pages
 
             (Dictionary<long, Dictionary<string, dynamic>> hours, List<string> actions) = contraLogClient.LogActionsPerHour();
 
-            await JSRuntime.InvokeAsync<object>("window.initChart", new object[]
+            await JSRuntime.InvokeAsync<object>("window.initLogActionsPerHourChart", new object[]
             {
                 JsonConvert.SerializeObject(hours),
                 JsonConvert.SerializeObject(actions)
             });
+
+            Dictionary<string, long> actionCounts = contraLogClient.LogActionCounts();
+            
+            await JSRuntime.InvokeAsync<object>("window.initLogActionCountsChart", new object[]
+            {
+                JsonConvert.SerializeObject(actionCounts)
+            });
+            
+            //
+
+            Dictionary<string, long> leaseVendorCounts = StatsModel.LeaseVendorCounts();
+            
+            await JSRuntime.InvokeAsync<object>("window.initLeaseVendorCounts", new object[]
+            {
+                JsonConvert.SerializeObject(leaseVendorCounts)
+            });
+            
         }
     }
 }

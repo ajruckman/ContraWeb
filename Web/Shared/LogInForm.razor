@@ -1,0 +1,27 @@
+﻿@using Blazored.LocalStorage
+
+@inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider ContraWebAuthStateProvider
+@inject ILocalStorageService LocalStorage
+
+<div class="Authentication_LoginContainer">
+
+    <form @onsubmit="@(_ => LogIn())">
+        <table>
+            <tr>
+                <td>Username</td>
+                <td>
+                    <input class="SS_Input" type="text" @bind-value="@_username" @bind-value:event="oninput" @ref="@UsernameInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td>
+                    <input class="SS_Input" type="password" @bind-value="@_password" @bind-value:event="oninput"/>
+                </td>
+            </tr>
+        </table>
+
+        <button type="submit" class="SS_Button--Green" disabled="@(!CanLogIn())">LOG IN</button>
+    </form>
+</div>

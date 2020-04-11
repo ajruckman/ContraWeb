@@ -1,8 +1,57 @@
 ﻿.Stats_StatsContainer {
-    padding: 5px 7px;
-    
-    #Stats_LogActionsPerHour {
-        height: 500px;
-        width:  100%;
+    padding: 5px 9px;
+
+    .Row {
+        display:   flex;
+        flex-wrap: wrap;
+
+        .FullWidth {
+            width: 100%;
+        }
+
+        .HalfWidth {
+            //flex-grow: 1;
+            //width: 50%;
+            flex-grow: 1;
+        }
+        
+        .Stats_StatGraphic {
+            align-content:   center;
+            align-items:     center;
+            display:         flex;
+            flex-wrap:       wrap;
+            justify-content: center;
+            width:           100%;
+            
+            .LoadingText {
+                font-weight: bold;
+                margin-top:  30px;
+                text-align:  center;
+                width:       100%;
+            }
+
+            *:not(.LoadingText) {
+                font-family: var(--FontSet-MonospaceFont), monospace;
+            }
+        }
+
+
+        #Stats_LogActionsPerHour {
+            height: 500px;
+        }
+
+        #Stats_LogActionCounts {
+            height: 325px;
+            min-width: 775px;
+        }
+
+        #Stats_LeaseVendorCounts {
+            height: 325px;
+            min-width: 950px;
+        }
+    }
+
+    .Stats_StatsWrapper {
+
     }
 }

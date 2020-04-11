@@ -16,16 +16,12 @@ namespace Web.Pages
                 monospace: true,
                 rowColorGetter: row =>
                 {
-                    switch (row.Action)
-                    {
-                        case "respond.block":
-                        case "respond.domainneeded":
-                            return RowColor.Red;
-                        case "pass.notblacklisted":
-                            return RowColor.Green;
-                        default:
-                            return RowColor.Undefined;
-                    }
+                    if (row.Action.StartsWith("block"))
+                        return RowColor.Red;
+                    if (row.Action.StartsWith("pass"))
+                        return RowColor.Green;
+                    
+                    return RowColor.Undefined;
                 }
             );
 

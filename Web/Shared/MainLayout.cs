@@ -77,9 +77,15 @@ namespace Web.Shared
                     goto case UserRole.Roles.Restricted;
 
                 case UserRole.Roles.Restricted:
-                    break;
+                    
+                    goto case UserRole.Roles.Undefined;
 
                 case UserRole.Roles.Undefined:
+                    header.Add(new PageLink("Stats", "/stats"));
+                    header.Add(new Space());
+                    header.Add(new Separator());
+                    header.Add(new Space());
+
                     break;
                 
                 default:
@@ -88,13 +94,13 @@ namespace Web.Shared
 
             if (user == null)
             {
-                header.Add(new Button("Log in", () => { NavigationManager.NavigateTo("/login"); }));
+                header.Add(new Button("LOG IN", () => { NavigationManager.NavigateTo("/login"); }));
             }
             else
             {
                 header.Add(new Chip(user.Username));
                 header.Add(new Space());
-                header.Add(new Button("Log out",
+                header.Add(new Button("LOG OUT",
                     async () => { await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogOut(); }));
             }
 

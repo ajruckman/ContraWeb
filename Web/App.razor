@@ -1,7 +1,23 @@
 ﻿<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <div class="NotAuthorizedContainer">
+                        <h1>Sorry</h1>
+                        <p>You're not authorized to reach this page.</p>
+                        <p>You may need to log in as a different user.</p>
+
+                        <LogInForm/>
+                    </div>
+                </NotAuthorized>
+                <Authorizing>
+                    <div class="AuthorizingContainer">
+                        <h1>Authentication in progress</h1>
+                        <p>Only visible while authentication is in progress.</p>
+                    </div>
+                </Authorizing>
+            </AuthorizeRouteView>
         </Found>
         <NotFound>
             <LayoutView Layout="@typeof(MainLayout)">
@@ -10,3 +26,17 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@* <Authorized> *@
+@*     @Body *@
+@*     <div style="margin: 9px;">User: @context.User.Identity.Name</div> *@
+@* </Authorized> *@
+@* <NotAuthorized> *@
+@*     <Login/> *@
+@* *@
+@*     <h1>Authentication Failure!</h1> *@
+@*     <p>You're not signed in.</p> *@
+@* </NotAuthorized> *@
+@* <Authorizing> *@
+@*     <h1>Authorizing</h1> *@
+@* </Authorizing> *@
