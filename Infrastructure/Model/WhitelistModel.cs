@@ -9,13 +9,11 @@ namespace Infrastructure.Model
 {
     public static class WhitelistModel
     {
-        private static List<Whitelist>? _whitelistListCache;
-
         public static List<Whitelist> List()
         {
             using ContraCoreDBContext contraDB = new ContraCoreDBContext();
 
-            return _whitelistListCache ??= contraDB.whitelist.Select(v => new Whitelist(v)).ToList();
+            return contraDB.whitelist.Select(v => new Whitelist(v)).ToList();
         }
 
         public static void Submit(Whitelist whitelist)
@@ -50,9 +48,14 @@ namespace Infrastructure.Model
             return match != null ? new Whitelist(match) : null;
         }
 
-        public static void InvalidateCache()
+        public static void Remove(Whitelist row)
         {
-            _whitelistListCache = null;
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
+
+            var match = contraDB.whitelist.SingleOrDefault(v => v.id == row.ID);
+
+            contraDB.whitelist.Remove(match);
+            contraDB.SaveChanges();
         }
     }
 }

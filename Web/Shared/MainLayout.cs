@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Component;
 using ColorSet.Components;
+using Fundament.App;
 using Infrastructure.Schema;
 using Infrastructure.Utility;
 using Microsoft.AspNetCore.Components;
@@ -19,7 +20,7 @@ namespace Web.Shared
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-        private readonly Configuration _configuration = new Configuration();
+        private readonly Configuration    _configuration    = new Configuration();
 
         private          ThemeLoader?  _themeLoader;
         private readonly UpdateTrigger _updateHeader = new UpdateTrigger();
@@ -77,7 +78,7 @@ namespace Web.Shared
                     goto case UserRole.Roles.Restricted;
 
                 case UserRole.Roles.Restricted:
-                    
+
                     goto case UserRole.Roles.Undefined;
 
                 case UserRole.Roles.Undefined:
@@ -87,7 +88,7 @@ namespace Web.Shared
                     header.Add(new Space());
 
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

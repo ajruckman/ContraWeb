@@ -45,6 +45,8 @@ namespace Web.Shared
                 await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogIn(token);
             }
 
+            NavigationManager.NavigateTo("/");
+
             return true;
         }
 

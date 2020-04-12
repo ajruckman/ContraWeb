@@ -14,11 +14,14 @@ namespace Web.Components.EditableList
     {
         public delegate (ValidationResult, MarkupString) Validator(string value);
 
+        public delegate bool IsDisabled();
+
         public delegate string Transformer(string input);
 
         private readonly bool         _moveDuplicatesToEnd;
         private readonly bool         _preventDuplicates;
         private readonly Validator?   _validator;
+        private readonly IsDisabled?  _isDisabled;
         private readonly Transformer? _transformer;
         private readonly List<string> _values = new List<string>();
         private readonly string       _uid;
@@ -31,6 +34,7 @@ namespace Web.Components.EditableList
             bool         preventDuplicates   = true,
             bool         moveDuplicatesToEnd = false,
             Validator?   validator           = null,
+            IsDisabled?  isDisabled          = null,
             Transformer? transformer         = null,
             bool         monospace           = true,
             string       placeholder         = "",
@@ -46,6 +50,7 @@ namespace Web.Components.EditableList
             _moveDuplicatesToEnd = moveDuplicatesToEnd;
 
             _validator   = validator;
+            _isDisabled  = isDisabled;
             _transformer = transformer;
             _uid         = Guid.NewGuid().ToString().Replace("-", "");
 
@@ -87,6 +92,13 @@ namespace Web.Components.EditableList
             OnUpdate?.Invoke(_values);
         }
 
+        public void Set(List<string> values)
+        {
+            _values.Clear();
+            _values.AddRange(values);
+            OnUpdate?.Invoke(_values);
+        }
+
         public void Remove(string value)
         {
             _values.Remove(value);
@@ -98,6 +110,8 @@ namespace Web.Components.EditableList
         {
             return _validator?.Invoke(value);
         }
+
+        public bool Disabled() => _isDisabled?.Invoke() ?? false;
 
         public RenderFragment Render()
         {
@@ -112,6 +126,12 @@ namespace Web.Components.EditableList
             }
 
             return Fragment;
+        }
+
+        public void Empty()
+        {
+            _values.Clear();
+            OnUpdate?.Invoke(_values);
         }
     }
 

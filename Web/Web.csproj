@@ -17,7 +17,7 @@
     <ItemGroup>
         <PackageReference Include="Blazored.LocalStorage" Version="2.1.5" />
         <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
-        <PackageReference Include="FS3" Version="3.4.8-alpha" />
+        <PackageReference Include="FS3" Version="3.4.9-alpha" />
         <PackageReference Include="FT3" Version="3.6.8-alpha" />
 <!--        <PackageReference Include="Integrant.Rudiment" Version="2.42.1-alpha" />-->
         <PackageReference Include="Integrant.Subsegment" Version="1.5.0-alpha" />

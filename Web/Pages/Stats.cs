@@ -41,7 +41,7 @@ namespace Web.Pages
             //
 
             Dictionary<string, long> leaseVendorCounts = StatsModel.LeaseVendorCounts();
-            
+
             await JSRuntime.InvokeAsync<object>("window.initLeaseVendorCounts", new object[]
             {
                 JsonConvert.SerializeObject(leaseVendorCounts)

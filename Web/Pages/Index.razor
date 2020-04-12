@@ -2,73 +2,92 @@
 @using FT3
 @using FT3.Component
 @using Infrastructure.Schema
+@using Microsoft.AspNetCore.Http
 @using Web.Services
+@using Superset.Web.State
 
+@inject IHttpContextAccessor HttpContextAccessor
 @inject LogActionService LogActionService
+
+<TriggerWrapper Trigger="@StatusChangeTrigger">
+    @(_subheader!.Render())
+</TriggerWrapper>
 
 <div class="Index_LogTableContainer">
 
-    <FlareTableContainer FlareTable="@_queryLogTable">
+    @if (_errorMessage != null)
+    {
+        <div class="ErrorMessage">@_errorMessage</div>
+    }
+    else
+    {
+        <FlareTableContainer FlareTable="@_queryLogTable">
 
-        <FlareTableControlRow>
-            <FlareTableColumnToggles T="Log"/>
-            <FlareTableControlSpacer/>
-            <FlareTableResetButton T="Log"/>
-            <FlareTableControlFiller/>
-            <FlareTableRegexToggle T="Log"/>
-        </FlareTableControlRow>
+            <FlareTableControlRow>
+                <FlareTableColumnToggles T="Log"/>
+                <FlareTableControlSpacer/>
+                <FlareTableResetButton T="Log"/>
+                <FlareTableControlFiller/>
+                <FlareTableRegexToggle T="Log"/>
+            </FlareTableControlRow>
 
-        <FlareTableControlRow>
-            <FlareTablePaginationSize T="Log"/>
-            <FlareTableControlFiller/>
-            <FlareTablePaginationButtons T="Log" ID="1"/>
-        </FlareTableControlRow>
+            <FlareTableControlRow>
+                <FlareTablePaginationSize T="Log"/>
+                <FlareTableControlFiller/>
+                <FlareTablePaginationButtons T="Log" ID="1"/>
+            </FlareTableControlRow>
 
-        <FlareTableTable>
-            <FlareTableHead>
-                <FlareTableHeadingRow>
-                    @foreach (Column column in _queryLogTable.Columns)
+            <FlareTableTable>
+                <FlareTableHead>
+                    <FlareTableHeadingRow>
+                        @foreach (Column column in _queryLogTable.Columns)
+                        {
+                            <FlareTableHeading T="Log" ID="@column.ID"/>
+                        }
+                    </FlareTableHeadingRow>
+                    <FlareTableFilterRow>
+                        @foreach (Column column in _queryLogTable.Columns)
+                        {
+                            <FlareTableFilter T="Log" ID="@column.ID"/>
+                        }
+                    </FlareTableFilterRow>
+                </FlareTableHead>
+                <FlareTableBody T="Log">
+                    @foreach (Log row in _queryLogTable.Rows())
                     {
-                        <FlareTableHeading T="Log" ID="@column.ID"/>
-                    }
-                </FlareTableHeadingRow>
-                <FlareTableFilterRow>
-                    @foreach (Column column in _queryLogTable.Columns)
-                    {
-                        <FlareTableFilter T="Log" ID="@column.ID"/>
-                    }
-                </FlareTableFilterRow>
-            </FlareTableHead>
-            <FlareTableBody T="Log">
-                @foreach (Log row in _queryLogTable.Rows())
-                {
-                    <FlareTableBodyRow T="Log" Value="@row">
-                        <FlareTableCell T="Log" ID="Time">@(row.Time.ToString("HH:mm:ss.fff"))</FlareTableCell>
-                        <FlareTableCell T="Log" ID="Client">@row.Client</FlareTableCell>
-                        <FlareTableCell T="Log" ID="Question">@row.Question</FlareTableCell>
-                        <FlareTableCell T="Log" ID="Action">@row.Action</FlareTableCell>
-                        <FlareTableCell T="Log" ID="Answers">
-                            @if (row.Answers != null)
+                        <FlareTableBodyRow T="Log" Value="@row">
+                            @* <FlareTableCell T="Log" ID="Time">@(row.Time.ToString("HH:mm:ss.fff"))</FlareTableCell> *@
+                            <FlareTableCell T="Log" ID="Time">@(row.Time.ToString("HH:mm:ss"))</FlareTableCell>
+                            <FlareTableCell T="Log" ID="Client">@row.Client</FlareTableCell>
+                            <FlareTableCell T="Log" ID="Question">@row.Question</FlareTableCell>
+                            <FlareTableCell T="Log" ID="Action">@row.Action</FlareTableCell>
+                            <FlareTableCell T="Log" ID="Answers">
+                                @if (row.Answers != null)
+                                {
+                                    @:@string.Join(", ", row.Answers)
+                                }
+                            </FlareTableCell>
+                            <FlareTableCell T="Log" ID="ClientHostname">@row.ClientHostname</FlareTableCell>
+                            <FlareTableCell T="Log" ID="ClientVendor">@row.ClientVendor</FlareTableCell>
+                            @if (_clientRole != UserRole.Roles.Undefined)
                             {
-                                @:@string.Join(", ", row.Answers)
+                                <FlareTableCell T="Log" ID="ActionButton">
+                                    <button class="SS_Button" @onclick="_ => LogActionService.Invoke(row)">Invoke</button>
+                                </FlareTableCell>
                             }
-                        </FlareTableCell>
-                        <FlareTableCell T="Log" ID="ClientHostname">@row.ClientHostname</FlareTableCell>
-                        <FlareTableCell T="Log" ID="ClientVendor">@row.ClientVendor</FlareTableCell>
-                        <FlareTableCell T="Log" ID="ActionButton">
-                            <button class="SS_Button" @onclick="_ => LogActionService.Invoke(row)">Invoke</button>
-                        </FlareTableCell>
-                    </FlareTableBodyRow>
-                }
-            </FlareTableBody>
-        </FlareTableTable>
+                        </FlareTableBodyRow>
+                    }
+                </FlareTableBody>
+            </FlareTableTable>
 
-        <FlareTableControlRow>
-            <FlareTablePaginationInfo T="Log"/>
-            <FlareTableControlFiller/>
-            <FlareTablePaginationButtons T="Log" ID="2"/>
-        </FlareTableControlRow>
+            <FlareTableControlRow>
+                <FlareTablePaginationInfo T="Log"/>
+                <FlareTableControlFiller/>
+                <FlareTablePaginationButtons T="Log" ID="2"/>
+            </FlareTableControlRow>
 
-    </FlareTableContainer>
+        </FlareTableContainer>
+    }
+
 
 </div>

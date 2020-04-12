@@ -130,7 +130,7 @@ body {
     }
 
     .Index_LogTableContainer {
-        padding: 5px;
+        padding: 7px;
     }
 
     .Configure_SettingsContainer {
@@ -223,46 +223,94 @@ body {
     }
 
     .Rules_NewWhitelistContainer {
-        padding: 5px 7px;
+        display:   flex;
+        flex-wrap: wrap;
+        padding:   5px 7px;
 
-        .Inputs {
-            tr {
-                td {
-                    &:first-child {
-                        color:          var(--ColorSet_ThemeColor_Text_40);
-                        font-weight:    600;
-                        padding-right:  10px;
-                        padding-top:    6px;
-                        vertical-align: top;
-                    }
+        .InputsContainer {
+            flex-grow: 999;
 
-                    .VendorSelectorContainer {
-                        min-height: 62px;
-                    }
+            .Inputs {
+                tr {
+                    td {
+                        &:first-child {
+                            color:          var(--ColorSet_ThemeColor_Text_40);
+                            font-weight:    600;
+                            padding-right:  10px;
+                            padding-top:    6px;
+                            vertical-align: top;
+                        }
 
-                    .ExpirationDateFuturesContainer {
+                        .VendorSelectorContainer {
+                            min-height: 62px;
+                        }
 
-                    }
+                        .ExpirationDateFuturesContainer {
 
-                    .EditableListContainer {
-                        max-width: 400px;
-                        width:     100%;
-                    }
+                        }
 
-                    .FlareSelect_Container {
-                        max-width: 405px;
-                    }
+                        .EditableListContainer {
+                            max-width: 400px;
+                            width:     100%;
+                        }
 
-                    .SubmitWrapper {
-                        align-items: center;
-                        display:     flex;
+                        .FlareSelect_Container {
+                            max-width: 405px;
+                        }
 
-                        .CenterRow {
-                            margin-left: 10px;
+                        .SubmitWrapper {
+                            align-items: center;
+                            display:     flex;
+
+                            .CenterRow {
+                                margin-left: 10px;
+                            }
                         }
                     }
                 }
             }
+        }
+
+        .StatusContainer {
+            align-self:       flex-start;
+            background-color: var(--ColorSet_ThemeColor_Background_50);
+            border:           1px solid var(--ColorSet_ThemeColor_Border_80);
+            border-radius:    4px;
+            display:          inline;
+            margin:           7px 3px;
+            overflow-y:       scroll;
+            width:            350px;
+
+            h3 {
+                padding: 0 5px;
+            }
+
+            span {
+                display:     block;
+                font-family: var(--FontSet-MonospaceFont);
+                padding:     1px 3px;
+
+                &:not(:first-child) {
+                    border-top: 1px solid var(--ColorSet_ThemeColor_Border_50);
+                }
+
+                &:hover {
+                    background-color: var(--ColorSet_ThemeColor_Background_50_Hover);
+                }
+            }
+        }
+    }
+
+    .Rules_WhitelistTableContainer {
+        padding: 5px 7px;
+
+        .HeaderContainer {
+            @extend .VerticallyCenteredContainer;
+            justify-content: space-between;
+        }
+
+        .FlareTableCell {
+            padding: 5px 7px !important;
         }
     }
 

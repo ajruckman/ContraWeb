@@ -5,14 +5,14 @@
         @foreach (string v in EditableList.Values)
         {
             <div class="EditableList--Selection">
-                <span class="EditableList--RemoveButton" @onclick="@(_ => EditableList.Remove(v))"></span>
                 <span class="EditableList--Value">@v</span>
+                <button class="EditableList--RemoveButton" @onclick="@(_ => EditableList.Remove(v))" disabled="@EditableList.Disabled()">✕</button>
             </div>
         }
     </div>
 
     <div class="EditableList--New">
-        <input class="EditableList--Input SS_Input" value="@_newValue" @oninput="@UpdateNewValue" @onkeypress="OnKeyPress" type="text" placeholder="@EditableList.Placeholder"/>
+        <input class="EditableList--Input SS_Input" value="@_newValue" disabled="@EditableList.Disabled()" @oninput="@UpdateNewValue" @onkeypress="OnKeyPress" type="text" placeholder="@EditableList.Placeholder"/>
         <button class="EditableList--AddButton SS_Button" disabled="@(!CanAdd())" @onclick="@Add">+</button>
     </div>
 

@@ -29,9 +29,12 @@ namespace Infrastructure.Controller
         public event Action         OnConnected;
         public event Action         OnDisconnected;
         public event Action         OnStatusChange; // OnConnected + OnDisconnected
-        public event Action         OnNewLog;
+        public event Action<Log?>   OnNewLog;
         public event Action<string> OnGenRulesCallback;
         public event Action<string> OnGenOUICallback;
+
+        public event Action<string> OnReloadWhitelistStatusCallback;
+        public event Action<string> OnReloadWhitelistErrorCallback;
 
         public bool         GeneratingRules { get; private set; }
         public event Action OnGenRulesChange;
@@ -62,7 +65,7 @@ namespace Infrastructure.Controller
                 Connected       = false;
                 GeneratingRules = false;
                 GeneratingOUI   = false;
-                OnGenRulesChange.Invoke();
+                OnGenRulesChange?.Invoke();
                 OnGenOUIChange?.Invoke();
                 Common.Logger.Info("Disconnected from ContraCore");
                 OnStatusChange?.Invoke();
@@ -82,7 +85,7 @@ namespace Infrastructure.Controller
                 stopwatch.Stop();
                 Common.Logger.Info("Initial log data loaded",
                     new Fields {{"Count", cache.Count}, {"Time (ms)", stopwatch.ElapsedMilliseconds}});
-                OnNewLog?.Invoke();
+                OnNewLog?.Invoke(null);
             });
 
             OnConnected -= Setup;
@@ -143,7 +146,7 @@ namespace Infrastructure.Controller
                                 Common.Logger.Debug($"Incoming: {log}");
                                 _data.Enqueue(log);
 
-                                OnNewLog?.Invoke();
+                                OnNewLog?.Invoke(log);
                                 break;
 
                             case "gen_rules.sources":
@@ -173,6 +176,14 @@ namespace Infrastructure.Controller
                                 _reloadConfigCompleteEvent.Release();
                                 break;
 
+                            case "reload_whitelist.complete":
+                                OnReloadWhitelistStatusCallback.Invoke(val);
+                                break;
+
+                            case "reload_whitelist.error":
+                                OnReloadWhitelistErrorCallback?.Invoke(val);
+                                break;
+
                             default:
                                 Common.Logger.Error(
                                     $"Unmatched command received from NetManagerClient: {cmd}",
@@ -194,7 +205,7 @@ namespace Infrastructure.Controller
 
         // public IEnumerable<Log> Data() => _data.Queue.Any() ? _data.Queue.Reverse() : new List<Log>();
 
-        public IEnumerable<Log> Data()
+        public IEnumerable<Log> Data(string? ip)
         {
             if (_data.Queue.Count == 0)
             {
@@ -203,7 +214,14 @@ namespace Infrastructure.Controller
 
             for (int i = _data.Queue.Count - 1; i >= 0; i--)
             {
-                yield return _data.Queue.ElementAt(i);
+                var e = _data.Queue.ElementAt(i);
+                if (ip != null)
+                    if (ip == e.Client)
+                        yield return e;
+                    else
+                        continue;
+                else
+                    yield return e;
             }
         }
 
@@ -283,6 +301,36 @@ namespace Infrastructure.Controller
             _reloadConfigCompleteEvent.Release();
 
             return false;
+        }
+
+        // public async Task<bool> ReloadWhitelist()
+        // {
+        //     if (_client == null)
+        //         return false;
+        //
+        //     CancellationTokenSource source = new CancellationTokenSource();
+        //     OnDisconnected += source.Cancel;
+        //
+        //     await Send("reload_whitelist");
+        //     Stopwatch stopwatch = Stopwatch.StartNew();
+        //
+        //     Task task = _reloadWhitelistCompleteEvent.WaitAsync(source.Token);
+        //     if (await Task.WhenAny(task, Task.Delay(25 * 1000, source.Token)) == task)
+        //     {
+        //         Common.Logger.Info("Reload whitelist complete message received",
+        //             new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
+        //         return true;
+        //     }
+        //
+        //     Common.Logger.Warning("Reload config timeout occured");
+        //     _reloadWhitelistCompleteEvent.Release();
+        //
+        //     return false;
+        // }
+
+        public async Task ReloadWhitelist()
+        {
+            await Send("reload_whitelist");
         }
 
         private async Task Send(string msg)

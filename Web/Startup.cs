@@ -28,9 +28,11 @@ namespace Web
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddHttpContextAccessor();
+            
             services.AddBlazoredLocalStorage();
             services.AddBlazoredSessionStorage();
-
+            
             services.AddScoped<LogActionService>();
             
             services.AddScoped<AuthenticationStateProvider, ContraWebAuthStateProvider>();

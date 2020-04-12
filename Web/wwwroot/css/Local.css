@@ -9,14 +9,18 @@
     background-color: var(--ColorSet_ThemeColor_Background_30);
     border: 1px solid var(--ColorSet_ThemeColor_Border_30);
     border-radius: 2px;
+    box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
-    min-height: 26px;
+    min-height: 31.2px;
     padding: 1px; }
     .EditableListContainer .EditableList--Selected .EditableList--Selection {
+      align-items: center;
       background-color: var(--ColorSet_ThemeColor_Background_40);
       border: 1px solid var(--ColorSet_ThemeColor_Border_40);
       border-radius: 2px;
+      color: var(--ColorSet_ThemeColor_Text_60);
+      display: inline-flex;
       margin: 2px;
       padding: 2px; }
       .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--Value {
@@ -24,26 +28,22 @@
         margin: 1px;
         word-break: break-word; }
       .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton {
+        background: none;
+        border: none;
+        color: var(--ColorSet_ThemeColor_Background_200);
         cursor: pointer;
-        float: right;
-        height: 16px;
-        margin-right: 3px;
-        position: relative;
-        width: 8px; }
-        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:hover:before, .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:hover:after {
-          background-color: var(--ColorSet_ThemeColor_Border_190); }
-        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:before, .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:after {
-          background-color: var(--ColorSet_ThemeColor_Border_160);
-          content: '';
-          height: 10px;
-          position: absolute;
-          right: 2.5px;
-          top: 3px;
-          width: 1px; }
-        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:before {
-          transform: rotate(45deg); }
-        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:after {
-          transform: rotate(-45deg); }
+        flex-shrink: 0;
+        font-family: 'Arial', sans-serif;
+        height: 15px;
+        line-height: 0;
+        margin-left: 1px;
+        outline: none;
+        padding: 0;
+        width: 15px; }
+        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:not(:disabled):hover {
+          color: var(--ColorSet_ThemeColor_SolidRed_0); }
+        .EditableListContainer .EditableList--Selected .EditableList--Selection .EditableList--RemoveButton:disabled {
+          cursor: not-allowed; }
   .EditableListContainer .EditableList--New {
     align-items: center;
     display: flex;
@@ -67,8 +67,8 @@
       padding: 0 3px;
       width: 23px; }
     .EditableListContainer .EditableList--Validation .EditableList--ValidationText {
-      width: calc(100% - 23px - 6px - 1px - 3px);
-      font-family: var(--FontSet-MonospaceFont); }
+      font-family: var(--FontSet-MonospaceFont);
+      width: calc(100% - 23px - 6px - 1px - 3px); }
 
 .Spinner {
   height: 21px;
@@ -162,7 +162,7 @@ body {
     height: 21px; }
     body .CenterRow span {
       margin-left: 5px; }
-  body .VerticallyCenteredContainer {
+  body .VerticallyCenteredContainer, body .Rules_WhitelistTableContainer .HeaderContainer {
     align-items: center;
     display: flex; }
   body .DividerLine {
@@ -223,7 +223,7 @@ body {
       position: absolute;
       top: 2px; }
   body .Index_LogTableContainer {
-    padding: 5px; }
+    padding: 7px; }
   body .Configure_SettingsContainer {
     padding: 5px 7px; }
     body .Configure_SettingsContainer .Options .CheckboxContainer {
@@ -266,28 +266,57 @@ body {
         body .Configure_SettingsContainer .CommitConfig .ResultContainer .Result > div {
           margin-right: 5px; }
   body .Rules_NewWhitelistContainer {
+    display: flex;
+    flex-wrap: wrap;
     padding: 5px 7px; }
-    body .Rules_NewWhitelistContainer .Inputs tr td:first-child {
-      color: var(--ColorSet_ThemeColor_Text_40);
-      font-weight: 600;
-      padding-right: 10px;
-      padding-top: 6px;
-      vertical-align: top; }
-    body .Rules_NewWhitelistContainer .Inputs tr td .VendorSelectorContainer {
-      min-height: 62px; }
-    body .Rules_NewWhitelistContainer .Inputs tr td .EditableListContainer {
-      max-width: 400px;
-      width: 100%; }
-    body .Rules_NewWhitelistContainer .Inputs tr td .FlareSelect_Container {
-      max-width: 405px; }
-    body .Rules_NewWhitelistContainer .Inputs tr td .SubmitWrapper {
-      align-items: center;
-      display: flex; }
-      body .Rules_NewWhitelistContainer .Inputs tr td .SubmitWrapper .CenterRow {
-        margin-left: 10px; }
+    body .Rules_NewWhitelistContainer .InputsContainer {
+      flex-grow: 999; }
+      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td:first-child {
+        color: var(--ColorSet_ThemeColor_Text_40);
+        font-weight: 600;
+        padding-right: 10px;
+        padding-top: 6px;
+        vertical-align: top; }
+      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .VendorSelectorContainer {
+        min-height: 62px; }
+      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .EditableListContainer {
+        max-width: 400px;
+        width: 100%; }
+      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .FlareSelect_Container {
+        max-width: 405px; }
+      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .SubmitWrapper {
+        align-items: center;
+        display: flex; }
+        body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .SubmitWrapper .CenterRow {
+          margin-left: 10px; }
+    body .Rules_NewWhitelistContainer .StatusContainer {
+      align-self: flex-start;
+      background-color: var(--ColorSet_ThemeColor_Background_50);
+      border: 1px solid var(--ColorSet_ThemeColor_Border_80);
+      border-radius: 4px;
+      display: inline;
+      margin: 7px 3px;
+      overflow-y: scroll;
+      width: 350px; }
+      body .Rules_NewWhitelistContainer .StatusContainer h3 {
+        padding: 0 5px; }
+      body .Rules_NewWhitelistContainer .StatusContainer span {
+        display: block;
+        font-family: var(--FontSet-MonospaceFont);
+        padding: 1px 3px; }
+        body .Rules_NewWhitelistContainer .StatusContainer span:not(:first-child) {
+          border-top: 1px solid var(--ColorSet_ThemeColor_Border_50); }
+        body .Rules_NewWhitelistContainer .StatusContainer span:hover {
+          background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
+  body .Rules_WhitelistTableContainer {
+    padding: 5px 7px; }
+    body .Rules_WhitelistTableContainer .HeaderContainer {
+      justify-content: space-between; }
+    body .Rules_WhitelistTableContainer .FlareTableCell {
+      padding: 5px 7px !important; }
   body .Generate_GenerateContainer {
     padding: 5px 7px; }
-    body .Generate_GenerateContainer .VerticallyCenteredContainer h3 ~ a {
+    body .Generate_GenerateContainer .VerticallyCenteredContainer h3 ~ a, body .Generate_GenerateContainer .Rules_WhitelistTableContainer .HeaderContainer h3 ~ a, body .Rules_WhitelistTableContainer .Generate_GenerateContainer .HeaderContainer h3 ~ a {
       margin-left: 15px;
       text-decoration: none; }
     body .Generate_GenerateContainer .GenStats tr td {

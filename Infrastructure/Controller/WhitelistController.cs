@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using Infrastructure.Model;
 using Infrastructure.Schema;
@@ -31,16 +30,8 @@ namespace Infrastructure.Controller
                 @"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$",
                 RegexOptions.Compiled);
 
-        private DateTime? _expiresDate; // = DateTime.Now.Add(TimeSpan.FromDays(7));
-
-        // private DateTime? _expiresDateAndTime;
-        private TimeSpan? _expiresTime; // = DateTime.Now.Add(TimeSpan.FromMinutes(5)).TimeOfDay;
-
-        // private List<string> _ips       = new List<string>();
-        // private List<string> _subnets   = new List<string>();
-        // private List<string> _hostnames = new List<string>();
-        // private List<string> _macs      = new List<string>();
-        // private List<string> _vendors   = new List<string>();
+        private DateTime? _expiresDate;
+        private TimeSpan? _expiresTime;
 
         public WhitelistController(Action onValidation)
         {
@@ -57,7 +48,8 @@ namespace Infrastructure.Controller
         public string ExpiresDate => _expiresDate.HasValue ? _expiresDate.Value.ToString("yyyy-MM-dd") : "";
         public string ExpiresTime => _expiresTime.HasValue ? DateTime.MinValue.Add(_expiresTime.Value).ToString("HH:mm") : "";
 
-        public event Action OnValidation;
+        public event Action  OnValidation;
+        public event Action? OnCommit;
 
         public void UpdatePattern(string pattern)
         {
@@ -207,7 +199,7 @@ namespace Infrastructure.Controller
             foreach (string subnet in subnets)
                 if (subnet != "")
                     _newWhitelist.Subnets.Add(IPNetwork.Parse(subnet));
-            
+
             OnValidation.Invoke();
         }
 
@@ -223,7 +215,7 @@ namespace Infrastructure.Controller
             foreach (string vendor in vendors)
                 if (vendor != "")
                     _newWhitelist.Vendors.Add(vendor);
-            
+
             OnValidation.Invoke();
         }
 
@@ -244,20 +236,15 @@ namespace Infrastructure.Controller
             return a || b || c || d || e;
         }
 
-        public void Commit()
+        public bool Commit()
         {
-            if (!CanCommit()) return;
-
-            // _newWhitelist.Expires   = IsExpiresValid == true ? _expiresDateAndTime : null;
-            // _newWhitelist.IPs       = _ips.Any() ? _ips.Select(IPAddress.Parse).ToList() : null;
-            // _newWhitelist.Subnets   = _subnets.Any() ? _subnets.Select(IPNetwork.Parse).ToList() : null;
-            // _newWhitelist.Hostnames = _hostnames.Any() ? _hostnames : null;
-            // _newWhitelist.MACs      = _macs.Any() ? _macs.Select(PhysicalAddress.Parse).ToList() : null;
-            // _newWhitelist.Vendors   = _vendors.Any() ? _vendors : null;
+            if (!CanCommit()) return false;
 
             WhitelistModel.Submit(_newWhitelist);
-            
+            OnCommit?.Invoke();
+
             _newWhitelist = new Whitelist();
+            return true;
         }
 
         public (Validation.ValidationResult, MarkupString) ValidateIP(string s)
@@ -296,6 +283,16 @@ namespace Infrastructure.Controller
                 return (Validation.ValidationResult.Valid, new MarkupString("Valid hostname"));
 
             return (Validation.ValidationResult.Warning, new MarkupString("Invalid hostname"));
+        }
+
+        public void Edit(Whitelist row)
+        {
+            _newWhitelist = row;
+        }
+
+        public static void Remove(Whitelist row)
+        {
+            WhitelistModel.Remove(row);
         }
     }
 }

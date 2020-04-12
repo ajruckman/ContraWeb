@@ -14,17 +14,21 @@
         background-color: var(--ColorSet_ThemeColor_Background_30);
         border:           1px solid var(--ColorSet_ThemeColor_Border_30);
         border-radius:    2px;
+        box-sizing:       border-box;
         display:          flex;
         flex-wrap:        wrap;
-        min-height:       26px;
+        min-height:       31.2px;
         padding:          1px;
 
         .EditableList--Selection {
+            align-items:      center;
             background-color: var(--ColorSet_ThemeColor_Background_40);
             border:           1px solid var(--ColorSet_ThemeColor_Border_40);
             border-radius:    2px;
+            color:            var(--ColorSet_ThemeColor_Text_60);
+            display:          inline-flex;
             margin:           2px;
-            padding: 2px;
+            padding:          2px;
 
             .EditableList--Value {
                 height:     16px;
@@ -33,35 +37,25 @@
             }
 
             .EditableList--RemoveButton {
-                cursor:       pointer;
-                float:        right;
-                height:       16px;
-                margin-right: 3px;
-                position:     relative;
-                width:        8px;
+                background:  none;
+                border:      none;
+                color:       var(--ColorSet_ThemeColor_Background_200);
+                cursor:      pointer;
+                flex-shrink: 0;
+                font-family: 'Arial', sans-serif;
+                height:      15px;
+                line-height: 0;
+                margin-left: 1px;
+                outline:     none;
+                padding:     0;
+                width:       15px;
 
-                &:hover {
-                    &:before, &:after {
-                        background-color: var(--ColorSet_ThemeColor_Border_190);
-                    }
+                &:not(:disabled):hover {
+                    color: var(--ColorSet_ThemeColor_SolidRed_0);
                 }
 
-                &:before, &:after {
-                    background-color: var(--ColorSet_ThemeColor_Border_160);
-                    content:          '';
-                    height:           10px;
-                    position:         absolute;
-                    right:            2.5px;
-                    top:              3px;
-                    width:            1px;
-                }
-
-                &:before {
-                    transform: rotate(45deg);
-                }
-
-                &:after {
-                    transform: rotate(-45deg);
+                &:disabled {
+                    cursor: not-allowed;
                 }
             }
         }
@@ -75,10 +69,8 @@
         width:           100%;
 
         .EditableList--Input {
-            //background-color: var(--ColorSet_ThemeColor_Background_30);
-            //border:           1px solid var(--ColorSet_ThemeColor_Border_60);
-            margin:           0;
-            width:            calc(100% - 25px - 2px);
+            margin: 0;
+            width:  calc(100% - 25px - 2px);
         }
 
         .EditableList--AddButton {
@@ -89,12 +81,9 @@
 
     .EditableList--Validation {
         align-items:     center;
-        //border-top:      1px solid var(--ColorSet_ThemeColor_Border_0);
         display:         flex;
         justify-content: space-between;
         margin-top:      2px;
-        //padding-top:     3px;
-        //padding-bottom:     2px;
 
         .EditableList--ValidationMark {
             border-right: 1px solid var(--ColorSet_ThemeColor_Border_0);
@@ -105,8 +94,8 @@
         }
 
         .EditableList--ValidationText {
-            width: calc(100% - 23px - 6px - 1px - 3px);
             font-family: var(--FontSet-MonospaceFont);
+            width:       calc(100% - 23px - 6px - 1px - 3px);
         }
     }
 }
