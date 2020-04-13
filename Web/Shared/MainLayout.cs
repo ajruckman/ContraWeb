@@ -18,7 +18,7 @@ namespace Web.Shared
     public partial class MainLayout
     {
         [CascadingParameter]
-        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+        private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
         private readonly Configuration    _configuration    = new Configuration();
 

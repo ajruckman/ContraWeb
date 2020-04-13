@@ -15,7 +15,7 @@ namespace Web.Pages
     public partial class Generate : IDisposable
     {
         [CascadingParameter]
-        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+        private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
         private readonly UpdateTrigger _ruleGenProgressTrigger = new UpdateTrigger();
         private readonly UpdateTrigger _ouiGenProgressTrigger  = new UpdateTrigger();
@@ -93,7 +93,7 @@ namespace Web.Pages
 
         private bool AllowGenRule()
         {
-            UserRole.Roles role = Utility.GetRole(AuthenticationStateTask).Result;
+            UserRole.Roles role = Utility.GetRole(AuthenticationStateTask!).Result;
             if (role != UserRole.Roles.Administrator)
                 return false;
 
@@ -102,7 +102,7 @@ namespace Web.Pages
 
         private bool AllowGenOUI()
         {
-            UserRole.Roles role = Utility.GetRole(AuthenticationStateTask).Result;
+            UserRole.Roles role = Utility.GetRole(AuthenticationStateTask!).Result;
             if (role != UserRole.Roles.Administrator)
                 return false;
 

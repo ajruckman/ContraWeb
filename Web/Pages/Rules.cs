@@ -16,6 +16,9 @@ using Superset.Web.State;
 using Superset.Web.Validation;
 using Web.Components.EditableList;
 
+#pragma warning disable 1998
+#pragma warning disable 4014
+
 namespace Web.Pages
 {
     [Authorize(Roles = "Privileged, Administrator")]
@@ -43,7 +46,7 @@ namespace Web.Pages
 
         private Debouncer<string>? _patternChangeDebouncer;
         
-        Validator<ValidationResult> _validator;
+        Validator<ValidationResult>? _validator;
 
         protected override void OnInitialized()
         {

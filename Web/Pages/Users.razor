@@ -22,20 +22,20 @@
             <FlareTableTable>
                 <FlareTableHead>
                     <FlareTableHeadingRow>
-                        @foreach (Column column in _userTable.Columns)
+                        @foreach (Column column in _userTable!.Columns)
                         {
                             <FlareTableHeading T="User" ID="@column.ID"/>
                         }
                     </FlareTableHeadingRow>
                     <FlareTableFilterRow>
-                        @foreach (Column column in _userTable.Columns)
+                        @foreach (Column column in _userTable!.Columns)
                         {
                             <FlareTableFilter T="User" ID="@column.ID"/>
                         }
                     </FlareTableFilterRow>
                 </FlareTableHead>
                 <FlareTableBody T="User">
-                    @foreach (User row in _userTable.Rows())
+                    @foreach (User row in _userTable!.Rows())
                     {
                         <FlareTableBodyRow T="User" Value="@row">
                             <FlareTableCell T="User" ID="Username">@row.Username</FlareTableCell>
@@ -78,7 +78,7 @@
                 <td>
                     @if (_editing == null)
                     {
-                        <input type="text" value="@_newUsername" @oninput="@(args => _newUsernameDebouncer.Reset(args.Value?.ToString() ?? ""))" class="SS_Input"/>
+                        <input type="text" value="@_newUsername" @oninput="@(args => _newUsernameDebouncer!.Reset(args.Value?.ToString() ?? ""))" class="SS_Input"/>
                     }
                     else
                     {
@@ -93,7 +93,7 @@
                 <td>
                     @if (_editing == null)
                     {
-                        <input type="password" value="@_newPassword" @oninput="@(args => _newPasswordDebouncer.Reset(args.Value?.ToString() ?? ""))" class="SS_Input"/>
+                        <input type="password" value="@_newPassword" @oninput="@(args => _newPasswordDebouncer!.Reset(args.Value?.ToString() ?? ""))" class="SS_Input"/>
                     }
                     else
                     {
@@ -108,11 +108,11 @@
                 <td>
                     @if (_editing == null)
                     {
-                        @_newRoleSelector.Render()
+                        @(_newRoleSelector!.Render())
                     }
                     else
                     {
-                        @_editedRoleSelector.Render()
+                        @(_editedRoleSelector!.Render())
                     }
                 </td>
             </tr>

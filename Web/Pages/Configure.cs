@@ -72,7 +72,7 @@ namespace Web.Pages
                 if (Config != null)
                 {
                     Config.Sources       = _sources.Select(v => v.URL).ToList();
-                    Config.SearchDomains = _searchDomainList?.Values.ToList();
+                    Config.SearchDomains = _searchDomainList?.Values!.ToList();
 
                     Common.Logger.Info("Committing config.", new Fields {{"New config", Config.ToString()}});
 

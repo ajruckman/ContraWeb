@@ -86,7 +86,7 @@ namespace Web.Pages
             _editedRoleSelector = new FlareSelector<string>(
                 () => UserRole.Options(_editing?.Role),
                 false,
-                isDisabled: () => _editing.Username == _user.Username);
+                isDisabled: () => _editing?.Username == _user.Username);
 
             _editedRoleSelector.OnSelect += selected =>
             {
@@ -143,7 +143,7 @@ namespace Web.Pages
         private void Edit(User user)
         {
             _editing = user;
-            _editedRoleSelector.InvalidateData();
+            _editedRoleSelector!.InvalidateData();
         }
 
         private async Task Remove(User user)
@@ -153,7 +153,7 @@ namespace Web.Pages
             {
                 UserModel.Remove(user);
                 LoadUsers();
-                _userTable.InvalidateData();
+                _userTable!.InvalidateData();
             }
         }
 
@@ -168,8 +168,8 @@ namespace Web.Pages
                 _newRole     = UserRole.Roles.Undefined;
 
                 LoadUsers();
-                _userTable.InvalidateData();
-                _newRoleSelector.InvalidateData(true);
+                _userTable!.InvalidateData();
+                _newRoleSelector!.InvalidateData(true);
             }
             else
             {
@@ -190,8 +190,8 @@ namespace Web.Pages
                 _editing        = null;
 
                 LoadUsers();
-                _userTable.InvalidateData();
-                _newRoleSelector.InvalidateData(true);
+                _userTable!.InvalidateData();
+                _newRoleSelector!.InvalidateData(true);
             }
 
             Add();

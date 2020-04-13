@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Infrastructure.Controller;
-using Infrastructure.Model;
 using Infrastructure.Schema;
 using Microsoft.AspNetCore.Components;
 using Superset.Web.Utilities;
@@ -11,16 +10,15 @@ namespace Web.Shared
 {
     public partial class LogInForm
     {
-        private string _username;
-        private string _password;
-        private string _loginMessage;
-        private User?  _user;
+        private string? _username;
+        private string? _password;
+        private User?   _user;
 
         private ElementReference UsernameInput { get; set; }
 
         // protected override async Task OnInitializedAsync()
         // {
-            // await Register();
+        // await Register();
         // }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -35,7 +33,7 @@ namespace Web.Shared
             if (!CanLogIn())
                 return false;
 
-            User? match = await UserController.LogIn(_username, _password);
+            User? match = await UserController.LogIn(_username!, _password!);
             Console.WriteLine(match);
 
             if (match != null)

@@ -1,11 +1,11 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+
+#pragma warning disable 649
 
 namespace Web.Pages
 {
@@ -85,9 +85,10 @@ namespace Web.Pages
             }
         }
 
-        private void OnNewSourceKeyUp(KeyboardEventArgs args)
+        private async Task OnNewSourceKeyUp(KeyboardEventArgs args)
         {
-            if (args.Key == "Enter") AddSource();
+            if (args.Key == "Enter") 
+                await AddSource();
         }
     }
 }

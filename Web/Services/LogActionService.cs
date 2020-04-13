@@ -14,7 +14,7 @@ namespace Web.Services
 
         public NavigationManager NavigationManager { get; set; }
         
-        public Log TargetLog { get; private set; }
+        public Log? TargetLog { get; private set; }
 
         public void Invoke(Log targetLog)
         {
@@ -25,7 +25,7 @@ namespace Web.Services
 
         public Log GetAndUnset()
         {
-            Log log = TargetLog;
+            Log log = TargetLog!;
             TargetLog = null;
             return log;
         }

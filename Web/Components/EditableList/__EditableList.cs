@@ -12,7 +12,7 @@ namespace Web.Components.EditableList
         private (ValidationResult, MarkupString)? _validation;
 
         [Parameter]
-        public EditableList EditableList { get; set; }
+        public EditableList? EditableList { get; set; }
 
         protected override void OnParametersSet()
         {
@@ -20,18 +20,18 @@ namespace Web.Components.EditableList
             _hasInitialized = true;
 
             Validate();
-            _newValue = EditableList.DefaultValue;
+            _newValue = EditableList!.DefaultValue;
         }
 
         private void Add()
         {
-            EditableList.Add(_newValue);
+            EditableList!.Add(_newValue);
             _newValue = "";
         }
 
         private void Validate()
         {
-            if (EditableList.Validated)
+            if (EditableList!.Validated)
                 _validation = EditableList.Validate(_newValue);
         }
 
@@ -45,7 +45,7 @@ namespace Web.Components.EditableList
         {
             if (_newValue.Length == 0) return false;
 
-            if (EditableList.Validated)
+            if (EditableList!.Validated)
             {
                 (ValidationResult, MarkupString)? validation = EditableList.Validate(_newValue);
                 if (validation?.Item1 == ValidationResult.Invalid)

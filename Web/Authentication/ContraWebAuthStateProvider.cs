@@ -8,6 +8,8 @@ using Infrastructure.Model;
 using Infrastructure.Schema;
 using Microsoft.AspNetCore.Components.Authorization;
 
+#pragma warning disable 1998
+
 namespace Web.Authentication
 {
     public class ContraWebAuthStateProvider : AuthenticationStateProvider
@@ -73,7 +75,7 @@ namespace Web.Authentication
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            ClaimsIdentity identity = IsAuthenticated
+            ClaimsIdentity identity = IsAuthenticated && User != null
                 ? new ClaimsIdentity(new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, User.Username),

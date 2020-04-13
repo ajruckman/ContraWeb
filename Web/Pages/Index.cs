@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FT3;
-using Fundament.App;
 using Infrastructure.Schema;
 using Infrastructure.Utility;
 using Microsoft.AspNetCore.Components;
@@ -16,19 +15,19 @@ namespace Web.Pages
     {
         private string?         _clientIP;
         private UserRole.Roles? _clientRole;
-        private FlareTable<Log> _queryLogTable;
+        private FlareTable<Log>? _queryLogTable;
         private string?         _errorMessage;
         private Subheader?      _subheader;
 
-        private readonly UpdateTrigger StatusChangeTrigger = new UpdateTrigger();
+        private readonly UpdateTrigger _statusChangeTrigger = new UpdateTrigger();
 
         [CascadingParameter]
-        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+        private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
         protected override void OnInitialized()
         {
             _clientIP   = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
-            _clientRole = Utility.GetRole(AuthenticationStateTask).Result;
+            _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set")).Result;
 
             BuildSubheader();
             Common.ContraCoreClient.OnStatusChange += OnContraCoreClientStatusChange;
@@ -77,11 +76,11 @@ namespace Web.Pages
         {
             if (v != null)
             {
-                _queryLogTable.PrependRow(v, 1000);
+                _queryLogTable!.PrependRow(v, 1000);
             }
             else
             {
-                _queryLogTable.InvalidateData();
+                _queryLogTable!.InvalidateData();
             }
         }
 
@@ -89,7 +88,7 @@ namespace Web.Pages
         {
             Console.WriteLine("Status change");
             BuildSubheader();
-            StatusChangeTrigger.Trigger();
+            _statusChangeTrigger.Trigger();
         }
 
         private void BuildSubheader()

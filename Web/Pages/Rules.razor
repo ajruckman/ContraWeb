@@ -21,7 +21,7 @@
         <label for="NewWhitelist_Pattern">Pattern</label>
     </td>
     <td>
-        <input @oninput="@OnPatternChange" value="@_whitelistController.Pattern" id="NewWhitelist_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
+        <input @oninput="@OnPatternChange" value="@(_whitelistController!.Pattern)" id="NewWhitelist_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
     </td>
 </tr>
 <tr>
@@ -30,7 +30,7 @@
         <div class="CenterRow">
             @if (!_processing)
             {
-                @if (string.IsNullOrEmpty(_whitelistController.Pattern))
+                @if (string.IsNullOrEmpty(_whitelistController!.Pattern))
                 {
                     <div class="XMark"></div>
                     <span>Required</span>
@@ -266,20 +266,20 @@
         <FlareTableTable>
             <FlareTableHead>
                 <FlareTableHeadingRow>
-                    @foreach (Column column in _whitelistTable.Columns)
+                    @foreach (Column column in _whitelistTable!.Columns)
                     {
                         <FlareTableHeading T="Whitelist" ID="@column.ID"/>
                     }
                 </FlareTableHeadingRow>
                 <FlareTableFilterRow>
-                    @foreach (Column column in _whitelistTable.Columns)
+                    @foreach (Column column in _whitelistTable!.Columns)
                     {
                         <FlareTableFilter T="Whitelist" ID="@column.ID"/>
                     }
                 </FlareTableFilterRow>
             </FlareTableHead>
             <FlareTableBody T="Whitelist">
-                @foreach (Whitelist row in _whitelistTable.Rows())
+                @foreach (Whitelist row in _whitelistTable!.Rows())
                 {
                     <FlareTableBodyRow T="Whitelist" Value="@row">
                         <FlareTableCell T="Whitelist" ID="ID">@row.ID</FlareTableCell>

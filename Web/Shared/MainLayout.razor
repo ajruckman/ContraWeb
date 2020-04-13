@@ -10,7 +10,7 @@
 
 @ResourceManifest.RenderScripts(new Configuration().ResourceManifests)
 
-@if (_themeLoader.Complete)
+@if (_themeLoader!.Complete)
 {
     @_themeLoader.RenderLink()
     

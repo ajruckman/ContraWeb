@@ -9,7 +9,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject LogActionService LogActionService
 
-<TriggerWrapper Trigger="@StatusChangeTrigger">
+<TriggerWrapper Trigger="@_statusChangeTrigger">
     @(_subheader!.Render())
 </TriggerWrapper>
 
@@ -40,20 +40,20 @@
             <FlareTableTable>
                 <FlareTableHead>
                     <FlareTableHeadingRow>
-                        @foreach (Column column in _queryLogTable.Columns)
+                        @foreach (Column column in _queryLogTable!.Columns)
                         {
                             <FlareTableHeading T="Log" ID="@column.ID"/>
                         }
                     </FlareTableHeadingRow>
                     <FlareTableFilterRow>
-                        @foreach (Column column in _queryLogTable.Columns)
+                        @foreach (Column column in _queryLogTable!.Columns)
                         {
                             <FlareTableFilter T="Log" ID="@column.ID"/>
                         }
                     </FlareTableFilterRow>
                 </FlareTableHead>
                 <FlareTableBody T="Log">
-                    @foreach (Log row in _queryLogTable.Rows())
+                    @foreach (Log row in _queryLogTable!.Rows())
                     {
                         <FlareTableBodyRow T="Log" Value="@row">
                             @* <FlareTableCell T="Log" ID="Time">@(row.Time.ToString("HH:mm:ss.fff"))</FlareTableCell> *@
