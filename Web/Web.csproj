@@ -6,11 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
-        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
@@ -19,36 +14,12 @@
         <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
         <PackageReference Include="FS3" Version="3.4.9-alpha" />
         <PackageReference Include="FT3" Version="3.6.8-alpha" />
-<!--        <PackageReference Include="Integrant.Rudiment" Version="2.42.1-alpha" />-->
         <PackageReference Include="Integrant.Subsegment" Version="1.5.0-alpha" />
         <PackageReference Include="IPNetwork2" Version="2.5.194" />
         <PackageReference Include="Superset" Version="1.15.1-alpha" />
         <PackageReference Include="UISet.ColorSet" Version="1.1.6-alpha" />
         <PackageReference Include="UISet.FontSet" Version="1.1.6-alpha" />
         <PackageReference Include="UISet.ShapeSet" Version="1.2.12-alpha" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Update="Shared\LogInForm.razor">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      </Content>
-      <Content Update="Pages\Users.razor">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      </Content>
-      <Content Update="Pages\Stats.razor">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      </Content>
-      <Content Update="wwwroot\js\Stats.js">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-      <Content Update="wwwroot\css\Stats.scss">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-      <Content Update="Pages\LogIn.razor">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      </Content>
     </ItemGroup>
 
 </Project>

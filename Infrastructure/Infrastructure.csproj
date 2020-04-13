@@ -10,7 +10,6 @@
     </ItemGroup>
 
     <ItemGroup>
-<!--        <PackageReference Include="FlareSelect" Version="2.1.2-alpha" />-->
         <PackageReference Include="FS3" Version="3.4.9-alpha" />
         <PackageReference Include="IPNetwork2" Version="2.5.194" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.3" />
