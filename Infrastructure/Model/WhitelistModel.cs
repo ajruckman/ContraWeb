@@ -16,6 +16,19 @@ namespace Infrastructure.Model
             return contraDB.whitelist.Select(v => new Whitelist(v)).ToList();
         }
 
+        public static IEnumerable<Whitelist> List(string clientIP)
+        {
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
+
+            return contraDB.whitelist
+                           .Where(v => v.ips != null)
+                           .Where(v => v.ips.Length == 1)
+                           .ToList()
+                           .Where(v => v.ips[0].ToString() == clientIP)
+                           .Select(v => new Whitelist(v))
+                           .ToList();
+        }
+
         public static void Submit(Whitelist whitelist)
         {
             using ContraCoreDBContext contraDB = new ContraCoreDBContext();

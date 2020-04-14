@@ -67,7 +67,7 @@ namespace Infrastructure.Controller
                 GeneratingOUI   = false;
                 OnGenRulesChange?.Invoke();
                 OnGenOUIChange?.Invoke();
-                Common.Logger.Info("Disconnected from ContraCore");
+                // Common.Logger.Info("Disconnected from ContraCore");
                 OnStatusChange?.Invoke();
             };
         }
@@ -106,8 +106,8 @@ namespace Infrastructure.Controller
                 }
                 catch (Exception e)
                 {
-                    Common.Logger.Warning("Failed to connect to server; retrying...", e: e,
-                        meta: new Fields {{"Hostname", hostname}});
+                    // Common.Logger.Warning("Failed to connect to server; retrying...", e: e,
+                        // meta: new Fields {{"Hostname", hostname}});
                     Thread.Sleep(1000);
 
                     OnDisconnected?.Invoke();
@@ -328,9 +328,13 @@ namespace Infrastructure.Controller
         //     return false;
         // }
 
-        public async Task ReloadWhitelist()
+        public async Task<bool> ReloadWhitelist()
         {
+            if (_client == null)
+                return false;
+
             await Send("reload_whitelist");
+            return true;
         }
 
         private async Task Send(string msg)

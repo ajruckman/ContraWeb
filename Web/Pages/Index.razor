@@ -72,7 +72,14 @@
                             @if (_clientRole != UserRole.Roles.Undefined)
                             {
                                 <FlareTableCell T="Log" ID="ActionButton">
-                                    <button class="SS_Button" @onclick="_ => LogActionService.Invoke(row)">Invoke</button>
+                                    @if (row.Action.StartsWith("pass."))
+                                    {
+                                        <button class="SS_Button--Red" @onclick="@(_ => LogActionService.Invoke(row))">BLOCK</button>
+                                    }
+                                    else if (row.Action.StartsWith("block."))
+                                    {
+                                        <button class="SS_Button--Green" @onclick="@(_ => LogActionService.Invoke(row))">ALLOW</button>
+                                    }
                                 </FlareTableCell>
                             }
                         </FlareTableBodyRow>

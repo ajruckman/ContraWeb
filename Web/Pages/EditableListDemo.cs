@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Schema;
-using Infrastructure.Validation;
 using Microsoft.AspNetCore.Components;
+using Superset.Web.Validation;
 using Web.Components.EditableList;
 
 namespace Web.Pages

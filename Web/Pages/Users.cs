@@ -7,9 +7,9 @@ using FT3;
 using Infrastructure.Controller;
 using Infrastructure.Model;
 using Infrastructure.Schema;
-using Infrastructure.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Superset.Utilities;
+using Superset.Web.Validation;
 using Web.Authentication;
 
 namespace Web.Pages
@@ -21,16 +21,16 @@ namespace Web.Pages
 
         private FlareTable<User>? _userTable;
 
-        private string             _newUsername = "";
-        Debouncer<string>?         _newUsernameDebouncer;
-        private string             _newPassword = "";
-        private Debouncer<string>? _newPasswordDebouncer;
-        private UserRole.Roles     _newRole          = UserRole.Roles.Undefined;
-        private Validator          _newUserValidator = new Validator();
+        private string                      _newUsername = "";
+        Debouncer<string>?                  _newUsernameDebouncer;
+        private string                      _newPassword = "";
+        private Debouncer<string>?          _newPasswordDebouncer;
+        private UserRole.Roles              _newRole          = UserRole.Roles.Undefined;
+        private Validator<ValidationResult> _newUserValidator = new Validator<ValidationResult>();
 
-        private string         _editedPassword    = "";
-        private UserRole.Roles _editedRole        = UserRole.Roles.Undefined;
-        private Validator      _editUserValidator = new Validator();
+        private string                      _editedPassword    = "";
+        private UserRole.Roles              _editedRole        = UserRole.Roles.Undefined;
+        private Validator<ValidationResult> _editUserValidator = new Validator<ValidationResult>();
 
         private User?       _editing;
         private List<User>? _users;
@@ -61,14 +61,14 @@ namespace Web.Pages
             {
                 Console.WriteLine("--");
                 _newUsername = value;
-                _newUserValidator.Refresh();
+                _newUserValidator.Validate();
                 InvokeAsync(StateHasChanged);
             }, _newUsername);
-            
+
             _newPasswordDebouncer = new Debouncer<string>(value =>
             {
                 _newPassword = value;
-                _newUserValidator.Refresh();
+                _newUserValidator.Validate();
                 InvokeAsync(StateHasChanged);
             }, _newPassword);
 
@@ -80,7 +80,8 @@ namespace Web.Pages
             _newRoleSelector.OnSelect += selected =>
             {
                 _newRole = UserRole.NameToUserRole(selected.FirstOrDefault()?.ID);
-                StateHasChanged();
+                _newUserValidator.Validate();
+                InvokeAsync(StateHasChanged);
             };
 
             _editedRoleSelector = new FlareSelector<string>(
@@ -91,39 +92,42 @@ namespace Web.Pages
             _editedRoleSelector.OnSelect += selected =>
             {
                 _editedRole = UserRole.NameToUserRole(selected.FirstOrDefault()?.ID);
-                StateHasChanged();
+                _editUserValidator.Validate();
+                InvokeAsync(StateHasChanged);
             };
 
             //
 
-            _newUserValidator = new Validator(() =>
+            _newUserValidator = new Validator<ValidationResult>(() =>
             {
                 if (string.IsNullOrEmpty(_newUsername))
-                    return new Validation(ValidationResult.Invalid, "Username is required");
+                    return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Username is required")};
 
                 User? found = UserModel.Find(_newUsername).Result;
                 if (found != null)
-                    return new Validation(ValidationResult.Invalid, "Username is already registered");
+                    return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Username is already registered")};
 
                 if (string.IsNullOrEmpty(_newPassword))
-                    return new Validation(ValidationResult.Invalid, "Password is required");
+                    return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Password is required")};
 
                 if (_newRole == UserRole.Roles.Undefined || _newRole == UserRole.Roles.Restricted)
-                    return new Validation(ValidationResult.Invalid, "Role is invalid");
+                    return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Role is invalid")};
 
-                return new Validation(ValidationResult.Valid, "User is valid");
+                return new[] {new Validation<ValidationResult>(ValidationResult.Valid, "User is valid")};
             });
 
-            _editUserValidator = new Validator(() =>
+            _editUserValidator = new Validator<ValidationResult>(() =>
             {
                 // if (string.IsNullOrEmpty(_editedPassword))
                 // return new Validation(ValidationResult.Invalid, "Password is required");
 
                 if (_editedRole == UserRole.Roles.Undefined || _editedRole == UserRole.Roles.Restricted)
-                    return new Validation(ValidationResult.Invalid, "Role is invalid");
+                    return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Role is invalid")};
 
-                return new Validation(ValidationResult.Valid, "Edits are valid");
+                return new[] {new Validation<ValidationResult>(ValidationResult.Valid, "Edits are valid")};
             });
+            
+            _newUserValidator.Validate();
         }
 
         private void LoadUsers()
@@ -133,9 +137,9 @@ namespace Web.Pages
 
         private bool AllowSubmit()
         {
-            return !string.IsNullOrEmpty(_newUsername) &&
-                   !string.IsNullOrEmpty(_newPassword) &&
-                   (_newRole == UserRole.Roles.Privileged || _newRole == UserRole.Roles.Administrator);
+            return _editing == null
+                ? !_newUserValidator.AnyOfType(ValidationResult.Invalid)
+                : !_editUserValidator.AnyOfType(ValidationResult.Invalid);
         }
 
         private void Add() => _editing = null;
@@ -170,6 +174,7 @@ namespace Web.Pages
                 LoadUsers();
                 _userTable!.InvalidateData();
                 _newRoleSelector!.InvalidateData(true);
+                _newUserValidator.Validate();
             }
             else
             {
@@ -192,6 +197,7 @@ namespace Web.Pages
                 LoadUsers();
                 _userTable!.InvalidateData();
                 _newRoleSelector!.InvalidateData(true);
+                _editUserValidator.Validate();
             }
 
             Add();

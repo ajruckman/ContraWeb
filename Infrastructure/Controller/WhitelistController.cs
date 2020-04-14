@@ -165,7 +165,7 @@ namespace Infrastructure.Controller
 
             _newWhitelist.IPs = new List<IPAddress>();
             foreach (string ip in ips)
-                if (ip != "" && ValidateIP(ip).Item1 == Validation.ValidationResult.Valid)
+                // if (ip != "" && ValidateIP(ip).Item1 == Validation.ValidationResult.Valid)
                     _newWhitelist.IPs.Add(IPAddress.Parse(ip));
 
             OnValidation.Invoke();
@@ -181,7 +181,7 @@ namespace Infrastructure.Controller
 
             _newWhitelist.Hostnames = new List<string>();
             foreach (string hostname in hostnames)
-                if (hostname != "" && ValidateHostname(hostname).Item1 != Validation.ValidationResult.Invalid)
+                // if (hostname != "" && ValidateHostname(hostname).Item1 != Validation.ValidationResult.Invalid)
                     _newWhitelist.Hostnames.Add(hostname);
 
             OnValidation.Invoke();
@@ -247,43 +247,43 @@ namespace Infrastructure.Controller
             return true;
         }
 
-        public (Validation.ValidationResult, MarkupString) ValidateIP(string s)
-        {
-            if (s.Length == 0)
-                return (Validation.ValidationResult.Undefined, new MarkupString(""));
-
-            if (_matchIPv4Regex.IsMatch(s))
-                return (Validation.ValidationResult.Valid, new MarkupString("Valid IP"));
-
-            if (_matchIPv6Regex.IsMatch(s))
-                return (Validation.ValidationResult.Valid, new MarkupString("Valid IP"));
-
-            return (Validation.ValidationResult.Invalid, new MarkupString("Invalid IP"));
-        }
-
-        public (Validation.ValidationResult, MarkupString) ValidateSubnet(string s)
-        {
-            if (s.Length == 0)
-                return (Validation.ValidationResult.Undefined, new MarkupString(""));
-
-            bool valid = IPNetwork.TryParse(s, out IPNetwork parsed);
-
-            if (valid)
-                return (Validation.ValidationResult.Valid, new MarkupString($"Parsed: {parsed}"));
-
-            return (Validation.ValidationResult.Invalid, new MarkupString("Parse failure"));
-        }
-
-        public (Validation.ValidationResult, MarkupString) ValidateHostname(string s)
-        {
-            if (s.Length == 0)
-                return (Validation.ValidationResult.Undefined, new MarkupString(""));
-
-            if (_validHostnameRegex.IsMatch(s))
-                return (Validation.ValidationResult.Valid, new MarkupString("Valid hostname"));
-
-            return (Validation.ValidationResult.Warning, new MarkupString("Invalid hostname"));
-        }
+        // public (Validation.ValidationResult, MarkupString) ValidateIP(string s)
+        // {
+        //     if (s.Length == 0)
+        //         return (Validation.ValidationResult.Undefined, new MarkupString(""));
+        //
+        //     if (_matchIPv4Regex.IsMatch(s))
+        //         return (Validation.ValidationResult.Valid, new MarkupString("Valid IP"));
+        //
+        //     if (_matchIPv6Regex.IsMatch(s))
+        //         return (Validation.ValidationResult.Valid, new MarkupString("Valid IP"));
+        //
+        //     return (Validation.ValidationResult.Invalid, new MarkupString("Invalid IP"));
+        // }
+        //
+        // public (Validation.ValidationResult, MarkupString) ValidateSubnet(string s)
+        // {
+        //     if (s.Length == 0)
+        //         return (Validation.ValidationResult.Undefined, new MarkupString(""));
+        //
+        //     bool valid = IPNetwork.TryParse(s, out IPNetwork parsed);
+        //
+        //     if (valid)
+        //         return (Validation.ValidationResult.Valid, new MarkupString($"Parsed: {parsed}"));
+        //
+        //     return (Validation.ValidationResult.Invalid, new MarkupString("Parse failure"));
+        // }
+        //
+        // public (Validation.ValidationResult, MarkupString) ValidateHostname(string s)
+        // {
+        //     if (s.Length == 0)
+        //         return (Validation.ValidationResult.Undefined, new MarkupString(""));
+        //
+        //     if (_validHostnameRegex.IsMatch(s))
+        //         return (Validation.ValidationResult.Valid, new MarkupString("Valid hostname"));
+        //
+        //     return (Validation.ValidationResult.Warning, new MarkupString("Invalid hostname"));
+        // }
 
         public void Edit(Whitelist row)
         {

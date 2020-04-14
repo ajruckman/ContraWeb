@@ -4,7 +4,20 @@
     border-radius:    3px;
     padding:          2px;
 
-    &.Monospace {
+    &--Disabled {
+        background-color: var(--ColorSet_ThemeColor_Background_20);
+        border:           1px solid var(--ColorSet_ThemeColor_Border_20);
+        
+        .EditableList--New {
+            .EditableList--Input {
+                &::placeholder {
+                    color: var(--ColorSet_ThemeColor_Text_20);
+                }
+            }
+        }
+    }
+
+    &--Monospace {
         .EditableList--Selected .EditableList--Value {
             font-family: var(--FontSet-MonospaceFont);
         }

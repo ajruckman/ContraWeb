@@ -48,6 +48,7 @@
             <button @onclick="@GenRules" disabled="@(!AllowGenRule())" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
             @if (!Common.ContraCoreClient.Connected)
             {
+                <div class="SS_XMark"></div>
                 <span>ContraCore is disconnected</span>
             }
             else if (Common.ContraCoreClient.GeneratingRules)
@@ -91,6 +92,7 @@
             <button @onclick="@GenOUI" disabled="@(!AllowGenOUI())" class="SS_Button SS_Button--Blue">GENERATE OUI LIST</button>
             @if (!Common.ContraCoreClient.Connected)
             {
+                <div class="SS_XMark"></div>
                 <span>ContraCore is disconnected</span>
             }
             else if (Common.ContraCoreClient.GeneratingOUI)

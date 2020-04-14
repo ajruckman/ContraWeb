@@ -1,0 +1,60 @@
+﻿@using Superset.Web.State
+@using Superset.Web.Validation
+
+@page "/blacklist" 
+
+<div class="Blacklist_NewRuleContainer">
+
+    <h2>Create a blacklist rule</h2>
+
+    <table class="Inputs">
+        <tr>
+            <td>
+                <label for="NewRule_Pattern">Pattern</label>
+            </td>
+            <td>
+                <input @oninput="@OnPatternChange" value="@Rule().Pattern" id="NewRule_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div class="VerticallyCenteredContainer">
+                    @if (!_processing)
+                    {
+                        @(_validator!.RenderFieldResults("Pattern"))
+                    }
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="Spacer" colspan="2"></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>
+                <div class="SubmitWrapper">
+                    <TriggerWrapper Trigger="@_onInputValidation">
+                        <button @onclick="@Commit" disabled="@(_validator!.AnyOfType(ValidationResult.Invalid))" class="SS_Button SS_Button--Green">COMMIT</button>
+
+                        @if (!_processing)
+                        {
+@*                             @(_validator!.RenderOverallResults()) *@
+                        }
+                        else
+                        {
+                            <div class="VerticallyCenteredContainer">
+                                <div class="Spinner"></div>
+                                <span>Processing...</span>
+                            </div>
+                        }
+                    </TriggerWrapper>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+</div>

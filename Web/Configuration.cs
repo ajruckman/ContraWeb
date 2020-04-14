@@ -28,6 +28,7 @@ namespace Web
             ShapeSet.ResourceManifests.ShapeSet,
             ShapeSet.ResourceManifests.BlazorErrorUIStyle,
             ShapeSet.ResourceManifests.ComponentsReconnectModalStyle,
+            ShapeSet.ResourceManifests.SupersetValidationsStyle,
 
             // new ResourceManifest(nameof(Web), scriptsExternal: new[]
             // {

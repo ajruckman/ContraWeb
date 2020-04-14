@@ -21,7 +21,7 @@ namespace Web.Pages
                 return;
 
             ContraLogClient contraLogClient =
-                new ContraLogClient("Host=10.3.0.16;Port=9000;Database=contralog;User=contralogmgr;Password=contralogmgr;");
+                new ContraLogClient("Host=contralog;Port=9000;Database=contralog;User=contralog_mgr;Password=a6oMaVZZm8nuedax;");
 
             (Dictionary<long, Dictionary<string, dynamic>> hours, List<string> actions) = contraLogClient.LogActionsPerHour();
 

@@ -4,14 +4,21 @@
 @using FT3
 @using FT3.Component
 @using Infrastructure.Schema
+@using Microsoft.AspNetCore.Http
+@using Superset.Web.Validation
 
 @inject IJSRuntime JSRuntime
+@inject IHttpContextAccessor HttpContextAccessor
 @inject ISessionStorageService SessionStorageService
 @inject LogActionService LogActionService
 
 @page "/rules"
 
 <div class="Rules_NewWhitelistContainer">
+
+@{
+    Console.WriteLine("<- " + Whitelist().Expires + " ->");
+}
 
 <div class="InputsContainer">
 <h2>Create a whitelist rule</h2>
@@ -21,30 +28,16 @@
         <label for="NewWhitelist_Pattern">Pattern</label>
     </td>
     <td>
-        <input @oninput="@OnPatternChange" value="@(_whitelistController!.Pattern)" id="NewWhitelist_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
+        <input @oninput="@OnPatternChange" value="@Whitelist().Pattern" id="NewWhitelist_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
     </td>
 </tr>
 <tr>
     <td></td>
     <td>
-        <div class="CenterRow">
+        <div class="VerticallyCenteredContainer">
             @if (!_processing)
             {
-                @if (string.IsNullOrEmpty(_whitelistController!.Pattern))
-                {
-                    <div class="XMark"></div>
-                    <span>Required</span>
-                }
-                else if (_whitelistController.IsPatternValid)
-                {
-                    <div class="CheckMark"></div>
-                    <span>Valid regular expression</span>
-                }
-                else
-                {
-                    <div class="XMark"></div>
-                    <span>Invalid regular expression</span>
-                }
+                @(_validator!.RenderFieldResults("Pattern"))
             }
         </div>
     </td>
@@ -59,9 +52,16 @@
         <label for="NewWhitelist_ExpiresDate">Expires</label>
     </td>
     <td>
-        <input type="date" @oninput="@OnExpiresDateChange" value="@_whitelistController.ExpiresDate" class="SS_Input" disabled="@_processing" id="NewWhitelist_ExpiresDate"/>
+        @{
+            Console.WriteLine("== " + ExpiresTimeString);
+        }
+        <TriggerWrapper Trigger="@_onInputReset" Protected="true">
+            <input type="date" @oninput="@OnExpiresDateChange" value="@ExpiresDateString" class="SS_Input" disabled="@_processing" id="NewWhitelist_ExpiresDate"/>
+        </TriggerWrapper>
         at
-        <input type="time" @oninput="@OnExpiresTimeChange" value="@_whitelistController.ExpiresTime" class="SS_Input" disabled="@_processing"/>
+        <TriggerWrapper Trigger="@_onInputReset" Protected="true">
+            <input type="time" @oninput="@OnExpiresTimeChange" value="@ExpiresTimeString" class="SS_Input" disabled="@_processing"/>
+        </TriggerWrapper>
     </td>
 </tr>
 <tr>
@@ -69,40 +69,41 @@
     <td>
         <div class="ExpirationDateFuturesContainer">
             <label>In</label>
-            <button class="SS_Button" @onclick="@(_ => _whitelistController.SetExpirationAfterTimespan(TimeSpan.FromHours(1)))" disabled="@_processing">1 hour</button>
-            <button class="SS_Button" @onclick="@(_ => _whitelistController.SetExpirationAfterTimespan(TimeSpan.FromHours(6)))" disabled="@_processing">6 hours</button>
-            <button class="SS_Button" @onclick="@(_ => _whitelistController.SetExpirationAfterTimespan(TimeSpan.FromHours(12)))" disabled="@_processing">12 hours</button>
-            <button class="SS_Button" @onclick="@(_ => _whitelistController.SetExpirationAfterTimespan(TimeSpan.FromDays(1)))" disabled="@_processing">1 day</button>
-            <button class="SS_Button" @onclick="@(_ => _whitelistController.SetExpirationAfterTimespan(TimeSpan.FromDays(3)))" disabled="@_processing">3 day</button>
-            <button class="SS_Button" @onclick="@(_ => _whitelistController.SetExpirationAfterTimespan(TimeSpan.FromDays(7)))" disabled="@_processing">7 days</button>
-            <button class="SS_Button" @onclick="@(_ => _whitelistController.SetExpirationAfterTimespan(TimeSpan.Zero))" disabled="@_processing">Never</button>
+            <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromHours(1)))" disabled="@_processing">1 hour</button>
+            <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromHours(6)))" disabled="@_processing">6 hours</button>
+            <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromHours(12)))" disabled="@_processing">12 hours</button>
+            <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromDays(1)))" disabled="@_processing">1 day</button>
+            <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromDays(3)))" disabled="@_processing">3 day</button>
+            <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.FromDays(7)))" disabled="@_processing">7 days</button>
+            <button class="SS_Button" @onclick="@(_ => SetExpirationAfterTimespan(TimeSpan.Zero))" disabled="@_processing">Never</button>
         </div>
     </td>
 </tr>
 <tr>
     <td></td>
     <td>
-        <div class="CenterRow">
+        <div class="VerticallyCenteredContainer">
             @if (!_processing)
             {
-                @if (_whitelistController.IsExpiresValid.HasValue)
-                {
-                    if (_whitelistController.IsExpiresValid == true)
-                    {
-                        <div class="CheckMark"></div>
-                        <span>Expiration time is valid</span>
-                    }
-                    else
-                    {
-                        <div class="XMark"></div>
-                        <span>@_whitelistController.ExpiresInvalidReason</span>
-                    }
-                }
-                else
-                {
-                    <div class="CheckMark"></div>
-                    <span>Rule will not expire</span>
-                }
+                @(_validator!.RenderFieldResults("Expires"))
+@*                 @if (_whitelistController.IsExpiresValid.HasValue) *@
+@*                 { *@
+@*                     if (_whitelistController.IsExpiresValid == true) *@
+@*                     { *@
+@*                         <div class="CheckMark"></div> *@
+@*                         <span>Expiration time is valid</span> *@
+@*                     } *@
+@*                     else *@
+@*                     { *@
+@*                         <div class="XMark"></div> *@
+@*                         <span>@_whitelistController.ExpiresInvalidReason</span> *@
+@*                     } *@
+@*                 } *@
+@*                 else *@
+@*                 { *@
+@*                     <div class="CheckMark"></div> *@
+@*                     <span>Rule will not expire</span> *@
+@*                 } *@
             }
         </div>
     </td>
@@ -118,12 +119,24 @@
     </td>
 </tr>
 
+@if (!AllowCreateRuleForOthers())
+{
+    <tr>
+        <td colspan="2">
+            <div class="VerticallyCenteredContainer PermissionNoticeContainer">
+                <div class="SS_ExclamationMark"></div>
+                <div>You are only permitted to create whitelist rules for your own IP.</div>
+            </div>
+        </td>
+    </tr>
+}
+
 <tr>
     <td>
         <label>IPs</label>
     </td>
     <td>
-        @_newIPsList?.Render()
+        @(_newIPsList!.Render())
     </td>
 </tr>
 
@@ -136,7 +149,7 @@
         <label>Subnets</label>
     </td>
     <td>
-        @_newSubnetsList?.Render()
+        @(_newSubnetsList!.Render())
     </td>
 </tr>
 
@@ -149,7 +162,7 @@
         <label>Hostnames</label>
     </td>
     <td>
-        @_newHostnameList?.Render()
+        @(_newHostnameList!.Render())
     </td>
 </tr>
 
@@ -166,14 +179,14 @@
             <TriggerWrapper Trigger="@_onPostLoad">
                 @if (!_doPostLoad)
                 {
-                    <div class="CenterRow">
+                    <div class="VerticallyCenteredContainer">
                         <div class="Spinner"></div>
                         <span>Loading...</span>
                     </div>
                 }
                 else
                 {
-                    @_vendorSelector?.Render()
+                    @(_vendorSelector!.Render())
                 }
             </TriggerWrapper>
         </div>
@@ -188,33 +201,20 @@
     <td></td>
     <td>
         <div class="SubmitWrapper">
-            <TriggerWrapper Trigger="@_onWhitelistControllerValidation">
-                @{
-                    bool canCommit = _whitelistController.CanCommit();
+            <TriggerWrapper Trigger="@_onInputValidation">
+                <button @onclick="@Commit" disabled="@(_overallValidator!.AnyOfType(ValidationResult.Invalid, true))" class="SS_Button SS_Button--Green">COMMIT</button>
+
+                @if (!_processing)
+                {
+                    @(_overallValidator!.RenderOverallResults())
                 }
-                <button @onclick="@Commit" disabled="@(!canCommit)" class="SS_Button SS_Button--Green">COMMIT</button>
-                <div class="CenterRow">
-                    @if (_processing)
-                    {
+                else
+                {
+                    <div class="VerticallyCenteredContainer">
                         <div class="Spinner"></div>
                         <span>Processing...</span>
-                    }
-                    else if (string.IsNullOrEmpty(_whitelistController.Pattern) || !_whitelistController.IsPatternValid)
-                    {
-                        <div class="XMark"></div>
-                        <span>Valid pattern is required</span>
-                    }
-                    else if (!canCommit)
-                    {
-                        <div class="XMark"></div>
-                        <span>At least 1 whitelist condition is required</span>
-                    }
-                    else
-                    {
-                        <div class="CheckMark"></div>
-                        <span>Rule is valid</span>
-                    }
-                </div>
+                    </div>
+                }
             </TriggerWrapper>
         </div>
     </td>
@@ -227,25 +227,25 @@
 </table>
 </div>
 
-<TriggerWrapper Trigger="@_onReloadMessage">
-    @if (_justReloaded)
-    {
-        <div class="StatusContainer">
-            <h3>Whitelist rule reload status</h3>
-            @foreach (string message in _reloadMessages)
-            {
-                <span>@message</span>
-            }
-        </div>
-    }
-</TriggerWrapper>
+@* <TriggerWrapper Trigger="@_onReloadMessage"> *@
+@*     @if (_justReloaded) *@
+@*     { *@
+@*         <div class="StatusContainer"> *@
+@*             <h3>Whitelist rule reload status</h3> *@
+@*             @foreach (string message in _reloadMessages) *@
+@*             { *@
+@*                 <span>@message</span> *@
+@*             } *@
+@*         </div> *@
+@*     } *@
+@* </TriggerWrapper> *@
 </div>
 
 <div class="Rules_WhitelistTableContainer">
-    
+
     <div class="HeaderContainer">
         <h2>Existing rules</h2>
-        <button class="SS_Button--Blue" @onclick="@ReloadWhitelist">RELOAD WHITELIST CACHE</button>
+        @* <button class="SS_Button--Blue" @onclick="@ReloadWhitelist">RELOAD WHITELIST CACHE</button> *@
     </div>
 
     <FlareTableContainer FlareTable="@_whitelistTable">
@@ -285,9 +285,9 @@
                         <FlareTableCell T="Whitelist" ID="ID">@row.ID</FlareTableCell>
                         <FlareTableCell T="Whitelist" ID="Pattern">@row.Pattern</FlareTableCell>
                         <FlareTableCell T="Whitelist" ID="Expires">@(row.Expires.HasValue ? row.Expires.Value.ToString("yyyy-MM-dd HH:mm") : "")</FlareTableCell>
-                        
+
                         @* <FlareTableCell T="Whitelist" ID="_Edit"> *@
-                            @* <button class="SS_Button--Blue" @onclick="@(_ => Edit(row))" disabled="@(_editing != null || _processing)">EDIT</button> *@
+                        @* <button class="SS_Button--Blue" @onclick="@(_ => Edit(row))" disabled="@(_editing != null || _processing)">EDIT</button> *@
                         @* </FlareTableCell> *@
                         <FlareTableCell T="Whitelist" ID="_Remove">
                             <button class="SS_Button--Red" @onclick="@(_ => Remove(row))" disabled="@_processing">REMOVE</button>

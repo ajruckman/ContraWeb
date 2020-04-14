@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Infrastructure.Schema;
-using Infrastructure.Validation;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Superset.Web.Validation;
 
 namespace Web.Components.EditableList
 {

@@ -32,16 +32,6 @@ body {
         height: 20px;
     }
 
-    .CenterRow {
-        align-items: center;
-        display:     flex;
-        height:      21px;
-
-        span {
-            margin-left: 5px;
-        }
-    }
-
     .VerticallyCenteredContainer {
         align-items: center;
         display:     flex;
@@ -130,11 +120,16 @@ body {
     }
 
     .Index_LogTableContainer {
-        padding: 7px;
+        padding: 7px 5px;
+        
+        .FlareTableCell .SS_Button--Red, .FlareTableCell .SS_Button--Green {
+            width: 61px;
+            margin: 1px;
+        }
     }
 
     .Configure_SettingsContainer {
-        padding: 5px 7px;
+        padding: 0 9px;
 
         .Options {
             .CheckboxContainer {
@@ -225,7 +220,7 @@ body {
     .Rules_NewWhitelistContainer {
         display:   flex;
         flex-wrap: wrap;
-        padding:   5px 7px;
+        padding: 0 9px;
 
         .InputsContainer {
             flex-grow: 999;
@@ -242,7 +237,11 @@ body {
                         }
 
                         .VendorSelectorContainer {
-                            min-height: 62px;
+                            min-height: 72px;
+                            
+                            .Spinner {
+                                margin-right: 5px;
+                            }
                         }
 
                         .ExpirationDateFuturesContainer {
@@ -262,8 +261,17 @@ body {
                             align-items: center;
                             display:     flex;
 
-                            .CenterRow {
+                            .ValidationContainer {
                                 margin-left: 10px;
+                            }
+                        }
+                        
+                        .PermissionNoticeContainer {
+                            padding: 0 0 10px 0;
+                            
+                            .SS_ExclamationMark {
+                                margin-right: 5px;
+                                font-weight: normal;
                             }
                         }
                     }
@@ -300,9 +308,28 @@ body {
             }
         }
     }
+    
+    .Blacklist_NewRuleContainer {
+        padding: 0 9px;
 
+        .Inputs {
+            tr {
+                td {
+                    .SubmitWrapper {
+                        align-items: center;
+                        display:     flex;
+
+                        .ValidationContainer {
+                            margin-left: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     .Rules_WhitelistTableContainer {
-        padding: 5px 7px;
+        padding: 0 9px;
 
         .HeaderContainer {
             @extend .VerticallyCenteredContainer;
@@ -315,7 +342,7 @@ body {
     }
 
     .Generate_GenerateContainer {
-        padding: 5px 7px;
+        padding: 0 9px;
 
         .VerticallyCenteredContainer {
             h3 ~ a {
@@ -354,6 +381,10 @@ body {
         .GeneratingRulesNoticeContainer, .GeneratingOUINoticeContainer {
             align-items: center;
             display:     flex;
+            
+            > button {
+                margin-right: 10px;
+            }
 
             > * {
                 margin-right: 5px;
@@ -466,5 +497,9 @@ body {
                 }
             }
         }
+    }
+    
+    .NotFoundContainer {
+        padding: 25px;
     }
 }

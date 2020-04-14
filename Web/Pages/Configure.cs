@@ -5,11 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Model;
 using Infrastructure.Schema;
-using Infrastructure.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Superset.Logging;
 using Superset.Web.State;
+using Superset.Web.Validation;
 using Web.Components.EditableList;
 
 namespace Web.Pages

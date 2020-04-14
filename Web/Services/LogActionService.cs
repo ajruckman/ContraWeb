@@ -18,12 +18,22 @@ namespace Web.Services
 
         public void Invoke(Log targetLog)
         {
-            Console.WriteLine("Invoked: " + targetLog.Question);
+            Console.Write("Invoked: " + targetLog.Question);
             TargetLog = targetLog;
-            NavigationManager.NavigateTo("/rules");
+
+            if (targetLog.Action.StartsWith("pass."))
+            {
+                Console.WriteLine(" -> blacklist");
+                NavigationManager.NavigateTo("/blacklist");
+            }
+            else if (targetLog.Action.StartsWith("block."))
+            {
+                Console.WriteLine(" -> whitelist");
+                NavigationManager.NavigateTo("/rules");
+            }
         }
 
-        public Log GetAndUnset()
+        public Log? GetAndUnset()
         {
             Log log = TargetLog!;
             TargetLog = null;

@@ -15,12 +15,13 @@ namespace Infrastructure.Model
             using ContraCoreDBContext contraDB = new ContraCoreDBContext();
             if (_cache == null)
                 _cache = contraDB.oui_vendors
-                        .Select(v => new Option<string>
-                         {
-                             ID           = v.vendor,
-                             OptionText   = v.vendor,
-                             SelectedText = v.vendor
-                         }).ToList();
+                                 .Take(100)
+                                 .Select(v => new Option<string>
+                                  {
+                                      ID           = v.vendor,
+                                      OptionText   = v.vendor,
+                                      SelectedText = v.vendor
+                                  }).ToList();
 
             return _cache;
         }

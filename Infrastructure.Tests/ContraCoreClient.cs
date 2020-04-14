@@ -10,7 +10,7 @@ namespace Infrastructure.Tests
         [SetUp]
         public void Setup()
         {
-            _ccc = new Controller.ContraCoreClient("127.0.0.1");
+            _ccc = new Controller.ContraCoreClient("contralog");
         }
 
         [Test]

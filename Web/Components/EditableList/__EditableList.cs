@@ -1,7 +1,6 @@
-﻿using Infrastructure.Schema;
-using Infrastructure.Validation;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Superset.Web.Validation;
 
 namespace Web.Components.EditableList
 {

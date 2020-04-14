@@ -1,6 +1,7 @@
 ﻿@using Infrastructure.Schema
-@using Infrastructure.Validation
-<div class="EditableListContainer@(EditableList!.Monospace ? " Monospace" : "")">
+@using Superset.Web.Validation
+
+<div class="EditableListContainer @(EditableList!.Disabled() ? "EditableListContainer--Disabled" : "") @(EditableList!.Monospace ? "EditableListContainer--Monospace" : "")">
     <div class="EditableList--Selected">
         @foreach (string v in EditableList!.Values)
         {

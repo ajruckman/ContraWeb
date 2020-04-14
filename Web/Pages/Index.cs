@@ -13,11 +13,11 @@ namespace Web.Pages
 {
     public partial class Index : IDisposable
     {
-        private string?         _clientIP;
-        private UserRole.Roles? _clientRole;
+        private string?          _clientIP;
+        private UserRole.Roles?  _clientRole;
         private FlareTable<Log>? _queryLogTable;
-        private string?         _errorMessage;
-        private Subheader?      _subheader;
+        private string?          _errorMessage;
+        private Subheader?       _subheader;
 
         private readonly UpdateTrigger _statusChangeTrigger = new UpdateTrigger();
 
@@ -26,8 +26,9 @@ namespace Web.Pages
 
         protected override void OnInitialized()
         {
-            _clientIP   = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
-            _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set")).Result;
+            _clientIP = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
+            _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set"))
+                                 .Result;
 
             BuildSubheader();
             Common.ContraCoreClient.OnStatusChange += OnContraCoreClientStatusChange;
@@ -69,7 +70,8 @@ namespace Web.Pages
             _queryLogTable.RegisterColumn(nameof(Log.ClientVendor),   "Vendor",       width: "195px");
 
             if (_clientRole != UserRole.Roles.Undefined)
-                _queryLogTable.RegisterColumn(nameof(Log.ActionButton), "Action", width: "100px");
+                _queryLogTable.RegisterColumn(nameof(Log.ActionButton), "", width: "60px", filterable: false,
+                    sortable: false);
         }
 
         private void OnNewLog(Log? v)

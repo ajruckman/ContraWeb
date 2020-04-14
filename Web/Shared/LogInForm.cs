@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Infrastructure.Controller;
+using Infrastructure.Model;
 using Infrastructure.Schema;
 using Microsoft.AspNetCore.Components;
 using Superset.Web.Utilities;
@@ -16,10 +17,10 @@ namespace Web.Shared
 
         private ElementReference UsernameInput { get; set; }
 
-        // protected override async Task OnInitializedAsync()
-        // {
-        // await Register();
-        // }
+        protected override async Task OnInitializedAsync()
+        {
+            await Register();
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -53,19 +54,19 @@ namespace Web.Shared
             return !string.IsNullOrEmpty(_username) && !string.IsNullOrEmpty(_password);
         }
 
-        // private async Task Register()
-        // {
-        //     try
-        //     {
-        //         _user = await UserModel.Find("ajruckman") ??
-        //                 UserController.Create("ajruckman", "123", UserRole.Roles.Administrator);
-        //         Console.WriteLine(_user.Username);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Console.WriteLine(e);
-        //         return;
-        //     }
-        // }
+        private async Task Register()
+        {
+            try
+            {
+                _user = await UserModel.Find("ajruckman") ??
+                        UserController.Create("ajruckman", "123", UserRole.Roles.Administrator);
+                Console.WriteLine(_user.Username);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+        }
     }
 }

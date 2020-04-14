@@ -125,19 +125,15 @@
                         <button class="SS_Button--Green" @onclick="@Submit" disabled="@(!AllowSubmit())">SUBMIT</button>
                         @if (_editing == null)
                         {
-                            @_newUserValidator.RenderOverallResult()
+                            @_newUserValidator.RenderOverallResults()
                         }
                         else
                         {
-                            @_editUserValidator.RenderOverallResult()
+                            @_editUserValidator.RenderOverallResults()
                         }
                     </div>
                 </td>
             </tr>
         </table>
     </div>
-
-    @{
-        _newUserValidator.Refresh();
-    }
 </div>
