@@ -1,12 +1,12 @@
 ﻿@page "/"
-@using FT3
-@using FT3.Component
+@using FlareTables
+@using FlareTables.Component
 @using Infrastructure.Schema
 @using Microsoft.AspNetCore.Http
 @using Web.Services
 @using Superset.Web.State
 
-@inject IHttpContextAccessor HttpContextAccessor
+@inject AuthenticationStateProvider ContraWebAuthStateProvider
 @inject LogActionService LogActionService
 
 <TriggerWrapper Trigger="@_statusChangeTrigger">
@@ -76,7 +76,7 @@
                                     {
                                         <button class="SS_Button--Red" @onclick="@(_ => LogActionService.Invoke(row))">BLOCK</button>
                                     }
-                                    else if (row.Action.StartsWith("block."))
+                                    else if (row.Action.StartsWith("block.") && _clientRole! == UserRole.Roles.Administrator)
                                     {
                                         <button class="SS_Button--Green" @onclick="@(_ => LogActionService.Invoke(row))">ALLOW</button>
                                     }

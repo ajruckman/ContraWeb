@@ -1,4 +1,5 @@
 ﻿@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Http
 
 @inject IJSRuntime JSRuntime
 @inject AuthenticationStateProvider ContraWebAuthStateProvider
@@ -25,4 +26,8 @@
 
         <button type="submit" class="SS_Button--Green" disabled="@(!CanLogIn())">LOG IN</button>
     </form>
+
+    <br>
+
+    @(_validator!.RenderOverallResults())
 </div>

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Infrastructure.Model;
@@ -9,11 +11,11 @@ namespace Infrastructure.Controller
 {
     public static class UserController
     {
-        public static User Create(string username, string password, UserRole.Roles role)
+        public static User Create(string username, string password, UserRole.Roles role, List<PhysicalAddress> macs)
         {
             (string salt, string hash) = Hash(password);
 
-            User user = new User(username, salt, hash, role);
+            User user = new User(username, salt, hash, role, macs);
 
             UserModel.Submit(user);
 
@@ -54,7 +56,7 @@ namespace Infrastructure.Controller
 
             if (user.Password == Hash(Convert.FromBase64String(user.Salt), password))
                 return user;
-            
+
             return null;
         }
 
@@ -110,6 +112,14 @@ namespace Infrastructure.Controller
             // await UserSessionModel.Delete(user);
             // await UserSessionModel.Create(user, token);
             // return token;
+        }
+
+        public static async Task UpdatePassword(User user, string password)
+        {
+            (string salt, string hash) = Hash(password);
+            user.Salt                  = salt;
+            user.Password              = hash;
+            await UserModel.Update(user);
         }
     }
 }

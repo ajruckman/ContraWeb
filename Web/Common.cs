@@ -3,15 +3,19 @@ using Superset.Logging;
 
 namespace Web
 {
-    internal static class Common
+    public static class Common
     {
         internal static readonly Logger           Logger;
         internal static readonly ContraCoreClient ContraCoreClient;
 
         static Common()
         {
-            Logger           = new Logger(printSourceInfo: true);
-            ContraCoreClient = new ContraCoreClient("10.3.0.16");
+            Logger = new Logger(printSourceInfo: true);
+            #if DOCKER
+            ContraCoreClient = new ContraCoreClient("contracore");
+            #else
+            ContraCoreClient = new ContraCoreClient("localhost");
+            #endif
         }
     }
 }

@@ -19,8 +19,8 @@ namespace Web
             FontSet.ResourceManifests.JetBrainsMono,
 
             // FlareSelect.Resources.FocusScript,
-            FS3.ResourceManifests.FlareSelect,
-            FT3.ResourceManifests.FlareTables,
+            FlareSelect.ResourceManifests.FlareSelect,
+            FlareTables.ResourceManifests.FlareTables,
 
             // Fundament.Resources.ResourceManifest,
             // Rudiment.Resources.ResourceManifest,

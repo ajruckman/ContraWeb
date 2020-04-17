@@ -7,5 +7,6 @@ namespace Database.ContraCoreDB
     {
         public string vendor { get; set; }
         public long? c { get; set; }
+        public double? ratio { get; set; }
     }
 }

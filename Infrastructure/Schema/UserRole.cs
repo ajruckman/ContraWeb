@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FS3;
+using FlareSelect;
 using Superset.Common;
 
 namespace Infrastructure.Schema

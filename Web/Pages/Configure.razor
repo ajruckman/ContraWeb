@@ -6,12 +6,12 @@
 
 @page "/configure"
 
+@_subheader.Render()
+
 <div class="Configure_SettingsContainer">
     @if (Config != null)
     {
         <section class="Options">
-            <h3>Options</h3>
-
             <span class="CheckboxContainer">
                 <Checkbox checked="@Config.DomainNeeded" @onchange="@((args) => Config.DomainNeeded = (bool) args.Value)" id="DomainNeededCheckbox"></Checkbox>
                 <label for="DomainNeededCheckbox">Don't pass queries for short names to upstream servers</label>

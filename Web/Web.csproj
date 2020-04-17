@@ -3,6 +3,12 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release;Docker</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Docker' ">
+      <Optimize>true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,9 +18,9 @@
     <ItemGroup>
         <PackageReference Include="Blazored.LocalStorage" Version="2.1.5" />
         <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
-        <PackageReference Include="FS3" Version="3.4.10-alpha" />
-        <PackageReference Include="FT3" Version="3.6.9-alpha" />
-        <PackageReference Include="Integrant.Subsegment" Version="1.5.0-alpha" />
+        <PackageReference Include="FlareSelect" Version="3.5.0-alpha" />
+        <PackageReference Include="FlareTables" Version="3.6.9-alpha" />
+        <PackageReference Include="Integrant.Subsegment" Version="1.7.0-alpha" />
         <PackageReference Include="IPNetwork2" Version="2.5.194" />
         <PackageReference Include="Superset" Version="1.15.4-alpha" />
         <PackageReference Include="UISet.ColorSet" Version="1.1.7-alpha" />

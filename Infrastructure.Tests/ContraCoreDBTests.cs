@@ -10,9 +10,9 @@ namespace Infrastructure.Tests
         [Test]
         public void TestDistinctLeaseClients()
         {
-            var distinctLeaseClients = StatsModel.DistinctLeaseClients(TimeSpan.FromDays(7));
+            var distinctLeaseClients = LeaseModel.LeaseDetailsByMAC(TimeSpan.FromDays(7));
 
-            foreach (DistinctLeaseClient distinctLeaseClient in distinctLeaseClients)
+            foreach (Lease distinctLeaseClient in distinctLeaseClients)
             {
                 Console.WriteLine(distinctLeaseClient.MAC);
             }

@@ -1,34 +1,31 @@
 ﻿@using Web.Services
 @using Superset.Web.State
 @using Blazored.SessionStorage
-@using FT3
-@using FT3.Component
+@using FlareTables
+@using FlareTables.Component
 @using Infrastructure.Schema
 @using Microsoft.AspNetCore.Http
 @using Superset.Web.Validation
 
 @inject IJSRuntime JSRuntime
-@inject IHttpContextAccessor HttpContextAccessor
 @inject ISessionStorageService SessionStorageService
 @inject LogActionService LogActionService
 
-@page "/rules"
+@page "/whitelist"
+
+@_ruleSubheader.Render()
 
 <div class="Rules_NewWhitelistContainer">
 
-@{
-    Console.WriteLine("<- " + Whitelist().Expires + " ->");
-}
-
 <div class="InputsContainer">
-<h2>Create a whitelist rule</h2>
+
 <table class="Inputs">
 <tr>
     <td>
         <label for="NewWhitelist_Pattern">Pattern</label>
     </td>
     <td>
-        <input @oninput="@OnPatternChange" value="@Whitelist().Pattern" id="NewWhitelist_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
+        <input @oninput="@OnPatternChange" value="@Rule().Pattern" id="NewWhitelist_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
     </td>
 </tr>
 <tr>
@@ -86,24 +83,6 @@
             @if (!_processing)
             {
                 @(_validator!.RenderFieldResults("Expires"))
-@*                 @if (_whitelistController.IsExpiresValid.HasValue) *@
-@*                 { *@
-@*                     if (_whitelistController.IsExpiresValid == true) *@
-@*                     { *@
-@*                         <div class="CheckMark"></div> *@
-@*                         <span>Expiration time is valid</span> *@
-@*                     } *@
-@*                     else *@
-@*                     { *@
-@*                         <div class="XMark"></div> *@
-@*                         <span>@_whitelistController.ExpiresInvalidReason</span> *@
-@*                     } *@
-@*                 } *@
-@*                 else *@
-@*                 { *@
-@*                     <div class="CheckMark"></div> *@
-@*                     <span>Rule will not expire</span> *@
-@*                 } *@
             }
         </div>
     </td>
@@ -136,7 +115,14 @@
         <label>IPs</label>
     </td>
     <td>
-        @(_newIPsList!.Render())
+        @if (!_editing)
+        {
+            @(_newIPsList!.Render())
+        }
+        else
+        {
+            @(_editIPsList!.Render())
+        }
     </td>
 </tr>
 
@@ -149,7 +135,14 @@
         <label>Subnets</label>
     </td>
     <td>
-        @(_newSubnetsList!.Render())
+        @if (!_editing)
+        {
+            @(_newSubnetsList!.Render())
+        }
+        else
+        {
+            @(_editSubnetsList!.Render())
+        }
     </td>
 </tr>
 
@@ -162,7 +155,34 @@
         <label>Hostnames</label>
     </td>
     <td>
-        @(_newHostnameList!.Render())
+        @if (!_editing)
+        {
+            @(_newHostnameList!.Render())
+        }
+        else
+        {
+            @(_editHostnameList!.Render())
+        }
+    </td>
+</tr>
+
+<tr>
+    <td class="Spacer" colspan="2"></td>
+</tr>
+
+<tr>
+    <td>
+        <label>MAC addresses</label>
+    </td>
+    <td>
+        @if (!_editing)
+        {
+            @(_newMACsList!.Render())
+        }
+        else
+        {
+            @(_editMACsList!.Render())
+        }
     </td>
 </tr>
 
@@ -226,70 +246,56 @@
 
 </table>
 </div>
-
-@* <TriggerWrapper Trigger="@_onReloadMessage"> *@
-@*     @if (_justReloaded) *@
-@*     { *@
-@*         <div class="StatusContainer"> *@
-@*             <h3>Whitelist rule reload status</h3> *@
-@*             @foreach (string message in _reloadMessages) *@
-@*             { *@
-@*                 <span>@message</span> *@
-@*             } *@
-@*         </div> *@
-@*     } *@
-@* </TriggerWrapper> *@
 </div>
+
+@_listSubheader.Render()
 
 <div class="Rules_WhitelistTableContainer">
 
-    <div class="HeaderContainer">
-        <h2>Existing rules</h2>
-        @* <button class="SS_Button--Blue" @onclick="@ReloadWhitelist">RELOAD WHITELIST CACHE</button> *@
-    </div>
-
+    <TriggerWrapper Trigger="@_onRowChange" Protected="true">
+    
     <FlareTableContainer FlareTable="@_whitelistTable">
 
         <FlareTableControlRow>
-            <FlareTableColumnToggles T="Whitelist"/>
+            <FlareTableColumnToggles T="Infrastructure.Schema.Whitelist"/>
             <FlareTableControlSpacer/>
-            <FlareTableResetButton T="Whitelist"/>
+            <FlareTableResetButton T="Infrastructure.Schema.Whitelist"/>
             <FlareTableControlFiller/>
-            <FlareTableRegexToggle T="Whitelist"/>
+            <FlareTableRegexToggle T="Infrastructure.Schema.Whitelist"/>
         </FlareTableControlRow>
 
         <FlareTableControlRow>
-            <FlareTablePaginationSize T="Whitelist"/>
+            <FlareTablePaginationSize T="Infrastructure.Schema.Whitelist"/>
             <FlareTableControlFiller/>
-            <FlareTablePaginationButtons T="Whitelist" ID="1"/>
+            <FlareTablePaginationButtons T="Infrastructure.Schema.Whitelist" ID="1"/>
         </FlareTableControlRow>
         <FlareTableTable>
             <FlareTableHead>
                 <FlareTableHeadingRow>
                     @foreach (Column column in _whitelistTable!.Columns)
                     {
-                        <FlareTableHeading T="Whitelist" ID="@column.ID"/>
+                        <FlareTableHeading T="Infrastructure.Schema.Whitelist" ID="@column.ID"/>
                     }
                 </FlareTableHeadingRow>
                 <FlareTableFilterRow>
                     @foreach (Column column in _whitelistTable!.Columns)
                     {
-                        <FlareTableFilter T="Whitelist" ID="@column.ID"/>
+                        <FlareTableFilter T="Infrastructure.Schema.Whitelist" ID="@column.ID"/>
                     }
                 </FlareTableFilterRow>
             </FlareTableHead>
-            <FlareTableBody T="Whitelist">
-                @foreach (Whitelist row in _whitelistTable!.Rows())
+            <FlareTableBody T="Infrastructure.Schema.Whitelist">
+                @foreach (Infrastructure.Schema.Whitelist row in _whitelistTable!.Rows())
                 {
-                    <FlareTableBodyRow T="Whitelist" Value="@row">
-                        <FlareTableCell T="Whitelist" ID="ID">@row.ID</FlareTableCell>
-                        <FlareTableCell T="Whitelist" ID="Pattern">@row.Pattern</FlareTableCell>
-                        <FlareTableCell T="Whitelist" ID="Expires">@(row.Expires.HasValue ? row.Expires.Value.ToString("yyyy-MM-dd HH:mm") : "")</FlareTableCell>
+                    <FlareTableBodyRow T="Infrastructure.Schema.Whitelist" Value="@row">
+                        <FlareTableCell T="Infrastructure.Schema.Whitelist" ID="ID">@row.ID</FlareTableCell>
+                        <FlareTableCell T="Infrastructure.Schema.Whitelist" ID="Pattern">@row.Pattern</FlareTableCell>
+                        <FlareTableCell T="Infrastructure.Schema.Whitelist" ID="Expires">@(row.Expires.HasValue ? row.Expires.Value.ToString("yyyy-MM-dd HH:mm") : "")</FlareTableCell>
 
-                        @* <FlareTableCell T="Whitelist" ID="_Edit"> *@
-                        @* <button class="SS_Button--Blue" @onclick="@(_ => Edit(row))" disabled="@(_editing != null || _processing)">EDIT</button> *@
-                        @* </FlareTableCell> *@
-                        <FlareTableCell T="Whitelist" ID="_Remove">
+                        <FlareTableCell T="Infrastructure.Schema.Whitelist" ID="_Edit">
+                            <button class="SS_Button--Blue" @onclick="@(_ => Edit(row))" disabled="@(_editing || _processing || !_doPostLoad)">EDIT</button>
+                        </FlareTableCell>
+                        <FlareTableCell T="Infrastructure.Schema.Whitelist" ID="_Remove">
                             <button class="SS_Button--Red" @onclick="@(_ => Remove(row))" disabled="@_processing">REMOVE</button>
                         </FlareTableCell>
                     </FlareTableBodyRow>
@@ -298,12 +304,12 @@
         </FlareTableTable>
 
         <FlareTableControlRow>
-            <FlareTablePaginationInfo T="Whitelist"/>
+            <FlareTablePaginationInfo T="Infrastructure.Schema.Whitelist"/>
             <FlareTableControlFiller/>
-            <FlareTablePaginationButtons T="Whitelist" ID="2"/>
+            <FlareTablePaginationButtons T="Infrastructure.Schema.Whitelist" ID="2"/>
         </FlareTableControlRow>
 
 
     </FlareTableContainer>
-
+    </TriggerWrapper>
 </div>

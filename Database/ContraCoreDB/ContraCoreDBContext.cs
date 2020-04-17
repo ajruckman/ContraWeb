@@ -17,9 +17,11 @@ namespace Database.ContraCoreDB
 
         public virtual DbSet<blacklist> blacklist { get; set; }
         public virtual DbSet<config> config { get; set; }
-        public virtual DbSet<distinct_lease_clients> distinct_lease_clients { get; set; }
         public virtual DbSet<lease> lease { get; set; }
         public virtual DbSet<lease_details> lease_details { get; set; }
+        public virtual DbSet<lease_details_by_ip> lease_details_by_ip { get; set; }
+        public virtual DbSet<lease_details_by_ip_hostname> lease_details_by_ip_hostname { get; set; }
+        public virtual DbSet<lease_details_by_mac> lease_details_by_mac { get; set; }
         public virtual DbSet<lease_vendor_counts> lease_vendor_counts { get; set; }
         public virtual DbSet<oui> oui { get; set; }
         public virtual DbSet<oui_vendors> oui_vendors { get; set; }
@@ -31,7 +33,7 @@ namespace Database.ContraCoreDB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
+                optionsBuilder.UseNpgsql("Server=10.3.0.16;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
             }
         }
 
@@ -44,6 +46,8 @@ namespace Database.ContraCoreDB
                 entity.Property(e => e.id).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e._class).HasColumnName("class");
+
+                entity.Property(e => e.creator).HasMaxLength(16);
 
                 entity.Property(e => e.pattern).IsRequired();
             });
@@ -83,13 +87,6 @@ namespace Database.ContraCoreDB
                     .HasDefaultValueSql("'-'::text");
             });
 
-            modelBuilder.Entity<distinct_lease_clients>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("distinct_lease_clients", "contracore");
-            });
-
             modelBuilder.Entity<lease>(entity =>
             {
                 entity.ToTable("lease", "contracore");
@@ -119,6 +116,27 @@ namespace Database.ContraCoreDB
                 entity.Property(e => e.op)
                     .HasMaxLength(3)
                     .IsFixedLength();
+            });
+
+            modelBuilder.Entity<lease_details_by_ip>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("lease_details_by_ip", "contracore");
+            });
+
+            modelBuilder.Entity<lease_details_by_ip_hostname>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("lease_details_by_ip_hostname", "contracore");
+            });
+
+            modelBuilder.Entity<lease_details_by_mac>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("lease_details_by_mac", "contracore");
             });
 
             modelBuilder.Entity<lease_vendor_counts>(entity =>
@@ -168,6 +186,8 @@ namespace Database.ContraCoreDB
                 entity.ToTable("whitelist", "contracore");
 
                 entity.Property(e => e.id).UseIdentityAlwaysColumn();
+
+                entity.Property(e => e.creator).HasMaxLength(16);
 
                 entity.Property(e => e.pattern).IsRequired();
             });

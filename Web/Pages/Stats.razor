@@ -1,9 +1,15 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@using FlareTables
+@using FlareTables.Component
+
+@inject IJSRuntime JSRuntime
 
 @page "/stats"
 
 <div class="Stats_StatsContainer">
-    <h2>Server statistics</h2>
+    <div class="VerticallyCenteredContainer">
+        <h2>Server statistics</h2>
+        <span>Last 7 days</span>
+    </div>
 
     <div class="Row">
 
@@ -12,8 +18,8 @@
                 <h3>Query action counts by hour</h3>
                 <div class="DividerLine"></div>
             </div>
-            
-            <div class="Stats_StatGraphic" id="Stats_LogActionsPerHour">
+
+            <div class="Stats_Graphic" id="Stats_LogActionsPerHour">
                 <br>
                 <div class="StatsLoadingIndicator Spinner--125"></div>
                 <div class="LoadingText">Loading</div>
@@ -30,7 +36,7 @@
                 <div class="DividerLine"></div>
             </div>
 
-            <div class="Stats_StatGraphic" id="Stats_LogActionCounts">
+            <div class="Stats_Graphic" id="Stats_LogActionCounts">
                 <br>
                 <div class="StatsLoadingIndicator Spinner--125"></div>
                 <div class="LoadingText">Loading</div>
@@ -39,14 +45,113 @@
 
         <div class="HalfWidth">
             <div class="HeadingWrapper">
-                <h3>Lease vendor counts</h3>
+                <h3>Top lease client vendors</h3>
                 <div class="DividerLine"></div>
             </div>
 
-            <div class="Stats_StatGraphic" id="Stats_LeaseVendorCounts">
+            <div class="Stats_Graphic" id="Stats_LeaseVendorCounts">
                 <br>
                 <div class="StatsLoadingIndicator Spinner--125"></div>
                 <div class="LoadingText">Loading</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="Row">
+
+        <div class="HalfWidth">
+            <div class="Stats_Table">
+                <h3>Top blocked questions</h3>
+                
+                @if (_topBlockedTable != null)
+                {
+                    <FlareTableContainer FlareTable="@_topBlockedTable">
+                        <FlareTableTable>
+                            <FlareTableHead>
+                                <FlareTableHeadingRow>
+                                    @foreach (Column column in _topBlockedTable!.Columns)
+                                    {
+                                        <FlareTableHeading T="(string, int)" ID="@column.ID"/>
+                                    }
+                                </FlareTableHeadingRow>
+                            </FlareTableHead>
+                            <FlareTableBody T="(string, int)">
+                                @foreach ((string domain, int c) row in _topBlockedTable!.Rows())
+                                {
+                                    <FlareTableBodyRow T="(string, int)" Value="@row">
+                                        <FlareTableCell T="(string, int)" ID="domain">@row.domain</FlareTableCell>
+                                        <FlareTableCell T="(string, int)" ID="c">@row.c.ToString("N0")</FlareTableCell>
+                                    </FlareTableBodyRow>
+                                }
+                            </FlareTableBody>
+                        </FlareTableTable>
+                    </FlareTableContainer>
+                }
+            </div>
+        </div>
+
+        <div class="HalfWidth">
+            <div class="Stats_Table">
+                <h3>Top passed questions</h3>
+                
+                @if (_topPassedTable != null)
+                {
+                    <FlareTableContainer FlareTable="@_topPassedTable">
+                        <FlareTableTable>
+                            <FlareTableHead>
+                                <FlareTableHeadingRow>
+                                    @foreach (Column column in _topPassedTable!.Columns)
+                                    {
+                                        <FlareTableHeading T="(string, int)" ID="@column.ID"/>
+                                    }
+                                </FlareTableHeadingRow>
+                            </FlareTableHead>
+                            <FlareTableBody T="(string, int)">
+                                @foreach ((string domain, int c) row in _topPassedTable!.Rows())
+                                {
+                                    <FlareTableBodyRow T="(string, int)" Value="@row">
+                                        <FlareTableCell T="(string, int)" ID="domain">@row.domain</FlareTableCell>
+                                        <FlareTableCell T="(string, int)" ID="c">@row.c.ToString("N0")</FlareTableCell>
+                                    </FlareTableBodyRow>
+                                }
+                            </FlareTableBody>
+                        </FlareTableTable>
+                    </FlareTableContainer>
+                }
+            </div>
+        </div>
+
+        <div class="HalfWidth">
+            <div class="Stats_Table">
+                <h3>Top clients</h3>
+                
+                @if (_topClientsTable != null)
+                {
+                    <FlareTableContainer FlareTable="@_topClientsTable">
+                        <FlareTableTable>
+                            <FlareTableHead>
+                                <FlareTableHeadingRow>
+                                    @foreach (Column column in _topClientsTable!.Columns)
+                                    {
+                                        <FlareTableHeading T="(string, string, string, int)" ID="@column.ID"/>
+                                    }
+                                </FlareTableHeadingRow>
+                            </FlareTableHead>
+                            <FlareTableBody T="(string, string, string, int)">
+                                @foreach ((string client, string hostname, string vendor, int c) row in _topClientsTable!.Rows())
+                                {
+                                    <FlareTableBodyRow T="(string, string, string, int)" Value="@row">
+                                        <FlareTableCell T="(string, string, string, int)" ID="client">@row.client</FlareTableCell>
+                                        <FlareTableCell T="(string, string, string, int)" ID="hostname">@row.hostname</FlareTableCell>
+                                        <FlareTableCell T="(string, string, string, int)" ID="vendor">@row.vendor</FlareTableCell>
+                                        <FlareTableCell T="(string, string, string, int)" ID="c">@row.c.ToString("N0")</FlareTableCell>
+                                    </FlareTableBodyRow>
+                                }
+                            </FlareTableBody>
+                        </FlareTableTable>
+                    </FlareTableContainer>
+                }
             </div>
         </div>
 

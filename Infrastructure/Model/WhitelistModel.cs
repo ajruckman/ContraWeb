@@ -13,7 +13,10 @@ namespace Infrastructure.Model
         {
             using ContraCoreDBContext contraDB = new ContraCoreDBContext();
 
-            return contraDB.whitelist.Select(v => new Whitelist(v)).ToList();
+            return contraDB.whitelist
+                           .OrderByDescending(v => v.id)
+                           .Select(v => new Whitelist(v))
+                           .ToList();
         }
 
         public static IEnumerable<Whitelist> List(string clientIP)
@@ -21,8 +24,9 @@ namespace Infrastructure.Model
             using ContraCoreDBContext contraDB = new ContraCoreDBContext();
 
             return contraDB.whitelist
-                           .Where(v => v.ips != null)
+                           .Where(v => v.ips        != null)
                            .Where(v => v.ips.Length == 1)
+                           .OrderByDescending(v => v.id)
                            .ToList()
                            .Where(v => v.ips[0].ToString() == clientIP)
                            .Select(v => new Whitelist(v))
@@ -35,7 +39,6 @@ namespace Infrastructure.Model
 
             whitelist dbWhitelist = new whitelist
             {
-                id      = whitelist.ID,
                 pattern = whitelist.Pattern,
                 expires = whitelist.Expires,
                 ips     = whitelist.IPs?.ToArray(),
@@ -51,6 +54,28 @@ namespace Infrastructure.Model
             contraDB.SaveChanges();
 
             whitelist.ID = dbWhitelist.id;
+        }
+
+        public static void Update(Whitelist whitelist)
+        {
+            using ContraCoreDBContext contraDB = new ContraCoreDBContext();
+
+            whitelist? match = contraDB.whitelist.SingleOrDefault(v => v.id == whitelist.ID);
+            if (match == null)
+                throw new ArgumentException($"Could not find whitelist rule with ID '{whitelist.ID}'");
+
+            match.pattern = whitelist.Pattern;
+            match.expires = whitelist.Expires;
+            match.ips     = whitelist.IPs?.ToArray();
+            match.subnets = whitelist.Subnets?
+                                     .Select(v => new ValueTuple<IPAddress, int>(v.Network, v.Cidr))
+                                     .ToArray();
+            match.hostnames = whitelist.Hostnames?.ToArray();
+            match.macs      = whitelist.MACs?.ToArray();
+            match.vendors   = whitelist.Vendors?.ToArray();
+
+            contraDB.Update(match);
+            contraDB.SaveChanges();
         }
 
         public static Whitelist? Find(int id)

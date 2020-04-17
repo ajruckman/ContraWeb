@@ -1,2 +1,2 @@
 Clean-DotNETProject
-dotnet publish -c Release -r linux-x64
+dotnet publish -c Docker -r linux-x64

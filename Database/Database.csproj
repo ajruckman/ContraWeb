@@ -2,6 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <Configurations>Debug;Release;Docker</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Docker' ">
+      <Optimize>true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>

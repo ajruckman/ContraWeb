@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Web.Components.EditableList;
@@ -14,9 +12,6 @@ namespace Web
             _ = Common.ContraCoreClient.Connected;
 
             Tests.Test();
-
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            Console.WriteLine(Path.GetDirectoryName(typeof(Program).Assembly.Location));
 
             CreateHostBuilder(args).Build().Run();
         }

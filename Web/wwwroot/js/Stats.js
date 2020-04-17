@@ -7,6 +7,8 @@
         let data = [];
         let labels = [];
 
+        console.log(inputData);
+        
         for (let hour in inputData) {
             data.push(inputData[hour]);
         }
@@ -34,12 +36,12 @@
         // valueAxis.tooltip.disabled = true;
 
         dateAxis.title.text = "Hour";
-        /*
+        // /*
             dateAxis.baseInterval = {
-                "timeUnit": "hour",
+                "timeUnit": "minute",
                 "count": 1,
             };
-        */
+        // */
 
         chart.cursor = new am4charts.XYCursor();
         chart.cursor.xAxis = dateAxis;
@@ -145,27 +147,36 @@ window.initLeaseVendorCounts = function (dataSerialized) {
         const inputData = JSON.parse(dataSerialized);
         console.log(inputData);
 
-        let data = [];
+        // let data = [];
 
-        for (let vendor in inputData) {
-            if (!inputData.hasOwnProperty(vendor)) {
-                continue;
-            }
-
-            data.push({
-                vendor: vendor,
-                c: inputData[vendor],
-            });
-        }
+        // for (let vendor in inputData) {
+        //     if (!inputData.hasOwnProperty(vendor)) {
+        //         continue;
+        //     }
+        //
+        //     console.log(inputData[vendor]);
+        //
+        //     data.push({
+        //         vendor: inputData[vendor].Item1,
+        //         c: inputData[vendor].Item2,
+        //         percent: inputData[vendor].Item3,
+        //     });
+        // }
 
         const chart = am4core.create("Stats_LeaseVendorCounts", am4charts.PieChart);
+        
+        chart.data = JSON.parse(dataSerialized);
 
-        chart.data = data;
+        chart.chartContainer.minHeight = 20;
+        chart.chartContainer.minWidth = 20;
 
         const pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "c";
         pieSeries.dataFields.category = "vendor";
-
+        
+        // pieSeries.labels.template.fontSize = 10;
+        pieSeries.labels.template.text = "{category}: {value.percent.formatNumber('#.0')}%";
+        
         pieSeries.fillOpacity = 0.75;
         pieSeries.slices.template.fillOpacity = 0.3;
 
@@ -176,5 +187,3 @@ window.initLeaseVendorCounts = function (dataSerialized) {
         console.log(e);
     }
 };
-
-

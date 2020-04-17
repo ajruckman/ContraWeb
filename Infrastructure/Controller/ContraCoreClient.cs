@@ -33,6 +33,8 @@ namespace Infrastructure.Controller
         public event Action<string> OnGenRulesCallback;
         public event Action<string> OnGenOUICallback;
 
+        public event Action<string> OnReloadBlacklistStatusCallback;
+        public event Action<string> OnReloadBlacklistErrorCallback;
         public event Action<string> OnReloadWhitelistStatusCallback;
         public event Action<string> OnReloadWhitelistErrorCallback;
 
@@ -40,8 +42,14 @@ namespace Infrastructure.Controller
         public event Action OnGenRulesChange;
         public bool         GeneratingOUI { get; private set; }
         public event Action OnGenOUIChange;
+        public bool         ReloadingBlacklist { get; private set; }
+        public event Action OnReloadBlacklistChange;
+        public bool         ReloadingWhitelist { get; private set; }
+        public event Action OnReloadWhitelistChange;
 
         public readonly ManualResetEventSlim ConnectionComplete = new ManualResetEventSlim();
+
+        private bool _connected;
 
         // public TaskCompletionSource<bool> ConnectionComplete = new TaskCompletionSource<bool>();
 
@@ -62,12 +70,16 @@ namespace Infrastructure.Controller
             };
             OnDisconnected += () =>
             {
-                Connected       = false;
-                GeneratingRules = false;
-                GeneratingOUI   = false;
+                Connected          = false;
+                GeneratingRules    = false;
+                GeneratingOUI      = false;
+                ReloadingBlacklist = false;
+                ReloadingWhitelist = false;
                 OnGenRulesChange?.Invoke();
                 OnGenOUIChange?.Invoke();
-                // Common.Logger.Info("Disconnected from ContraCore");
+                OnReloadBlacklistChange?.Invoke();
+                OnReloadWhitelistChange?.Invoke();
+                Common.Logger.Info("Disconnected from ContraCore");
                 OnStatusChange?.Invoke();
             };
         }
@@ -102,15 +114,19 @@ namespace Infrastructure.Controller
                     _stream = _client.GetStream();
                     _reader = new StreamReader(_stream);
 
-                    OnConnected?.Invoke();
+                    if (!_connected)
+                        OnConnected?.Invoke();
+                    _connected = true;
                 }
                 catch (Exception e)
                 {
-                    // Common.Logger.Warning("Failed to connect to server; retrying...", e: e,
-                        // meta: new Fields {{"Hostname", hostname}});
+                    Common.Logger.Warning("Failed to connect to server; retrying...", e: e,
+                        meta: new Fields {{"Hostname", hostname}});
                     Thread.Sleep(1000);
 
-                    OnDisconnected?.Invoke();
+                    if (_connected)
+                        OnDisconnected?.Invoke();
+                    _connected = false;
 
                     continue;
                 }
@@ -153,8 +169,6 @@ namespace Infrastructure.Controller
                             case "gen_rules.gen_progress":
                             case "gen_rules.save_progress":
                             case "gen_rules.saved_in":
-                            case "gen_rules.recache_progress":
-                            case "gen_rules.recached_in":
                                 OnGenRulesCallback?.Invoke(val);
                                 break;
 
@@ -176,12 +190,32 @@ namespace Infrastructure.Controller
                                 _reloadConfigCompleteEvent.Release();
                                 break;
 
-                            case "reload_whitelist.complete":
-                                OnReloadWhitelistStatusCallback.Invoke(val);
+                            case "reload_blacklist.reload_progress":
+                            case "reload_blacklist.reloaded_in":
+                                OnReloadBlacklistStatusCallback?.Invoke(val);
                                 break;
 
+                            case "reload_blacklist.contradb_offline":
+                                ReloadingBlacklist = false;
+                                OnReloadBlacklistErrorCallback?.Invoke(val);
+                                OnReloadBlacklistChange?.Invoke();
+                                break;
+
+                            case "reload_blacklist.complete":
+                                ReloadingBlacklist = false;
+                                OnReloadBlacklistChange?.Invoke();
+                                break;
+
+                            case "reload_whitelist.complete":
+                                ReloadingWhitelist = false;
+                                OnReloadWhitelistChange?.Invoke();
+                                break;
+
+                            case "reload_whitelist.contradb_offline":
                             case "reload_whitelist.error":
+                                ReloadingWhitelist = false;
                                 OnReloadWhitelistErrorCallback?.Invoke(val);
+                                OnReloadWhitelistChange?.Invoke();
                                 break;
 
                             default:
@@ -328,11 +362,22 @@ namespace Infrastructure.Controller
         //     return false;
         // }
 
+        public async Task<bool> ReloadBlacklist()
+        {
+            if (_client == null)
+                return false;
+
+            ReloadingBlacklist = true;
+            await Send("reload_blacklist");
+            return true;
+        }
+
         public async Task<bool> ReloadWhitelist()
         {
             if (_client == null)
                 return false;
 
+            ReloadingWhitelist = true;
             await Send("reload_whitelist");
             return true;
         }

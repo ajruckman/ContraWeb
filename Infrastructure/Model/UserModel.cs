@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using Database.ContraWebDB;
 using Infrastructure.Schema;
@@ -25,7 +26,8 @@ namespace Infrastructure.Model
                 username = user.Username,
                 salt     = user.Salt,
                 password = user.Password,
-                role     = UserRole.RoleToDatabaseName(user.Role)
+                role     = UserRole.RoleToDatabaseName(user.Role),
+                macs     = user.MACs.ToArray()
             });
 
             contraDB.SaveChanges();
@@ -51,26 +53,25 @@ namespace Infrastructure.Model
             contraDB.SaveChanges();
         }
 
-        public static async Task UpdatePassword(User user)
+        public static async Task Update(User user)
         {
             await using ContraWebDBContext contraDB = new ContraWebDBContext();
 
             user match = contraDB.user.Single(v => v.username == user.Username);
 
+            match.salt     = user.Salt;
             match.password = user.Password;
+            match.role     = UserRole.RoleToDatabaseName(user.Role);
+            match.macs     = user.MACs.ToArray();
 
             await contraDB.SaveChangesAsync();
         }
 
-        public static async Task UpdateRole(User user)
+        public static async Task<List<User>> FindByMAC(PhysicalAddress mac)
         {
             await using ContraWebDBContext contraDB = new ContraWebDBContext();
 
-            user match = contraDB.user.Single(v => v.username == user.Username);
-
-            match.role = UserRole.RoleToDatabaseName(user.Role);
-
-            await contraDB.SaveChangesAsync();
+            return contraDB.user.Where(v => v.macs.Contains(mac)).Select(v => new User(v)).ToList();
         }
     }
 }

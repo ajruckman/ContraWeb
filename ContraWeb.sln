@@ -12,23 +12,32 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Docker|Any CPU = Docker|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{39AF289F-9FF8-4920-87FF-262937761D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{39AF289F-9FF8-4920-87FF-262937761D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39AF289F-9FF8-4920-87FF-262937761D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39AF289F-9FF8-4920-87FF-262937761D27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39AF289F-9FF8-4920-87FF-262937761D27}.Docker|Any CPU.ActiveCfg = Docker|Any CPU
+		{39AF289F-9FF8-4920-87FF-262937761D27}.Docker|Any CPU.Build.0 = Docker|Any CPU
 		{A3D27CFB-923C-4D3A-BA61-EF4FD6CBDB51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3D27CFB-923C-4D3A-BA61-EF4FD6CBDB51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3D27CFB-923C-4D3A-BA61-EF4FD6CBDB51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3D27CFB-923C-4D3A-BA61-EF4FD6CBDB51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3D27CFB-923C-4D3A-BA61-EF4FD6CBDB51}.Docker|Any CPU.ActiveCfg = Docker|Any CPU
+		{A3D27CFB-923C-4D3A-BA61-EF4FD6CBDB51}.Docker|Any CPU.Build.0 = Docker|Any CPU
 		{08B8C858-BF6A-4031-8C3D-76637FF9872A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{08B8C858-BF6A-4031-8C3D-76637FF9872A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08B8C858-BF6A-4031-8C3D-76637FF9872A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08B8C858-BF6A-4031-8C3D-76637FF9872A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08B8C858-BF6A-4031-8C3D-76637FF9872A}.Docker|Any CPU.ActiveCfg = Docker|Any CPU
+		{08B8C858-BF6A-4031-8C3D-76637FF9872A}.Docker|Any CPU.Build.0 = Docker|Any CPU
 		{BF0A4016-5D7E-4A3C-A195-4520002DC422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BF0A4016-5D7E-4A3C-A195-4520002DC422}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF0A4016-5D7E-4A3C-A195-4520002DC422}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF0A4016-5D7E-4A3C-A195-4520002DC422}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF0A4016-5D7E-4A3C-A195-4520002DC422}.Docker|Any CPU.ActiveCfg = Docker|Any CPU
+		{BF0A4016-5D7E-4A3C-A195-4520002DC422}.Docker|Any CPU.Build.0 = Docker|Any CPU
 	EndGlobalSection
 EndGlobal

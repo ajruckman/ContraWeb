@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using Infrastructure.Utility;
 using Microsoft.AspNetCore.Components;
@@ -10,10 +11,10 @@ using Superset.Web.Validation;
 
 namespace Web.Pages
 {
-    public partial class Rules
+    public partial class Whitelist
     {
         private readonly UpdateTrigger _onInputValidation = new UpdateTrigger();
-        private bool _isExpiresValid;
+        private          bool          _isExpiresValid;
 
         private Validator<ValidationResult>? _validator;
         private Validator<ValidationResult>? _overallValidator;
@@ -21,30 +22,33 @@ namespace Web.Pages
         private void InitValidators()
         {
             _validator = new Validator<ValidationResult>();
-            
+
             _overallValidator = new Validator<ValidationResult>(() =>
             {
                 if (_validator!.AnyOfType(ValidationResult.Invalid))
                     return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Inputs invalid")};
-                
-                bool a = Whitelist().IPs?.Any()       == true;
-                bool b = Whitelist().Subnets?.Any()   == true;
-                bool c = Whitelist().Hostnames?.Any() == true;
-                bool d = Whitelist().MACs?.Any()      == true;
-                bool e = Whitelist().Vendors?.Any()   == true;
+
+                bool a = Rule().IPs?.Any()       == true;
+                bool b = Rule().Subnets?.Any()   == true;
+                bool c = Rule().Hostnames?.Any() == true;
+                bool d = Rule().MACs?.Any()      == true;
+                bool e = Rule().Vendors?.Any()   == true;
 
                 return a || b || c || d || e
                     ? new[] {new Validation<ValidationResult>(ValidationResult.Valid, "All OK")}
-                    : new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "At least 1 whitelist condition is required")};
+                    : new[]
+                    {
+                        new Validation<ValidationResult>(ValidationResult.Invalid, "At least 1 whitelist condition is required")
+                    };
             });
 
             _validator.Register("Pattern", () =>
             {
                 return new[]
                 {
-                    string.IsNullOrEmpty(Whitelist().Pattern)
+                    string.IsNullOrEmpty(Rule().Pattern)
                         ? new Validation<ValidationResult>(ValidationResult.Invalid, "Required")
-                        : Utility.ValidateRegex(Whitelist().Pattern)
+                        : Utility.ValidateRegex(Rule().Pattern)
                             ? new Validation<ValidationResult>(ValidationResult.Valid,   "Valid")
                             : new Validation<ValidationResult>(ValidationResult.Invalid, "Invalid regular expression")
                 };
@@ -55,17 +59,17 @@ namespace Web.Pages
             _validator.Validate();
             _overallValidator.Validate();
         }
-        
+
         private IEnumerable<Validation<ValidationResult>> ValidateExpiresDateTime()
         {
             DateTime? ed = !_editing ? _newExpiresDate : _editExpiresDate;
             TimeSpan? et = !_editing ? _newExpiresTime : _editExpiresTime;
 
-            Whitelist().Expires = null;
+            Rule().Expires = null;
 
             if (ed == null)
             {
-                Whitelist().Expires = null;
+                Rule().Expires = null;
                 if (et == null)
                 {
                     _isExpiresValid = true;
@@ -86,7 +90,7 @@ namespace Web.Pages
 
             if (et == null)
             {
-                Whitelist().Expires = null;
+                Rule().Expires = null;
                 if (ed == null)
                 {
                     _isExpiresValid = true;
@@ -103,18 +107,18 @@ namespace Web.Pages
 
             if (composite < DateTime.Now)
             {
-                _isExpiresValid = false;
-                Whitelist().Expires = null;
+                _isExpiresValid     = false;
+                Rule().Expires = null;
                 return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Time is in the past")};
             }
             else
             {
-                _isExpiresValid = true;
-                Whitelist().Expires = composite;
+                _isExpiresValid     = true;
+                Rule().Expires = composite;
                 return new[] {new Validation<ValidationResult>(ValidationResult.Valid, "Expiration time valid")};
             }
         }
-        
+
         // https://stackoverflow.com/a/106223/9911189
         private readonly Regex _matchIPv4Regex =
             new Regex(
@@ -168,6 +172,16 @@ namespace Web.Pages
                 return (ValidationResult.Valid, new MarkupString("Valid hostname"));
 
             return (ValidationResult.Warning, new MarkupString("Invalid hostname"));
+        }
+
+        public (ValidationResult, MarkupString) ValidateMAC(string s)
+        {
+            if (s.Length == 0)
+                return (ValidationResult.Undefined, new MarkupString(""));
+
+            return Utility.ValidateMAC(s)
+                ? (ValidationResult.Valid, new MarkupString("Valid MAC"))
+                : (ValidationResult.Invalid, new MarkupString("Invalid MAC"));
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿@using Superset.Web.Resources
 @using Superset.Web.State
 @using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Http
 
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider ContraWebAuthStateProvider
 @inject ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager
 
 @inherits Microsoft.AspNetCore.Components.LayoutComponentBase
 
@@ -12,14 +14,18 @@
 
 @if (_themeLoader!.Complete)
 {
-    @_themeLoader.RenderLink()
+@*     <TriggerWrapper Trigger="@_onAuthChange"> *@
+        @_themeLoader.RenderLink()
     
-    <TriggerWrapper Trigger="@_updateHeader" Protected="true">
-        @Header().Render()
-    </TriggerWrapper>
+        <TriggerWrapper Trigger="@_updateHeader" Protected="true">
+            @Header().Render()
+        </TriggerWrapper>
     
-    @Body
-    
+        <CascadingValue Value="@ClientIP" IsFixed="true">
+            @Body
+        </CascadingValue>
+    // </TriggerWrapper>
+
 @*     <AuthorizeView> *@
 @*         <Authorized> *@
 @*             <div style="margin: 9px;">User: @context.User.Identity.Name</div> *@
@@ -36,8 +42,7 @@
 @*     </AuthorizeView> *@
 }
 
-
-@if (_themeLoader.Complete)
+@if (_themeLoader!.Complete)
 {
     @_themeLoader.RenderDropdown()
 }

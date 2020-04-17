@@ -23,7 +23,7 @@ namespace Database.ContraWebDB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;User Id=contraweb_usr;Password=U475jBKZfK3xhbVZ;Database=contradb;");
+                optionsBuilder.UseNpgsql("Server=10.3.0.16;Port=5432;User Id=contraweb_usr;Password=U475jBKZfK3xhbVZ;Database=contradb;");
             }
         }
 
@@ -37,6 +37,10 @@ namespace Database.ContraWebDB
                 entity.ToTable("user", "contraweb");
 
                 entity.Property(e => e.username).HasMaxLength(16);
+
+                entity.Property(e => e.macs)
+                    .IsRequired()
+                    .HasDefaultValueSql("ARRAY[]::macaddr[]");
 
                 entity.Property(e => e.password)
                     .IsRequired()

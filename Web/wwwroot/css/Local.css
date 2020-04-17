@@ -17,7 +17,7 @@
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
-    min-height: 31.2px;
+    min-height: 32px;
     padding: 1px; }
     .EditableListContainer .EditableList--Selected .EditableList--Selection {
       align-items: center;
@@ -115,35 +115,49 @@
 
 .Stats_StatsContainer {
   padding: 5px 9px; }
+  .Stats_StatsContainer .VerticallyCenteredContainer h2 ~ span, .Stats_StatsContainer body .Rules_WhitelistTableContainer .HeaderContainer h2 ~ span, body .Rules_WhitelistTableContainer .Stats_StatsContainer .HeaderContainer h2 ~ span {
+    margin-left: 15px;
+    margin-top: 3px; }
   .Stats_StatsContainer .Row {
     display: flex;
-    flex-wrap: wrap; }
+    flex-wrap: wrap;
+    justify-content: space-around; }
     .Stats_StatsContainer .Row .FullWidth {
       width: 100%; }
-    .Stats_StatsContainer .Row .HalfWidth {
-      flex-grow: 1; }
-    .Stats_StatsContainer .Row .Stats_StatGraphic {
+    .Stats_StatsContainer .Row .Stats_Graphic {
       align-content: center;
       align-items: center;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       width: 100%; }
-      .Stats_StatsContainer .Row .Stats_StatGraphic .LoadingText {
+      .Stats_StatsContainer .Row .Stats_Graphic .LoadingText {
         font-weight: bold;
         margin-top: 30px;
         text-align: center;
         width: 100%; }
-      .Stats_StatsContainer .Row .Stats_StatGraphic *:not(.LoadingText) {
+      .Stats_StatsContainer .Row .Stats_Graphic *:not(.LoadingText) {
         font-family: var(--FontSet-MonospaceFont), monospace; }
+    .Stats_StatsContainer .Row .Stats_Table {
+      margin: 10px 0;
+      max-width: 800px;
+      width: 100%; }
+      .Stats_StatsContainer .Row .Stats_Table .HeadingWrapper {
+        margin-bottom: 2.5px; }
+      .Stats_StatsContainer .Row .Stats_Table .FlareTableContainer {
+        border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40); }
+        .Stats_StatsContainer .Row .Stats_Table .FlareTableContainer .FlareTableHeading_Cell {
+          border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40); }
+        .Stats_StatsContainer .Row .Stats_Table .FlareTableContainer .FlareTableCell {
+          padding: 5px 7px !important; }
     .Stats_StatsContainer .Row #Stats_LogActionsPerHour {
       height: 500px; }
     .Stats_StatsContainer .Row #Stats_LogActionCounts {
       height: 325px;
-      min-width: 775px; }
+      width: 800px; }
     .Stats_StatsContainer .Row #Stats_LeaseVendorCounts {
       height: 325px;
-      min-width: 950px; }
+      width: 900px; }
 
 #blazor-error-ui {
   display: none; }
@@ -224,10 +238,10 @@ body {
   body .Index_LogTableContainer {
     padding: 7px 5px; }
     body .Index_LogTableContainer .FlareTableCell .SS_Button--Red, body .Index_LogTableContainer .FlareTableCell .SS_Button--Green {
-      width: 61px;
-      margin: 1px; }
+      margin: 1px;
+      width: 61px; }
   body .Configure_SettingsContainer {
-    padding: 0 9px; }
+    padding: 9px; }
     body .Configure_SettingsContainer .Options .CheckboxContainer {
       align-items: center;
       display: flex; }
@@ -270,7 +284,7 @@ body {
   body .Rules_NewWhitelistContainer {
     display: flex;
     flex-wrap: wrap;
-    padding: 0 9px; }
+    padding: 9px; }
     body .Rules_NewWhitelistContainer .InputsContainer {
       flex-grow: 999; }
       body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td:first-child {
@@ -296,8 +310,8 @@ body {
       body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .PermissionNoticeContainer {
         padding: 0 0 10px 0; }
         body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .PermissionNoticeContainer .SS_ExclamationMark {
-          margin-right: 5px;
-          font-weight: normal; }
+          font-weight: normal;
+          margin-right: 5px; }
     body .Rules_NewWhitelistContainer .StatusContainer {
       align-self: flex-start;
       background-color: var(--ColorSet_ThemeColor_Background_50);
@@ -325,7 +339,7 @@ body {
       body .Blacklist_NewRuleContainer .Inputs tr td .SubmitWrapper .ValidationContainer {
         margin-left: 10px; }
   body .Rules_WhitelistTableContainer {
-    padding: 0 9px; }
+    padding: 9px; }
     body .Rules_WhitelistTableContainer .HeaderContainer {
       justify-content: space-between; }
     body .Rules_WhitelistTableContainer .FlareTableCell {
@@ -375,13 +389,13 @@ body {
     body .Users_LayoutContainer .Users_ListContainer {
       border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40);
       flex-grow: 10;
-      padding: 5px 14px 14px 9px; }
+      padding: 0 14px 14px 9px; }
       body .Users_LayoutContainer .Users_ListContainer .FlareTableCell {
         padding: 5px 7px !important; }
     body .Users_LayoutContainer .Users_InputContainer {
       border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40);
       border-left: 1px solid var(--ColorSet_ThemeColor_Border_40);
-      padding: 5px 9px 0 14px; }
+      padding: 0 9px 9px 11px; }
       body .Users_LayoutContainer .Users_InputContainer .Users_InputHeader {
         justify-content: space-between; }
         body .Users_LayoutContainer .Users_InputContainer .Users_InputHeader .SS_Button--Red {
@@ -392,10 +406,14 @@ body {
         color: var(--ColorSet_ThemeColor_Text_40);
         font-weight: bold;
         padding-right: 7px; }
+        body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(1) .ValidationContainer {
+          margin-left: 5px; }
       body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) input {
-        width: 300px; }
+        width: 100%; }
       body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) .FlareSelect_Container {
         margin: 1px 0; }
+      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) .EditableListContainer {
+        width: 250px; }
   body .NotAuthorizedContainer, body .AuthorizingContainer {
     padding: 5px 25px; }
     body .NotAuthorizedContainer .Authentication_LoginContainer table tr td:first-child, body .AuthorizingContainer .Authentication_LoginContainer table tr td:first-child {
@@ -409,5 +427,9 @@ body {
       text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
       body .NotAuthorizedContainer .Authentication_LoginContainer table tr td:nth-child(2) a:hover, body .AuthorizingContainer .Authentication_LoginContainer table tr td:nth-child(2) a:hover {
         text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }
+    body .NotAuthorizedContainer .Authentication_LoginContainer .ErrorMessage, body .AuthorizingContainer .Authentication_LoginContainer .ErrorMessage {
+      color: red;
+      font-size: 15px;
+      font-weight: 500; }
   body .NotFoundContainer {
     padding: 25px; }

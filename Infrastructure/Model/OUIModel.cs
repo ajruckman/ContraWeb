@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Database.ContraCoreDB;
-using FS3;
+using FlareSelect;
 using Superset.Common;
 
 namespace Infrastructure.Model
@@ -15,7 +15,7 @@ namespace Infrastructure.Model
             using ContraCoreDBContext contraDB = new ContraCoreDBContext();
             if (_cache == null)
                 _cache = contraDB.oui_vendors
-                                 .Take(100)
+                                 // .Take(100)
                                  .Select(v => new Option<string>
                                   {
                                       ID           = v.vendor,

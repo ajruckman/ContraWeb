@@ -32,8 +32,11 @@ namespace Web.Pages
             _blacklistRuleCount   = ConfigModel.BlacklistRuleCount();
             _blacklistRuleSources = ConfigModel.Read()?.Sources;
 
-            Common.ContraCoreClient.OnGenRulesCallback += OnGenRulesCallback;
-            Common.ContraCoreClient.OnGenRulesChange   += OnGenRulesChange;
+            Common.ContraCoreClient.OnGenRulesCallback              += OnGenRulesCallback;
+            Common.ContraCoreClient.OnGenRulesChange                += OnGenRulesChange;
+            Common.ContraCoreClient.OnReloadBlacklistChange         += OnGenRulesChange;
+            Common.ContraCoreClient.OnReloadBlacklistStatusCallback += OnGenRulesCallback;
+            Common.ContraCoreClient.OnReloadBlacklistErrorCallback  += OnGenRulesCallback;
 
             _ouiCount = OUIModel.OUICount();
 
@@ -53,6 +56,7 @@ namespace Web.Pages
             {
                 _blacklistRuleCount = ConfigModel.BlacklistRuleCount();
             }
+
             _ruleGenProgressTrigger.Trigger();
         }
 
@@ -64,6 +68,7 @@ namespace Web.Pages
             _ruleGenProgress = new List<string>();
 
             await Common.ContraCoreClient.GenRules();
+            await Common.ContraCoreClient.ReloadBlacklist();
         }
 
         private void OnGenOUICallback(string s)
@@ -78,6 +83,7 @@ namespace Web.Pages
             {
                 _ouiCount = OUIModel.OUICount();
             }
+
             _ouiGenProgressTrigger.Trigger();
         }
 
@@ -97,7 +103,8 @@ namespace Web.Pages
             if (role != UserRole.Roles.Administrator)
                 return false;
 
-            return Common.ContraCoreClient.Connected && !Common.ContraCoreClient.GeneratingRules;
+            return Common.ContraCoreClient.Connected && !Common.ContraCoreClient.GeneratingRules &&
+                   !Common.ContraCoreClient.ReloadingBlacklist;
         }
 
         private bool AllowGenOUI()

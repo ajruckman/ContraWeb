@@ -1,7 +1,7 @@
 ﻿@page "/users"
 
-@using FT3
-@using FT3.Component
+@using FlareTables
+@using FlareTables.Component
 @using Infrastructure.Schema
 
 @inject AuthenticationStateProvider ContraWebAuthStateProvider
@@ -9,7 +9,7 @@
 
 <div class="Users_LayoutContainer">
     <div class="Users_ListContainer">
-        <h2>Users</h2>
+        @_listSubheader.Render()
 
         <FlareTableContainer FlareTable="@_userTable">
 
@@ -64,11 +64,7 @@
 
     <div class="Users_InputContainer">
         <div class="VerticallyCenteredContainer Users_InputHeader">
-            <h2>@(_editing == null ? "Add new user" : "Edit user")</h2>
-            @if (_editing != null)
-            {
-                <button class="SS_Button--Red" @onclick="@(_ => Add())">CANCEL</button>
-            }
+            @_inputSubheader.Render()
         </div>
         <table class="Inputs">
             <tr>
@@ -113,6 +109,21 @@
                     else
                     {
                         @(_editedRoleSelector!.Render())
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>MAC addresses</label>
+                </td>
+                <td>
+                    @if (_editing == null)
+                    {
+                        @(_newMACsSelector!.Render())
+                    }
+                    else
+                    {
+                        @(_editMACsSelector!.Render())
                     }
                 </td>
             </tr>

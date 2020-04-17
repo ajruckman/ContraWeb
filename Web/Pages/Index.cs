@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FT3;
+using FlareTables;
 using Infrastructure.Schema;
 using Infrastructure.Utility;
 using Microsoft.AspNetCore.Components;
@@ -13,65 +13,27 @@ namespace Web.Pages
 {
     public partial class Index : IDisposable
     {
-        private string?          _clientIP;
-        private UserRole.Roles?  _clientRole;
-        private FlareTable<Log>? _queryLogTable;
-        private string?          _errorMessage;
-        private Subheader?       _subheader;
-
-        private readonly UpdateTrigger _statusChangeTrigger = new UpdateTrigger();
-
         [CascadingParameter]
         private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
+        [CascadingParameter]
+        public string ClientIP { get; set; }
+
+        private readonly UpdateTrigger _statusChangeTrigger = new UpdateTrigger();
+
+        private          UserRole.Roles?  _clientRole;
+        private          FlareTable<Log>? _queryLogTable;
+        private          string?          _errorMessage;
+        private          Subheader?       _subheader;
+
         protected override void OnInitialized()
         {
-            _clientIP = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
-            _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set"))
-                                 .Result;
+            BuildTable();
 
-            BuildSubheader();
+            Common.ContraCoreClient.OnNewLog       += OnNewLog;
             Common.ContraCoreClient.OnStatusChange += OnContraCoreClientStatusChange;
 
-            Console.WriteLine(_clientRole + " => " + _clientIP);
-            if (string.IsNullOrEmpty(_clientIP) && _clientRole == UserRole.Roles.Undefined)
-            {
-                _errorMessage = "Could not read client IP and user is unauthenticated; not showing data";
-                return;
-            }
-
-            Console.WriteLine(10 == 9 + 1 == true);
-
-            _queryLogTable = new FlareTable<Log>(
-                () => Common.ContraCoreClient.Data(_clientRole == UserRole.Roles.Undefined ? _clientIP : null),
-                ValueGetter,
-                monospace: true,
-                // fixedLayout:true,
-                rowColorGetter: row =>
-                {
-                    if (row.Action.StartsWith("block"))
-                        return RowColor.Red;
-                    if (row.Action.StartsWith("pass"))
-                        return RowColor.Green;
-
-                    return RowColor.Undefined;
-                }
-            );
-
-            // Common.ContraCoreClient.OnNewLog += _queryLogTable.InvalidateData;
-            Common.ContraCoreClient.OnNewLog += OnNewLog;
-
-            _queryLogTable.RegisterColumn(nameof(Log.Time),   width: "80px");
-            _queryLogTable.RegisterColumn(nameof(Log.Client), width: "120px");
-            _queryLogTable.RegisterColumn(nameof(Log.Question));
-            _queryLogTable.RegisterColumn(nameof(Log.Action),         width: "100px");
-            _queryLogTable.RegisterColumn(nameof(Log.Answers),        width: "100px", shown: false);
-            _queryLogTable.RegisterColumn(nameof(Log.ClientHostname), "Hostname",     width: "160px");
-            _queryLogTable.RegisterColumn(nameof(Log.ClientVendor),   "Vendor",       width: "195px");
-
-            if (_clientRole != UserRole.Roles.Undefined)
-                _queryLogTable.RegisterColumn(nameof(Log.ActionButton), "", width: "60px", filterable: false,
-                    sortable: false);
+            ContraWebAuthStateProvider.AuthenticationStateChanged += _ => BuildTable();
         }
 
         private void OnNewLog(Log? v)
@@ -133,11 +95,60 @@ namespace Web.Pages
             };
         }
 
+        private void BuildTable()
+        {
+            _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set"))
+                                 .Result;
+
+            BuildSubheader();
+
+            Console.WriteLine(_clientRole + " => " + ClientIP);
+            if (string.IsNullOrEmpty(ClientIP) && _clientRole == UserRole.Roles.Undefined)
+            {
+                _errorMessage = "Could not read client IP and user is unauthenticated; not showing data";
+                return;
+            }
+
+            _queryLogTable = new FlareTable<Log>(
+                () => Common.ContraCoreClient.Data(_clientRole == UserRole.Roles.Undefined ? ClientIP : null),
+                ValueGetter,
+                monospace: true,
+                // fixedLayout:true,
+                rowColorGetter: row =>
+                {
+                    if (row.Action.StartsWith("block"))
+                        return RowColor.Red;
+                    if (row.Action.StartsWith("pass"))
+                        return RowColor.Green;
+
+                    return RowColor.Undefined;
+                }
+            );
+
+            // Common.ContraCoreClient.OnNewLog += _queryLogTable.InvalidateData;
+
+            _queryLogTable.RegisterColumn(nameof(Log.Time),   width: "80px");
+            _queryLogTable.RegisterColumn(nameof(Log.Client), width: "120px");
+            _queryLogTable.RegisterColumn(nameof(Log.Question));
+            _queryLogTable.RegisterColumn(nameof(Log.Action),         width: "100px");
+            _queryLogTable.RegisterColumn(nameof(Log.Answers),        width: "100px", shown: false);
+            _queryLogTable.RegisterColumn(nameof(Log.ClientHostname), "Hostname",     width: "160px");
+            _queryLogTable.RegisterColumn(nameof(Log.ClientVendor),   "Vendor",       width: "195px");
+
+            if (_clientRole != UserRole.Roles.Undefined)
+                _queryLogTable.RegisterColumn(nameof(Log.ActionButton), "", width: "60px", filterable: false,
+                    sortable: false);
+
+            StateHasChanged();
+        }
+
         public void Dispose()
         {
             Common.Logger.Debug("Web.Pages.Index.Dispose()");
             Common.ContraCoreClient.OnNewLog       -= OnNewLog;
             Common.ContraCoreClient.OnStatusChange -= OnContraCoreClientStatusChange;
+
+            ContraWebAuthStateProvider.AuthenticationStateChanged += _ => BuildTable();
         }
     }
 }

@@ -1,9 +1,17 @@
 ﻿.Stats_StatsContainer {
     padding: 5px 9px;
 
+    .VerticallyCenteredContainer {
+        h2 ~ span {
+            margin-left: 15px;
+            margin-top:  3px;
+        }
+    }
+
     .Row {
-        display:   flex;
-        flex-wrap: wrap;
+        display:         flex;
+        flex-wrap:       wrap;
+        justify-content: space-around;
 
         .FullWidth {
             width: 100%;
@@ -12,17 +20,17 @@
         .HalfWidth {
             //flex-grow: 1;
             //width: 50%;
-            flex-grow: 1;
+            //flex-grow: 1;
         }
-        
-        .Stats_StatGraphic {
+
+        .Stats_Graphic {
             align-content:   center;
             align-items:     center;
             display:         flex;
             flex-wrap:       wrap;
             justify-content: center;
             width:           100%;
-            
+
             .LoadingText {
                 font-weight: bold;
                 margin-top:  30px;
@@ -35,6 +43,29 @@
             }
         }
 
+        .Stats_Table {
+            margin:    10px 0;
+            max-width: 800px;
+            width:     100%;
+
+            .HeadingWrapper {
+                margin-bottom: 2.5px;
+            }
+
+            .FlareTableContainer {
+                border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40);
+
+                //width: 100%;
+
+                .FlareTableHeading_Cell {
+                    border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40);
+                }
+
+                .FlareTableCell {
+                    padding: 5px 7px !important;
+                }
+            }
+        }
 
         #Stats_LogActionsPerHour {
             height: 500px;
@@ -42,16 +73,13 @@
 
         #Stats_LogActionCounts {
             height: 325px;
-            min-width: 775px;
+            width:  800px;
         }
 
         #Stats_LeaseVendorCounts {
             height: 325px;
-            min-width: 950px;
+            width:  900px;
+            //width:  1100px;
         }
-    }
-
-    .Stats_StatsWrapper {
-
     }
 }

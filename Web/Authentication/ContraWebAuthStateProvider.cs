@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
@@ -14,8 +15,9 @@ namespace Web.Authentication
 {
     public class ContraWebAuthStateProvider : AuthenticationStateProvider
     {
-        internal bool  IsAuthenticated { get; private set; }
-        internal User? User            { get; private set; }
+        internal bool    IsAuthenticated    { get; private set; }
+        internal User?   User               { get; private set; }
+        internal string? AuthenticatedByMAC { get; private set; }
 
         private readonly ILocalStorageService _localStorage;
 
@@ -24,16 +26,21 @@ namespace Web.Authentication
             _localStorage = localStorage;
         }
 
-        public async Task Initialize()
+        public async Task Initialize(string? ip)
         {
             Console.WriteLine(new string('-', 50));
 
             IsAuthenticated = false;
 
             var token = await _localStorage.GetItemAsync<string>("token");
-            if (string.IsNullOrEmpty(token))
-                return;
+            if (!string.IsNullOrEmpty(token))
+                await AuthenticateByToken(token);
+            else if (ip != null)
+                await AuthenticateByIP(ip);
+        }
 
+        private async Task AuthenticateByToken(string token)
+        {
             UserSession? userSession = await UserController.FindSession(token);
             if (userSession == null)
                 return;
@@ -51,11 +58,35 @@ namespace Web.Authentication
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
+        private async Task AuthenticateByIP(string ip)
+        {
+            bool valid = IPAddress.TryParse(ip, out IPAddress address);
+            if (!valid)
+                return;
+
+            List<Lease> matches = LeaseModel.FindByIP(address);
+            if (matches.Count == 0)
+                return;
+
+            foreach (Lease match in matches)
+            {
+                List<User> users = await UserModel.FindByMAC(match.MAC);
+
+                foreach (User user in users)
+                {
+                    Console.WriteLine($"{match.IP} / {match.MAC} -> {user.Username}");
+                    User            = user;
+                    IsAuthenticated = true;
+                    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+                }
+            }
+        }
+
         public async Task LogIn(string token)
         {
             IsAuthenticated = false;
             await _localStorage.SetItemAsync("token", token);
-            await Initialize();
+            await AuthenticateByToken(token);
         }
 
         public async Task LogOut()

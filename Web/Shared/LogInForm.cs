@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using Infrastructure.Controller;
 using Infrastructure.Model;
 using Infrastructure.Schema;
 using Microsoft.AspNetCore.Components;
 using Superset.Web.Utilities;
+using Superset.Web.Validation;
 using Web.Authentication;
 
 namespace Web.Shared
@@ -14,11 +17,33 @@ namespace Web.Shared
         private string? _username;
         private string? _password;
         private User?   _user;
+        private bool?   _correct;
+
+        private Validator<ValidationResult>? _validator;
 
         private ElementReference UsernameInput { get; set; }
 
+        [Parameter]
+        public bool Redirect { get; set; }
+        
         protected override async Task OnInitializedAsync()
         {
+            _validator = new Validator<ValidationResult>(
+                () =>
+                {
+                    return new[]
+                    {
+                        _correct != null 
+                            ? _correct.Value
+                                ? new Validation<ValidationResult>(ValidationResult.Valid,   "Logged in")
+                                : new Validation<ValidationResult>(ValidationResult.Invalid, "Username or password is incorrect")
+                            : new Validation<ValidationResult>(ValidationResult.Undefined, "")
+                    };
+                }
+            );
+            
+            _validator.Validate();
+
             await Register();
         }
 
@@ -29,10 +54,10 @@ namespace Web.Shared
             await Utilities.FocusElement(JSRuntime, UsernameInput);
         }
 
-        private async Task<bool> LogIn()
+        private async Task LogIn()
         {
             if (!CanLogIn())
-                return false;
+                return;
 
             User? match = await UserController.LogIn(_username!, _password!);
             Console.WriteLine(match);
@@ -42,11 +67,18 @@ namespace Web.Shared
                 string token = await UserController.CreateUserSession(match);
 
                 await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogIn(token);
+
+                if (Redirect)
+                    NavigationManager.NavigateTo("/");
+
+                _correct = true;
+            }
+            else
+            {
+                _correct = false;
             }
 
-            NavigationManager.NavigateTo("/");
-
-            return true;
+            _validator!.Validate();
         }
 
         private bool CanLogIn()
@@ -59,13 +91,12 @@ namespace Web.Shared
             try
             {
                 _user = await UserModel.Find("ajruckman") ??
-                        UserController.Create("ajruckman", "123", UserRole.Roles.Administrator);
+                        UserController.Create("ajruckman", "123", UserRole.Roles.Administrator, new List<PhysicalAddress>());
                 Console.WriteLine(_user.Username);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return;
             }
         }
     }

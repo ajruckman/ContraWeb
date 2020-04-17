@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Component;
 using ColorSet.Components;
-using Fundament.App;
 using Infrastructure.Schema;
 using Infrastructure.Utility;
 using Microsoft.AspNetCore.Components;
@@ -17,16 +16,26 @@ namespace Web.Shared
 {
     public partial class MainLayout
     {
+        private readonly Configuration  _configuration = new Configuration();
+        private readonly UpdateTrigger  _updateHeader  = new UpdateTrigger();
+        private          ThemeLoader?   _themeLoader;
+        private          string?        ClientIP { get; set; }
+        private          UserRole.Roles _clientRole;
+
         [CascadingParameter]
         private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
-        private readonly Configuration    _configuration    = new Configuration();
-
-        private          ThemeLoader?  _themeLoader;
-        private readonly UpdateTrigger _updateHeader = new UpdateTrigger();
+        private readonly UpdateTrigger _onAuthChange = new UpdateTrigger();
 
         protected override void OnInitialized()
         {
+            // ContraWebAuthStateProvider.AuthenticationStateChanged += _ => _onAuthChange.ReDiff();
+
+            ClientIP = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
+
+            _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set"))
+                                 .Result;
+
             _themeLoader            =  new ThemeLoader(LocalStorage, _configuration.ResourceManifests, "Dark");
             _themeLoader.OnComplete += StateHasChanged;
 
@@ -35,8 +44,15 @@ namespace Web.Shared
 
         protected override async Task OnInitializedAsync()
         {
-            await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).Initialize();
+            await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).Initialize(ClientIP);
         }
+
+        private void GetClientRole(Task<AuthenticationState> authState)
+        {
+            _clientRole = Utility.GetRole(authState).Result;
+        }
+
+        private UserRole.Roles ClientRoleGetter() => _clientRole;
 
         public Header Header()
         {
@@ -65,7 +81,12 @@ namespace Web.Shared
                     goto case UserRole.Roles.Privileged;
 
                 case UserRole.Roles.Privileged:
-                    header.Add(new PageLink("Rules", "/rules"));
+                    header.Add(new PageLink("Whitelist", "/whitelist"));
+                    header.Add(new Space());
+                    header.Add(new Separator());
+                    header.Add(new Space());
+
+                    header.Add(new PageLink("Blacklist", "/blacklist"));
                     header.Add(new Space());
                     header.Add(new Separator());
                     header.Add(new Space());

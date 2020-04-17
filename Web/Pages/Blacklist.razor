@@ -1,5 +1,12 @@
 ﻿@using Superset.Web.State
 @using Superset.Web.Validation
+@using Web.Services
+@using FlareTables
+@using FlareTables.Component
+@using Infrastructure.Schema
+
+@inject IJSRuntime JSRuntime
+@inject LogActionService LogActionService
 
 @page "/blacklist" 
 
@@ -13,7 +20,7 @@
                 <label for="NewRule_Pattern">Pattern</label>
             </td>
             <td>
-                <input @oninput="@OnPatternChange" value="@Rule().Pattern" id="NewRule_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@_processing"/>
+                <input @oninput="@OnPatternChange" value="@Rule().Pattern" id="NewRule_Pattern" type="text" class="SS_Input SS_Input--WidthWide" disabled="@(_processing || _clientRole != UserRole.Roles.Administrator)"/>
             </td>
         </tr>
         <tr>
@@ -37,7 +44,7 @@
             <td>
                 <div class="SubmitWrapper">
                     <TriggerWrapper Trigger="@_onInputValidation">
-                        <button @onclick="@Commit" disabled="@(_validator!.AnyOfType(ValidationResult.Invalid))" class="SS_Button SS_Button--Green">COMMIT</button>
+                        <button @onclick="@Commit" disabled="@(_validator!.AnyOfType(ValidationResult.Invalid) || _clientRole != UserRole.Roles.Administrator)" class="SS_Button SS_Button--Green">COMMIT</button>
 
                         @if (!_processing)
                         {
@@ -57,4 +64,69 @@
 
     </table>
 
+</div>
+
+<div class="Blacklist_BlacklistTableContainer">
+    <div class="HeaderContainer">
+            <h2>Existing rules</h2>
+            @* <button class="SS_Button--Blue" @onclick="@ReloadWhitelist">RELOAD WHITELIST CACHE</button> *@
+        </div>
+
+    @if (_loaded)
+    {
+        <FlareTableContainer FlareTable="@_blacklistTable">
+    
+            <FlareTableControlRow>
+                <FlareTableColumnToggles T="Infrastructure.Schema.Blacklist"/>
+                <FlareTableControlSpacer/>
+                <FlareTableResetButton T="Infrastructure.Schema.Blacklist"/>
+                <FlareTableControlFiller/>
+                <FlareTableRegexToggle T="Infrastructure.Schema.Blacklist"/>
+            </FlareTableControlRow>
+    
+            <FlareTableControlRow>
+                <FlareTablePaginationSize T="Infrastructure.Schema.Blacklist"/>
+                <FlareTableControlFiller/>
+                <FlareTablePaginationButtons T="Infrastructure.Schema.Blacklist" ID="1"/>
+            </FlareTableControlRow>
+            <FlareTableTable>
+                <FlareTableHead>
+                    <FlareTableHeadingRow>
+                        @foreach (Column column in _blacklistTable!.Columns)
+                        {
+                            <FlareTableHeading T="Infrastructure.Schema.Blacklist" ID="@column.ID"/>
+                        }
+                    </FlareTableHeadingRow>
+                    <FlareTableFilterRow>
+                        @foreach (Column column in _blacklistTable!.Columns)
+                        {
+                            <FlareTableFilter T="Infrastructure.Schema.Blacklist" ID="@column.ID"/>
+                        }
+                    </FlareTableFilterRow>
+                </FlareTableHead>
+                <FlareTableBody T="Infrastructure.Schema.Blacklist">
+                    @foreach (Infrastructure.Schema.Blacklist row in _blacklistTable!.Rows())
+                    {
+                        <FlareTableBodyRow T="Infrastructure.Schema.Blacklist" Value="@row">
+                            <FlareTableCell T="Infrastructure.Schema.Blacklist" ID="ID">@row.ID</FlareTableCell>
+                            <FlareTableCell T="Infrastructure.Schema.Blacklist" ID="Pattern">@row.Pattern</FlareTableCell>
+                            <FlareTableCell T="Infrastructure.Schema.Blacklist" ID="Expires">@(row.Expires.HasValue ? row.Expires.Value.ToString("yyyy-MM-dd HH:mm") : "")</FlareTableCell>
+    
+                            <FlareTableCell T="Infrastructure.Schema.Blacklist" ID="_Remove">
+                                <button class="SS_Button--Red" @onclick="@(_ => Remove(row))" disabled="@_processing">REMOVE</button>
+                            </FlareTableCell>
+                        </FlareTableBodyRow>
+                    }
+                </FlareTableBody>
+            </FlareTableTable>
+    
+            <FlareTableControlRow>
+                <FlareTablePaginationInfo T="Infrastructure.Schema.Blacklist"/>
+                <FlareTableControlFiller/>
+                <FlareTablePaginationButtons T="Infrastructure.Schema.Blacklist" ID="2"/>
+            </FlareTableControlRow>
+    
+    
+        </FlareTableContainer>        
+    }
 </div>

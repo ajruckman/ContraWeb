@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Component;
 using Infrastructure.Model;
 using Infrastructure.Schema;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Subsegment.Bits;
+using Subsegment.Constructs;
 using Superset.Logging;
 using Superset.Web.State;
 using Superset.Web.Validation;
@@ -14,7 +18,7 @@ using Web.Components.EditableList;
 
 namespace Web.Pages
 {
-    [Authorize(Roles ="Administrator")]
+    [Authorize(Roles = "Administrator")]
     public partial class Configure
     {
         private Config? Config { get; set; }
@@ -26,6 +30,14 @@ namespace Web.Pages
         private EditableList? _searchDomainList;
 
         private readonly UpdateTrigger _statusUpdated = new UpdateTrigger();
+
+        private readonly Subheader _subheader = new Subheader(
+            new List<IBit>
+            {
+                new Space(10),
+                new Title("Options")
+            }
+        );
 
         protected override void OnInitialized()
         {

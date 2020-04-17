@@ -92,7 +92,7 @@ namespace Web.Components.EditableList
             OnUpdate?.Invoke(_values);
         }
 
-        public void Set(List<string> values)
+        public void Set(IEnumerable<string> values)
         {
             _values.Clear();
             _values.AddRange(values);

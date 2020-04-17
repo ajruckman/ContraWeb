@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using FS3;
-using FT3;
+using API.Component;
+using FlareSelect;
+using FlareTables;
 using Infrastructure.Controller;
 using Infrastructure.Model;
 using Infrastructure.Schema;
+using Infrastructure.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using Subsegment.Bits;
+using Subsegment.Constructs;
 using Superset.Utilities;
 using Superset.Web.Validation;
 using Web.Authentication;
+using Web.Components.EditableList;
 
 namespace Web.Pages
 {
@@ -37,6 +44,9 @@ namespace Web.Pages
 
         private FlareSelector<string>? _newRoleSelector;
         private FlareSelector<string>? _editedRoleSelector;
+
+        private EditableList? _newMACsSelector;
+        private EditableList? _editMACsSelector;
 
         protected override void OnInitialized()
         {
@@ -72,6 +82,8 @@ namespace Web.Pages
                 InvokeAsync(StateHasChanged);
             }, _newPassword);
 
+            //
+
             _newRoleSelector = new FlareSelector<string>(
                 () => UserRole.Options(),
                 false
@@ -95,6 +107,26 @@ namespace Web.Pages
                 _editUserValidator.Validate();
                 InvokeAsync(StateHasChanged);
             };
+
+            //
+
+            _newMACsSelector = new EditableList(
+                validator: ValidateMAC,
+                placeholder: "Add a MAC",
+                transformer: Utility.FormatMAC
+            );
+
+            _newMACsSelector.OnUpdate += macs =>
+                _user!.MACs = macs.Select(v => PhysicalAddress.Parse(Utility.CleanMAC(v))).ToList();
+
+            _editMACsSelector = new EditableList(
+                validator: ValidateMAC,
+                placeholder: "Add a MAC",
+                transformer: Utility.FormatMAC
+            );
+
+            _editMACsSelector.OnUpdate += macs =>
+                _editing!.MACs = macs.Select(v => PhysicalAddress.Parse(Utility.CleanMAC(v))).ToList();
 
             //
 
@@ -126,8 +158,12 @@ namespace Web.Pages
 
                 return new[] {new Validation<ValidationResult>(ValidationResult.Valid, "Edits are valid")};
             });
-            
+
             _newUserValidator.Validate();
+            
+            //
+            
+            BuildHeaders();
         }
 
         private void LoadUsers()
@@ -138,16 +174,22 @@ namespace Web.Pages
         private bool AllowSubmit()
         {
             return _editing == null
-                ? !_newUserValidator.AnyOfType(ValidationResult.Invalid)
-                : !_editUserValidator.AnyOfType(ValidationResult.Invalid);
+                ? !_newUserValidator.AnyOfType(ValidationResult.Invalid, includeOverall: true)
+                : !_editUserValidator.AnyOfType(ValidationResult.Invalid, includeOverall: true);
         }
 
-        private void Add() => _editing = null;
+        private void Add()
+        {
+            _editing = null;
+            BuildHeaders();
+        }
 
         private void Edit(User user)
         {
             _editing = user;
             _editedRoleSelector!.InvalidateData();
+            _editMACsSelector!.Set(user.MACs.Select(Utility.FormatMAC).ToList());
+            BuildHeaders();
         }
 
         private async Task Remove(User user)
@@ -165,7 +207,7 @@ namespace Web.Pages
         {
             if (_editing == null)
             {
-                User newUser = UserController.Create(_newUsername, _newPassword, _newRole);
+                User newUser = UserController.Create(_newUsername, _newPassword, _newRole, new List<PhysicalAddress>());
 
                 _newUsername = "";
                 _newPassword = "";
@@ -181,13 +223,12 @@ namespace Web.Pages
                 if (_editedRole != UserRole.Roles.Undefined)
                 {
                     _editing.Role = _editedRole;
-                    await UserModel.UpdateRole(_editing);
+                    await UserModel.Update(_editing);
                 }
 
                 if (_editedPassword != null)
                 {
-                    _editing.Password = _editedPassword;
-                    await UserModel.UpdatePassword(_editing);
+                    await UserController.UpdatePassword(_editing, _editedPassword);
                 }
 
                 _editedRole     = UserRole.Roles.Undefined;
@@ -219,6 +260,41 @@ namespace Web.Pages
             }
 
             return true;
+        }
+
+        public (ValidationResult, MarkupString) ValidateMAC(string s)
+        {
+            if (s.Length == 0)
+                return (ValidationResult.Undefined, new MarkupString(""));
+
+            return Utility.ValidateMAC(s)
+                ? (ValidationResult.Valid, new MarkupString("Valid MAC"))
+                : (ValidationResult.Invalid, new MarkupString("Invalid MAC"));
+        }
+
+        private Subheader _listSubheader;
+        private Subheader _inputSubheader;
+
+        private void BuildHeaders()
+        {
+            _listSubheader = new Subheader(
+                new List<IBit>
+                {
+                    new Space(10),
+                    new Title("Options")
+                }
+            );
+
+            _inputSubheader = new Subheader(
+                new List<IBit>
+                {
+                    new Space(10),
+                    new Title(_editing == null ? "Add new user" : "Edit user"),
+                }
+            );
+            
+            if (_editing != null)
+                _inputSubheader.Add(new Button("CANCEL", Add, Button.Color.Red));
         }
     }
 }

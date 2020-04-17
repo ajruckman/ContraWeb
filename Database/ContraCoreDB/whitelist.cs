@@ -10,6 +10,7 @@ namespace Database.ContraCoreDB
         public int id { get; set; }
         public string pattern { get; set; }
         public DateTime? expires { get; set; }
+        public string creator { get; set; }
         public IPAddress[] ips { get; set; }
         public ValueTuple<IPAddress, int>[] subnets { get; set; }
         public string[] hostnames { get; set; }
