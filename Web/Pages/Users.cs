@@ -188,6 +188,7 @@ namespace Web.Pages
         {
             _editing = user;
             _editedRoleSelector!.InvalidateData();
+            // _editedRoleSelector!.Select(_editing.Role.ToString());
             _editMACsSelector!.Set(user.MACs.Select(Utility.FormatMAC).ToList());
             BuildHeaders();
         }
@@ -215,7 +216,7 @@ namespace Web.Pages
 
                 LoadUsers();
                 _userTable!.InvalidateData();
-                _newRoleSelector!.InvalidateData(true);
+                // _newRoleSelector!.InvalidateData(true);
                 _newUserValidator.Validate();
             }
             else
@@ -226,7 +227,7 @@ namespace Web.Pages
                     await UserModel.Update(_editing);
                 }
 
-                if (_editedPassword != null)
+                if (!string.IsNullOrEmpty(_editedPassword))
                 {
                     await UserController.UpdatePassword(_editing, _editedPassword);
                 }
@@ -262,7 +263,7 @@ namespace Web.Pages
             return true;
         }
 
-        public (ValidationResult, MarkupString) ValidateMAC(string s)
+        private (ValidationResult, MarkupString) ValidateMAC(string s)
         {
             if (s.Length == 0)
                 return (ValidationResult.Undefined, new MarkupString(""));
@@ -272,8 +273,8 @@ namespace Web.Pages
                 : (ValidationResult.Invalid, new MarkupString("Invalid MAC"));
         }
 
-        private Subheader _listSubheader;
-        private Subheader _inputSubheader;
+        private Subheader? _listSubheader;
+        private Subheader? _inputSubheader;
 
         private void BuildHeaders()
         {
@@ -292,9 +293,13 @@ namespace Web.Pages
                     new Title(_editing == null ? "Add new user" : "Edit user"),
                 }
             );
-            
+
             if (_editing != null)
+            {
+                _inputSubheader.Add(new Filler());
                 _inputSubheader.Add(new Button("CANCEL", Add, Button.Color.Red));
+                _inputSubheader.Add(new Space(10));
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
@@ -14,7 +13,10 @@ namespace Infrastructure.Model
         {
             using ContraWebDBContext contraDB = new ContraWebDBContext();
 
-            return contraDB.user.Select(v => new User(v)).ToList();
+            return contraDB.user
+                           .OrderBy(v => v.username)
+                           .Select(v => new User(v))
+                           .ToList();
         }
 
         public static void Submit(User user)

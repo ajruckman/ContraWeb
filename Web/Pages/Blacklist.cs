@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Component;
 using FlareTables;
 using Infrastructure.Model;
 using Infrastructure.Schema;
@@ -8,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
+using Subsegment.Bits;
+using Subsegment.Constructs;
 using Superset.Utilities;
 using Superset.Web.State;
 using Superset.Web.Validation;
@@ -106,6 +110,10 @@ namespace Web.Pages
                     Console.WriteLine(e);
                 }
             });
+            
+            //
+            
+            BuildHeaders();
         }
 
         private void BuildBlacklistTable()
@@ -170,6 +178,29 @@ namespace Web.Pages
             bool success = await Common.ContraCoreClient.ReloadBlacklist();
             if (!success)
                 Console.WriteLine("Not reloading blacklist after adding/removing rule because ContraCore is disconnected.");
+        }
+        
+        private Subheader? _inputSubheader;
+        private Subheader? _listSubheader;
+
+        private void BuildHeaders()
+        {
+            _inputSubheader = new Subheader(
+                new List<IBit>
+                {
+                    new Space(10),
+                    new Title("Create a blacklist rule"),
+                }
+            );
+
+            _listSubheader = new Subheader(
+                new List<IBit>
+                {
+                    new Space(10),
+                    new Title("Existing blacklist rules")
+                },
+                borderTop: true
+            );
         }
     }
 }

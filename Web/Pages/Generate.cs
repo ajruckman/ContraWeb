@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Component;
 using Infrastructure.Model;
 using Infrastructure.Schema;
 using Infrastructure.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Subsegment.Bits;
+using Subsegment.Constructs;
 using Superset.Web.State;
 
 namespace Web.Pages
@@ -27,6 +30,9 @@ namespace Web.Pages
         private int          _ouiCount;
         private List<string> _ouiGenProgress = new List<string>();
 
+        private Subheader? _blacklistSubheader;
+        private Subheader? _ouiListSubheader;
+
         protected override void OnInitialized()
         {
             _blacklistRuleCount   = ConfigModel.BlacklistRuleCount();
@@ -42,6 +48,22 @@ namespace Web.Pages
 
             Common.ContraCoreClient.OnGenOUICallback += OnGenOUICallback;
             Common.ContraCoreClient.OnGenOUIChange   += OnGenOUIChange;
+            
+            _blacklistSubheader = new Subheader(new List<IBit>
+            {
+                new Space(10),
+                new Title("Blacklist rule generation"),
+                new Space(15),
+                new Separator(),
+                new Space(15),
+                new Link("EDIT SOURCES", "/configure")
+            });            
+            
+            _ouiListSubheader = new Subheader(new List<IBit>
+            {
+                new Space(10),
+                new Title("OUI list generation")
+            }, borderTop: true);
         }
 
         private void OnGenRulesCallback(string s)

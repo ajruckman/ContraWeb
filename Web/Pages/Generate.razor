@@ -4,13 +4,13 @@
 
 @page "/generate"
 
-<div class="Generate_GenerateContainer">
-    <h2>Blacklist and OUI list generation</h2>
+@(_blacklistSubheader!.Render())
 
-    <div class="VerticallyCenteredContainer">
-        <h3>Blacklist rules</h3>
-        <a href="/configure" class="SS_Button">EDIT SOURCES</a>
-    </div>
+<div class="Generate_BlacklistContainer">
+    @* <div class="VerticallyCenteredContainer"> *@
+    @* <h3>Blacklist rules</h3> *@
+    @* <a href="/configure" class="SS_Button">EDIT SOURCES</a> *@
+    @* </div> *@
 
     <table class="GenStats">
         <tr>
@@ -43,7 +43,7 @@
     <br>
 
     <TriggerWrapper Trigger="@_ruleGenProgressTrigger">
-        <div class="GeneratingRulesNoticeContainer">
+        <div class="GeneratingBlacklistNoticeContainer">
 
             <button @onclick="@GenRules" disabled="@(!AllowGenRule())" class="SS_Button SS_Button--Blue">GENERATE RULES</button>
             @if (!Common.ContraCoreClient.Connected)
@@ -67,13 +67,20 @@
             }
         </TriggerWrapper>
     </div>
-    
-    <br>
-    <br>
-    <div class="DividerLine"></div>
-    <br>
+    @* *@
+    @* <br> *@
+    @* <br> *@
+    @* <div class="DividerLine"></div> *@
+    @* <br> *@
+</div>
 
-    <h3>OUI list</h3>
+<br>
+
+@(_ouiListSubheader!.Render())
+
+<br>
+
+<div class="Generate_OUIListContainer">
 
     <table class="GenStats">
         <tr>

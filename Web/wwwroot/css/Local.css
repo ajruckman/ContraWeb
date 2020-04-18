@@ -114,10 +114,7 @@
     transform: rotate(360deg); } }
 
 .Stats_StatsContainer {
-  padding: 5px 9px; }
-  .Stats_StatsContainer .VerticallyCenteredContainer h2 ~ span, .Stats_StatsContainer body .Rules_WhitelistTableContainer .HeaderContainer h2 ~ span, body .Rules_WhitelistTableContainer .Stats_StatsContainer .HeaderContainer h2 ~ span {
-    margin-left: 15px;
-    margin-top: 3px; }
+  padding: 9px; }
   .Stats_StatsContainer .Row {
     display: flex;
     flex-wrap: wrap;
@@ -235,6 +232,33 @@ body {
       left: -3.05px;
       position: absolute;
       top: 2px; }
+  body .InputTable tr td:first-child {
+    color: var(--ColorSet_ThemeColor_Text_40);
+    font-weight: 600;
+    padding-right: 7px;
+    padding-top: 6px;
+    vertical-align: top; }
+    body .InputTable tr td:first-child .ValidationContainer {
+      margin-left: 5px; }
+  body .InputTable tr td .VendorSelectorContainer {
+    min-height: 72px; }
+    body .InputTable tr td .VendorSelectorContainer .Spinner {
+      margin-right: 5px; }
+  body .InputTable tr td .EditableListContainer {
+    max-width: 400px;
+    width: 100%; }
+  body .InputTable tr td .FlareSelect_Container {
+    max-width: 405px; }
+  body .InputTable tr td .SubmitWrapper {
+    align-items: center;
+    display: flex; }
+    body .InputTable tr td .SubmitWrapper .ValidationContainer {
+      margin-left: 10px; }
+  body .InputTable tr td .PermissionNoticeContainer {
+    padding: 0 0 10px 0; }
+    body .InputTable tr td .PermissionNoticeContainer .SS_ExclamationMark {
+      font-weight: normal;
+      margin-right: 5px; }
   body .Index_LogTableContainer {
     padding: 7px 5px; }
     body .Index_LogTableContainer .FlareTableCell .SS_Button--Red, body .Index_LogTableContainer .FlareTableCell .SS_Button--Green {
@@ -287,31 +311,6 @@ body {
     padding: 9px; }
     body .Rules_NewWhitelistContainer .InputsContainer {
       flex-grow: 999; }
-      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td:first-child {
-        color: var(--ColorSet_ThemeColor_Text_40);
-        font-weight: 600;
-        padding-right: 10px;
-        padding-top: 6px;
-        vertical-align: top; }
-      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .VendorSelectorContainer {
-        min-height: 72px; }
-        body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .VendorSelectorContainer .Spinner {
-          margin-right: 5px; }
-      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .EditableListContainer {
-        max-width: 400px;
-        width: 100%; }
-      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .FlareSelect_Container {
-        max-width: 405px; }
-      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .SubmitWrapper {
-        align-items: center;
-        display: flex; }
-        body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .SubmitWrapper .ValidationContainer {
-          margin-left: 10px; }
-      body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .PermissionNoticeContainer {
-        padding: 0 0 10px 0; }
-        body .Rules_NewWhitelistContainer .InputsContainer .Inputs tr td .PermissionNoticeContainer .SS_ExclamationMark {
-          font-weight: normal;
-          margin-right: 5px; }
     body .Rules_NewWhitelistContainer .StatusContainer {
       align-self: flex-start;
       background-color: var(--ColorSet_ThemeColor_Background_50);
@@ -332,88 +331,81 @@ body {
         body .Rules_NewWhitelistContainer .StatusContainer span:hover {
           background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
   body .Blacklist_NewRuleContainer {
-    padding: 0 9px; }
-    body .Blacklist_NewRuleContainer .Inputs tr td .SubmitWrapper {
+    padding: 9px; }
+    body .Blacklist_NewRuleContainer .InputTable tr td .SubmitWrapper {
       align-items: center;
       display: flex; }
-      body .Blacklist_NewRuleContainer .Inputs tr td .SubmitWrapper .ValidationContainer {
+      body .Blacklist_NewRuleContainer .InputTable tr td .SubmitWrapper .ValidationContainer {
         margin-left: 10px; }
+  body .Blacklist_BlacklistTableContainer {
+    padding: 9px; }
   body .Rules_WhitelistTableContainer {
     padding: 9px; }
     body .Rules_WhitelistTableContainer .HeaderContainer {
       justify-content: space-between; }
     body .Rules_WhitelistTableContainer .FlareTableCell {
       padding: 5px 7px !important; }
-  body .Generate_GenerateContainer {
-    padding: 0 9px; }
-    body .Generate_GenerateContainer .VerticallyCenteredContainer h3 ~ a, body .Generate_GenerateContainer .Rules_WhitelistTableContainer .HeaderContainer h3 ~ a, body .Rules_WhitelistTableContainer .Generate_GenerateContainer .HeaderContainer h3 ~ a {
-      margin-left: 15px;
-      text-decoration: none; }
-    body .Generate_GenerateContainer .GenStats tr td {
+  body .GeneratingBlacklistNoticeContainer, body .GeneratingOUINoticeContainer {
+    align-items: center;
+    display: flex; }
+    body .GeneratingBlacklistNoticeContainer > button, body .GeneratingOUINoticeContainer > button {
+      margin-right: 10px; }
+    body .GeneratingBlacklistNoticeContainer > *, body .GeneratingOUINoticeContainer > * {
+      margin-right: 5px; }
+  body .ProgressContainer {
+    background-color: var(--ColorSet_ThemeColor_Background_50);
+    border: 1px solid var(--ColorSet_ThemeColor_Border_80);
+    height: 500px;
+    margin-top: 10px;
+    overflow-y: scroll; }
+    body .ProgressContainer span {
+      display: block;
+      font-family: var(--FontSet-MonospaceFont);
+      padding: 1px 3px; }
+      body .ProgressContainer span:not(:first-child) {
+        border-top: 1px solid var(--ColorSet_ThemeColor_Border_50); }
+      body .ProgressContainer span:hover {
+        background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
+  body .Generate_BlacklistContainer {
+    padding: 9px; }
+    body .Generate_BlacklistContainer .GenStats tr td {
       vertical-align: top; }
-      body .Generate_GenerateContainer .GenStats tr td:first-child {
+      body .Generate_BlacklistContainer .GenStats tr td:first-child {
         color: var(--ColorSet_ThemeColor_Text_40);
         font-weight: 600;
         padding-right: 10px; }
-      body .Generate_GenerateContainer .GenStats tr td:nth-child(2) a {
+      body .Generate_BlacklistContainer .GenStats tr td:nth-child(2) a {
         color: var(--ColorSet_ThemeColor_Text_80);
         display: block;
         font-family: var(--FontSet-MonospaceFont);
         text-decoration-color: var(--ColorSet_ThemeColor_Text_0); }
-        body .Generate_GenerateContainer .GenStats tr td:nth-child(2) a:hover {
+        body .Generate_BlacklistContainer .GenStats tr td:nth-child(2) a:hover {
           text-decoration-color: var(--ColorSet_ThemeColor_Text_80); }
-    body .Generate_GenerateContainer .GeneratingRulesNoticeContainer, body .Generate_GenerateContainer .GeneratingOUINoticeContainer {
-      align-items: center;
-      display: flex; }
-      body .Generate_GenerateContainer .GeneratingRulesNoticeContainer > button, body .Generate_GenerateContainer .GeneratingOUINoticeContainer > button {
-        margin-right: 10px; }
-      body .Generate_GenerateContainer .GeneratingRulesNoticeContainer > *, body .Generate_GenerateContainer .GeneratingOUINoticeContainer > * {
-        margin-right: 5px; }
-    body .Generate_GenerateContainer .ProgressContainer {
-      background-color: var(--ColorSet_ThemeColor_Background_50);
-      border: 1px solid var(--ColorSet_ThemeColor_Border_80);
-      height: 500px;
-      margin-top: 10px;
-      overflow-y: scroll; }
-      body .Generate_GenerateContainer .ProgressContainer span {
-        display: block;
-        font-family: var(--FontSet-MonospaceFont);
-        padding: 1px 3px; }
-        body .Generate_GenerateContainer .ProgressContainer span:not(:first-child) {
-          border-top: 1px solid var(--ColorSet_ThemeColor_Border_50); }
-        body .Generate_GenerateContainer .ProgressContainer span:hover {
-          background-color: var(--ColorSet_ThemeColor_Background_50_Hover); }
+  body .Generate_OUIListContainer {
+    padding: 9px; }
   body .Users_LayoutContainer {
     display: flex;
     flex-wrap: wrap; }
     body .Users_LayoutContainer .Users_ListContainer {
       border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40);
-      flex-grow: 10;
-      padding: 0 14px 14px 9px; }
-      body .Users_LayoutContainer .Users_ListContainer .FlareTableCell {
-        padding: 5px 7px !important; }
+      flex-grow: 10; }
+      body .Users_LayoutContainer .Users_ListContainer .ContentWrapper {
+        padding: 9px; }
+        body .Users_LayoutContainer .Users_ListContainer .ContentWrapper .FlareTableCell {
+          padding: 5px 7px !important; }
     body .Users_LayoutContainer .Users_InputContainer {
       border-bottom: 1px solid var(--ColorSet_ThemeColor_Border_40);
-      border-left: 1px solid var(--ColorSet_ThemeColor_Border_40);
-      padding: 0 9px 9px 11px; }
-      body .Users_LayoutContainer .Users_InputContainer .Users_InputHeader {
-        justify-content: space-between; }
-        body .Users_LayoutContainer .Users_InputContainer .Users_InputHeader .SS_Button--Red {
-          margin-right: 5px; }
-      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td {
-        vertical-align: middle; }
-      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(1) {
-        color: var(--ColorSet_ThemeColor_Text_40);
-        font-weight: bold;
-        padding-right: 7px; }
-        body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(1) .ValidationContainer {
-          margin-left: 5px; }
-      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) input {
-        width: 100%; }
-      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) .FlareSelect_Container {
-        margin: 1px 0; }
-      body .Users_LayoutContainer .Users_InputContainer .Inputs tr td:nth-child(2) .EditableListContainer {
-        width: 250px; }
+      border-left: 1px solid var(--ColorSet_ThemeColor_Border_80); }
+      body .Users_LayoutContainer .Users_InputContainer .ContentWrapper {
+        padding: 9px; }
+        body .Users_LayoutContainer .Users_InputContainer .ContentWrapper .InputTable tr td {
+          vertical-align: middle; }
+        body .Users_LayoutContainer .Users_InputContainer .ContentWrapper .InputTable tr td:nth-child(2) input {
+          width: 100%; }
+        body .Users_LayoutContainer .Users_InputContainer .ContentWrapper .InputTable tr td:nth-child(2) .FlareSelect_Container {
+          margin: 1px 0; }
+        body .Users_LayoutContainer .Users_InputContainer .ContentWrapper .InputTable tr td:nth-child(2) .EditableListContainer {
+          width: 250px; }
   body .NotAuthorizedContainer, body .AuthorizingContainer {
     padding: 5px 25px; }
     body .NotAuthorizedContainer .Authentication_LoginContainer table tr td:first-child, body .AuthorizingContainer .Authentication_LoginContainer table tr td:first-child {

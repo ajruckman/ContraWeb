@@ -5,12 +5,9 @@
 
 @page "/stats"
 
-<div class="Stats_StatsContainer">
-    <div class="VerticallyCenteredContainer">
-        <h2>Server statistics</h2>
-        <span>Last 7 days</span>
-    </div>
+@(_graphicSubheader!.Render())
 
+<div class="Stats_StatsContainer">
     <div class="Row">
 
         <div class="FullWidth">

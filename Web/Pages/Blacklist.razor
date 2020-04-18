@@ -10,11 +10,11 @@
 
 @page "/blacklist" 
 
+@(_inputSubheader!.Render())
+
 <div class="Blacklist_NewRuleContainer">
 
-    <h2>Create a blacklist rule</h2>
-
-    <table class="Inputs">
+    <table class="InputTable">
         <tr>
             <td>
                 <label for="NewRule_Pattern">Pattern</label>
@@ -66,11 +66,14 @@
 
 </div>
 
+<br>
+
+@(_listSubheader!.Render())
+
 <div class="Blacklist_BlacklistTableContainer">
-    <div class="HeaderContainer">
-            <h2>Existing rules</h2>
+    @* <div class="HeaderContainer"> *@
             @* <button class="SS_Button--Blue" @onclick="@ReloadWhitelist">RELOAD WHITELIST CACHE</button> *@
-        </div>
+        @* </div> *@
 
     @if (_loaded)
     {

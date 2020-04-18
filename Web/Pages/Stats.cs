@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Component;
 using FlareTables;
 using Infrastructure.Controller;
 using Infrastructure.Model;
 using Newtonsoft.Json;
+using Subsegment.Bits;
+using Subsegment.Constructs;
 
 namespace Web.Pages
 {
@@ -13,6 +16,21 @@ namespace Web.Pages
         private FlareTable<(string, int)>?                 _topBlockedTable;
         private FlareTable<(string, int)>?                 _topPassedTable;
         private FlareTable<(string, string, string, int)>? _topClientsTable;
+
+        private Subheader? _graphicSubheader;
+
+        protected override void OnInitialized()
+        {
+            _graphicSubheader = new Subheader(new List<IBit>
+            {
+                new Space(10),
+                new Title("Server statistics"),
+                new Space(15),
+                new Separator(),
+                new Space(15),
+                new TextLine("Last 7 days")
+            });
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
