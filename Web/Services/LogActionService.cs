@@ -29,7 +29,7 @@ namespace Web.Services
             else if (targetLog.Action.StartsWith("block."))
             {
                 Console.WriteLine(" -> whitelist");
-                NavigationManager.NavigateTo("/rules");
+                NavigationManager.NavigateTo("/whitelist");
             }
         }
 
