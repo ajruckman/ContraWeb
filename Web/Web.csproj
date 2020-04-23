@@ -19,11 +19,11 @@
         <PackageReference Include="Blazored.LocalStorage" Version="2.1.5" />
         <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
         <PackageReference Include="FlareSelect" Version="3.5.1-alpha" />
-        <PackageReference Include="FlareTables" Version="3.6.10-alpha" />
-        <PackageReference Include="Integrant.Subsegment" Version="1.7.0-alpha" />
+        <PackageReference Include="FlareTables" Version="3.6.11-alpha" />
+        <PackageReference Include="Integrant.Subsegment" Version="1.7.1-alpha" />
         <PackageReference Include="IPNetwork2" Version="2.5.194" />
         <PackageReference Include="Superset" Version="1.15.4-alpha" />
-        <PackageReference Include="UISet.ColorSet" Version="1.1.7-alpha" />
+        <PackageReference Include="UISet.ColorSet" Version="1.2.0-alpha" />
         <PackageReference Include="UISet.FontSet" Version="1.1.7-alpha" />
         <PackageReference Include="UISet.ShapeSet" Version="1.2.14-alpha" />
     </ItemGroup>

@@ -7,7 +7,7 @@
 }
 
 body {
-    background-color: var(--ColorSet_ThemeColor_Background_20);
+    background-color: var(--ColorSet_Color_PageBG);
     color:            var(--ColorSet_ThemeColor_Text_80);
     font-size:        15px;
     margin:           0;
@@ -30,6 +30,14 @@ body {
 
     .Spacer {
         height: 20px;
+    }
+
+    .FlareTableCell {
+        overflow:      hidden;
+        padding:       1px 5px !important;
+        text-overflow: ellipsis;
+        white-space:   nowrap;
+        max-width: 350px;
     }
 
     .VerticallyCenteredContainer {
@@ -331,7 +339,7 @@ body {
             }
         }
     }
-    
+
     .Blacklist_BlacklistTableContainer {
         padding: 9px;
     }
@@ -389,7 +397,7 @@ body {
             }
         }
     }
-    
+
     .Generate_BlacklistContainer {
         padding: 9px;
 
@@ -420,7 +428,7 @@ body {
             }
         }
     }
-    
+
     .Generate_OUIListContainer {
         padding: 9px;
     }

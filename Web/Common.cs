@@ -14,7 +14,7 @@ namespace Web
             #if DOCKER
             ContraCoreClient = new ContraCoreClient("contracore");
             #else
-            ContraCoreClient = new ContraCoreClient("localhost");
+            ContraCoreClient = new ContraCoreClient("10.3.0.16");
             #endif
         }
     }

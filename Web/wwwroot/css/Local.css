@@ -160,7 +160,7 @@
   display: none; }
 
 body {
-  background-color: var(--ColorSet_ThemeColor_Background_20);
+  background-color: var(--ColorSet_Color_PageBG);
   color: var(--ColorSet_ThemeColor_Text_80);
   font-size: 15px;
   margin: 0; }
@@ -172,6 +172,12 @@ body {
     line-height: unset !important; }
   body .Spacer {
     height: 20px; }
+  body .FlareTableCell {
+    overflow: hidden;
+    padding: 1px 5px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 350px; }
   body .VerticallyCenteredContainer, body .Rules_WhitelistTableContainer .HeaderContainer {
     align-items: center;
     display: flex; }

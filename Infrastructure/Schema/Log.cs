@@ -29,7 +29,9 @@ namespace Infrastructure.Schema
 
         public dynamic ActionButton { get; set; }
 
+        #pragma warning disable 8618
         public Log() { }
+        #pragma warning restore 8618
 
         // public Log(log log)
         // {

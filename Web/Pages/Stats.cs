@@ -38,7 +38,7 @@ namespace Web.Pages
                 return;
 
             #if DOCKER
-            _logClient =
+            var logClient =
                 new ContraLogClient("Host=contralog;Port=9000;Database=contralog;User=contralog_mgr;Password=a6oMaVZZm8nuedax;");
             #else
             var logClient =

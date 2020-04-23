@@ -282,7 +282,7 @@ namespace Web.Pages
                 new List<IBit>
                 {
                     new Space(10),
-                    new Title("Options")
+                    new Title("Users")
                 }
             );
 

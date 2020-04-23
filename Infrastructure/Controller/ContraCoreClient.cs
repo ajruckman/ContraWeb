@@ -103,6 +103,8 @@ namespace Infrastructure.Controller
             OnConnected -= Setup;
         }
 
+        private readonly Dictionary<string, bool> _seenClients = new Dictionary<string, bool>();
+
         [SuppressMessage("ReSharper", "FunctionNeverReturns")]
         private async void Read(string hostname)
         {
@@ -154,12 +156,52 @@ namespace Infrastructure.Controller
 
                             case "get_cache.cache":
                                 List<Log> logs = JsonConvert.DeserializeObject<List<Log>>(val);
+
+                                // var logsFiltered = new List<Log>();
+                                //
+                                // logsFiltered.AddRange(Enumerable.Range(0, 1000).Select(v => new Log()));
+                                //
+                                // foreach (Log i in logs)
+                                // {
+                                //     // if (_seenClients.ContainsKey(i.Question))
+                                //         // continue;
+                                //     // _seenClients[i.Question] = true;
+                                //     
+                                //     // if (_seenClients.ContainsKey(i.Client) && _seenClients[i.Client] > 2)
+                                //     //     continue;
+                                //     // _seenClients[i.Client] = _seenClients.ContainsKey(i.Client) ? _seenClients[i.Client] + 1 : 1;
+                                //     //
+                                //     // if (!i.Action.StartsWith("block.") && i.Time.Ticks % 3 != 0)
+                                //     //     continue;
+                                //
+                                //     // var key = $"{i.Client}_{i.Action.Split('.')[0]}";
+                                //     // if (_seenClients.ContainsKey(key))
+                                //     //     continue;
+                                //     // _seenClients[key] = true;
+                                //     
+                                //     logsFiltered.Add(i);
+                                // }
+
+                                
                                 await _cacheChannel.Writer.WriteAsync(logs);
                                 break;
 
                             case "query":
                                 Log log = JsonConvert.DeserializeObject<Log>(val);
                                 Common.Logger.Debug($"Incoming: {log}");
+
+                                // if (_seenClients.ContainsKey(log.Question))
+                                    // continue;
+                                // _seenClients[log.Question] = true;
+                                // if (_seenClients.ContainsKey(log.Client) && _seenClients[log.Client] > 2)
+                                //     continue;
+                                // _seenClients[log.Client] = _seenClients.ContainsKey(log.Client) ? _seenClients[log.Client] + 1 : 1;
+
+                                // var key2 = $"{log.Client}_{log.Action.Split('.')[0]}";
+                                // if (_seenClients.ContainsKey(key2))
+                                //     continue;
+                                // _seenClients[key2] = true;
+
                                 _data.Enqueue(log);
 
                                 OnNewLog?.Invoke(log);
