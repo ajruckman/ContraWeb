@@ -2,13 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <Nullable>enable</Nullable>
         <Configurations>Debug;Release;Docker</Configurations>
         <Platforms>AnyCPU</Platforms>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Docker' ">
-      <Optimize>true</Optimize>
+        <Optimize>true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,12 +16,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FlareSelect" Version="3.5.1-alpha" />
-        <PackageReference Include="IPNetwork2" Version="2.5.194" />
+        <PackageReference Include="FlareSelect" Version="3.6.3-alpha" />
+        <PackageReference Include="IPNetwork2" Version="2.5.202" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="3.1.3" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-        <PackageReference Include="Superset" Version="1.15.4-alpha" />
+        <PackageReference Include="Superset" Version="1.15.5-alpha" />
     </ItemGroup>
 
 </Project>

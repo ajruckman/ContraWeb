@@ -60,6 +60,8 @@
             series.fillOpacity = 0.4;
             series.strokeOpacity = 0.3;
             series.stacked = true;
+            
+            // series.connect = false;
 
             // series.tooltipText = "[#FFF]" + action + ": {valueY.value}[/]";
             series.tooltipText = action + ": {valueY.value}";

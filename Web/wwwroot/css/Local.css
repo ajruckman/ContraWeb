@@ -172,12 +172,6 @@ body {
     line-height: unset !important; }
   body .Spacer {
     height: 20px; }
-  body .FlareTableCell {
-    overflow: hidden;
-    padding: 1px 5px !important;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 350px; }
   body .VerticallyCenteredContainer, body .Rules_WhitelistTableContainer .HeaderContainer {
     align-items: center;
     display: flex; }

@@ -27,10 +27,10 @@ namespace Infrastructure.Controller
         {
             using ClickHouseCommand cmd    = _conn.CreateCommand("SELECT * FROM log_actions_per_hour;");
             using IDataReader       reader = cmd.ExecuteReader();
-
+        
             var                                           actions = new List<string>();
             Dictionary<long, Dictionary<string, dynamic>> result  = new Dictionary<long, Dictionary<string, dynamic>>();
-
+        
             do
             {
                 while (reader.Read())
@@ -38,7 +38,7 @@ namespace Infrastructure.Controller
                     DateTime hour   = DateTime.ParseExact(reader.GetString(0), "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
                     var      action = reader.GetString(1);
                     long     c      = reader.GetInt64(2);
-
+        
                     if (!result.ContainsKey(hour.Ticks))
                     {
                         result[hour.Ticks] = new Dictionary<string, dynamic>
@@ -46,16 +46,51 @@ namespace Infrastructure.Controller
                             {"time", hour}
                         };
                     }
-
+        
                     if (!actions.Contains(action))
                         actions.Add(action);
-
+        
                     result[hour.Ticks][action] = c;
                 }
             } while (reader.NextResult());
-
+        
             return (result, actions);
         }
+
+        // public (Dictionary<long, Dictionary<string, dynamic>>, List<string>) LogActionsPerHour()
+        // {
+        //     using ClickHouseCommand cmd    = _conn.CreateCommand("SELECT formatDateTime(h, '%F %H:%M'), action, c FROM log_actions_per_sliding_hour;");
+        //     using IDataReader       reader = cmd.ExecuteReader();
+        //
+        //     var                                           actions = new List<string>();
+        //     Dictionary<long, Dictionary<string, dynamic>> result  = new Dictionary<long, Dictionary<string, dynamic>>();
+        //
+        //     do
+        //     {
+        //         while (reader.Read())
+        //         {
+        //             // DateTime hour   = DateTime.ParseExact(reader.GetString(0), "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
+        //             DateTime hour   = reader.GetDateTime(0);
+        //             var      action = reader.GetString(1);
+        //             long     c      = reader.GetInt64(2);
+        //
+        //             if (!result.ContainsKey(hour.Ticks))
+        //             {
+        //                 result[hour.Ticks] = new Dictionary<string, dynamic>
+        //                 {
+        //                     {"time", hour}
+        //                 };
+        //             }
+        //
+        //             if (!actions.Contains(action))
+        //                 actions.Add(action);
+        //
+        //             result[hour.Ticks][action] = c;
+        //         }
+        //     } while (reader.NextResult());
+        //
+        //     return (result, actions);
+        // }
 
         public Dictionary<string, int> LogActionCounts()
         {

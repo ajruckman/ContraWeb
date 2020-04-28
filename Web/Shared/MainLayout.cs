@@ -31,7 +31,8 @@ namespace Web.Shared
         {
             // ContraWebAuthStateProvider.AuthenticationStateChanged += _ => _onAuthChange.ReDiff();
 
-            ClientIP = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
+            // ClientIP = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
+            ClientIP = "10.2.0.10";
 
             _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set"))
                                  .Result;

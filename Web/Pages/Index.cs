@@ -38,14 +38,13 @@ namespace Web.Pages
 
         private void OnNewLog(Log? v)
         {
+            if (_clientRole == UserRole.Roles.Undefined && (v == null || v.Client != ClientIP))
+                return;
+         
             if (v != null)
-            {
                 _queryLogTable!.PrependRow(v, 1000);
-            }
             else
-            {
                 _queryLogTable!.InvalidateData();
-            }
         }
 
         private void OnContraCoreClientStatusChange()
@@ -133,7 +132,7 @@ namespace Web.Pages
             _queryLogTable.RegisterColumn(nameof(Log.Action),         width: "100px");
             _queryLogTable.RegisterColumn(nameof(Log.Answers),        width: "100px", shown: false);
             _queryLogTable.RegisterColumn(nameof(Log.ClientHostname), "Hostname",     width: "160px");
-            _queryLogTable.RegisterColumn(nameof(Log.ClientVendor),   "Vendor",       width: "195px");
+            _queryLogTable.RegisterColumn(nameof(Log.ClientVendor),   "Vendor" /*,       width: "250px"*/);
 
             if (_clientRole != UserRole.Roles.Undefined)
                 _queryLogTable.RegisterColumn(nameof(Log.ActionButton), "", width: "60px", filterable: false,

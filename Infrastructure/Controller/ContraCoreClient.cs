@@ -294,8 +294,7 @@ namespace Infrastructure.Controller
                 if (ip != null)
                     if (ip == e.Client)
                         yield return e;
-                    else
-                        continue;
+                    else;
                 else
                     yield return e;
             }
