@@ -40,11 +40,11 @@ namespace Infrastructure.Model
             await contraDB.SaveChangesAsync();
         }
 
-        public static async Task Delete(User user)
+        public static async Task Delete(User user, string token)
         {
             await using ContraWebDBContext contraDB = new ContraWebDBContext();
 
-            user_session? match = contraDB.user_session.SingleOrDefault(v => v.username == user.Username);
+            user_session? match = contraDB.user_session.FirstOrDefault(v => v.username == user.Username && v.token == token);
             if (match == null)
                 return;
 
@@ -52,11 +52,11 @@ namespace Infrastructure.Model
             await contraDB.SaveChangesAsync();
         }
 
-        public static async Task Refresh(User user)
+        public static async Task Refresh(User user, string token)
         {
             await using ContraWebDBContext contraDB = new ContraWebDBContext();
 
-            user_session? match = contraDB.user_session.SingleOrDefault(v => v.username == user.Username);
+            user_session? match = contraDB.user_session.SingleOrDefault(v => v.username == user.Username && v.token == token);
             if (match == null)
                 return;
 

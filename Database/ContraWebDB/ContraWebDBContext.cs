@@ -60,20 +60,18 @@ namespace Database.ContraWebDB
 
             modelBuilder.Entity<user_session>(entity =>
             {
-                entity.HasKey(e => e.username)
+                entity.HasKey(e => new { e.username, e.token })
                     .HasName("user_session_pk");
 
                 entity.ToTable("user_session", "contraweb");
 
                 entity.Property(e => e.username).HasMaxLength(16);
 
-                entity.Property(e => e.token)
-                    .IsRequired()
-                    .HasMaxLength(32);
+                entity.Property(e => e.token).HasMaxLength(32);
 
                 entity.HasOne(d => d.usernameNavigation)
-                    .WithOne(p => p.user_session)
-                    .HasForeignKey<user_session>(d => d.username)
+                    .WithMany(p => p.user_session)
+                    .HasForeignKey(d => d.username)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("user_session_user_id_fk");
             });

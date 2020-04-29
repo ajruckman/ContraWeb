@@ -17,6 +17,7 @@ namespace Web.Authentication
     {
         internal bool    IsAuthenticated    { get; private set; }
         internal User?   User               { get; private set; }
+        internal string? Token              { get; private set; }
         internal string? AuthenticatedByMAC { get; private set; }
 
         private readonly ILocalStorageService _localStorage;
@@ -49,12 +50,14 @@ namespace Web.Authentication
             if (User == null)
                 return;
 
+            Token = token;
+
             if (DateTime.Now.Subtract(userSession.RefreshedAt) > TimeSpan.FromDays(7))
                 return;
 
             IsAuthenticated = true;
             Console.WriteLine(true);
-            await UserController.RefreshSession(User);
+            await UserController.RefreshSession(User, token);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
@@ -95,8 +98,9 @@ namespace Web.Authentication
 
             if (User != null)
             {
-                await UserController.DeleteUserSession(User);
-                User = null;
+                await UserController.DeleteUserSession(User, Token!);
+                User  = null;
+                Token = null;
             }
 
             await _localStorage.RemoveItemAsync("token");

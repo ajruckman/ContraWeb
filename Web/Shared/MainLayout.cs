@@ -135,9 +135,9 @@ namespace Web.Shared
                 await _themeLoader.Load();
         }
 
-        private async Task LogOut()
-        {
-            await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogOut();
-        }
+        // private async Task LogOut()
+        // {
+        //     await ((ContraWebAuthStateProvider) ContraWebAuthStateProvider).LogOut();
+        // }
     }
 }

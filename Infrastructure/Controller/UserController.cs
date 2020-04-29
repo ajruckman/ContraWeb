@@ -94,19 +94,19 @@ namespace Infrastructure.Controller
         public static async Task<string> CreateUserSession(User user)
         {
             string token = NewToken();
-            await UserSessionModel.Delete(user);
+            // await UserSessionModel.Delete(user);
             await UserSessionModel.Create(user, token);
             return token;
         }
 
-        public static async Task DeleteUserSession(User user)
+        public static async Task DeleteUserSession(User user, string token)
         {
-            await UserSessionModel.Delete(user);
+            await UserSessionModel.Delete(user, token);
         }
 
-        public static async Task RefreshSession(User user)
+        public static async Task RefreshSession(User user, string token)
         {
-            await UserSessionModel.Refresh(user);
+            await UserSessionModel.Refresh(user, token);
             // string token = NewToken();
 
             // await UserSessionModel.Delete(user);
