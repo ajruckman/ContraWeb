@@ -22,7 +22,11 @@ namespace Database.ContraWebDB
         {
             if (!optionsBuilder.IsConfigured)
             {
+                #if DOCKER
+                optionsBuilder.UseNpgsql("Server=contradb;Port=5432;User Id=contraweb_usr;Password=U475jBKZfK3xhbVZ;Database=contradb;");
+                #else
                 optionsBuilder.UseNpgsql("Server=10.3.0.16;Port=5432;User Id=contraweb_usr;Password=U475jBKZfK3xhbVZ;Database=contradb;");
+                #endif
             }
         }
 
