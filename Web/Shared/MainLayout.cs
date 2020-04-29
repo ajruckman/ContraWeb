@@ -29,10 +29,7 @@ namespace Web.Shared
 
         protected override void OnInitialized()
         {
-            // ContraWebAuthStateProvider.AuthenticationStateChanged += _ => _onAuthChange.ReDiff();
-
-            // ClientIP = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
-            ClientIP = "10.2.0.10";
+            ClientIP = HttpContextAccessor.HttpContext.Connection?.RemoteIpAddress.ToString();
 
             _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new Exception("AuthenticationStateTask was not set"))
                                  .Result;

@@ -92,8 +92,8 @@ namespace Web.Shared
         {
             try
             {
-                _user = await UserModel.Find("ajruckman") ??
-                        UserController.Create("ajruckman", "123", UserRole.Roles.Administrator, new List<PhysicalAddress>());
+                _user = await UserModel.Find("admin") ??
+                        UserController.Create("admin", "password", UserRole.Roles.Administrator, new List<PhysicalAddress>());
                 Console.WriteLine(_user.Username);
             }
             catch (Exception e)
