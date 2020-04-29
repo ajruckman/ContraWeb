@@ -7,8 +7,8 @@ namespace Web.Pages
 {
     public partial class Whitelist
     {
-        private Subheader _ruleSubheader;
-        private Subheader _listSubheader;
+        private Subheader? _ruleSubheader;
+        private Subheader? _listSubheader;
 
         private void BuildHeaders()
         {

@@ -9,7 +9,6 @@ using Infrastructure.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.JSInterop;
 using Subsegment.Bits;
 using Subsegment.Constructs;
 using Superset.Utilities;
@@ -25,9 +24,9 @@ namespace Web.Pages
         private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
         private UserRole.Roles _clientRole;
-        private bool            _processing;
+        private bool           _processing;
 
-        private Infrastructure.Schema.Blacklist              _newRule;
+        private Infrastructure.Schema.Blacklist?             _newRule;
         private FlareTable<Infrastructure.Schema.Blacklist>? _blacklistTable;
         private bool                                         _loaded = false;
 
@@ -37,15 +36,13 @@ namespace Web.Pages
 
         private Infrastructure.Schema.Blacklist Rule()
         {
-            return _newRule;
+            return _newRule!;
         }
 
         protected override void OnInitialized()
         {
-            // Console.WriteLine("Initialized <><><> " + ClientRoleGetter.Invoke());
-
             _clientRole = Utility.GetRole(AuthenticationStateTask ?? throw new ArgumentNullException()).Result;
-            
+
             _newRule = new Infrastructure.Schema.Blacklist();
 
             Log? fromLog = LogActionService.GetAndUnset();
@@ -57,20 +54,6 @@ namespace Web.Pages
             }
 
             _validator = new Validator<ValidationResult>();
-            //     () =>
-            // {
-            //     if (_clientRole != UserRole.Roles.Administrator)
-            //         return new[]
-            //         {
-            //             new Validation<ValidationResult>(ValidationResult.Warning,
-            //                 "You are not permitted to create blacklist rules")
-            //         };
-            //     
-            //     if (string.IsNullOrEmpty(Rule().Pattern))
-            //         return new[] {new Validation<ValidationResult>(ValidationResult.Invalid, "Inputs invalid")};
-            //
-            //     return new[] {new Validation<ValidationResult>(ValidationResult.Valid, "All OK")};
-            // });
 
             _validator.Register("Pattern", () =>
             {
@@ -110,9 +93,9 @@ namespace Web.Pages
                     Console.WriteLine(e);
                 }
             });
-            
+
             //
-            
+
             BuildHeaders();
         }
 
@@ -132,12 +115,14 @@ namespace Web.Pages
             InvokeAsync(StateHasChanged);
         }
 
+        #pragma warning disable 1998
         private async Task OnPatternChange(ChangeEventArgs args)
         {
             var pattern = args.Value?.ToString() ?? "";
             Rule().Pattern = pattern;
             _patternChangeDebouncer!.Reset(pattern);
         }
+        #pragma warning restore 1998
 
         private async Task Commit()
         {
@@ -149,7 +134,7 @@ namespace Web.Pages
                 return;
             }
 
-            BlacklistModel.Submit(_newRule);
+            BlacklistModel.Submit(_newRule!);
 
             _newRule = new Infrastructure.Schema.Blacklist();
             _validator!.Validate();
@@ -179,7 +164,7 @@ namespace Web.Pages
             if (!success)
                 Console.WriteLine("Not reloading blacklist after adding/removing rule because ContraCore is disconnected.");
         }
-        
+
         private Subheader? _inputSubheader;
         private Subheader? _listSubheader;
 

@@ -5,7 +5,7 @@ namespace Infrastructure.Tests
 {
     public class ContraCoreClient
     {
-        private Controller.ContraCoreClient _ccc;
+        private Controller.ContraCoreClient _ccc = null!;
 
         [SetUp]
         public void Setup()

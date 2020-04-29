@@ -8,7 +8,7 @@ namespace Infrastructure.Model
 {
     public static class OUIModel
     {
-        private static IEnumerable<IOption<string>> _cache;
+        private static IEnumerable<IOption<string>>? _cache;
 
         public static IEnumerable<IOption<string>> Options()
         {

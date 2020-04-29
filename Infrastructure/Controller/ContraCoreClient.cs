@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 67
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,9 +20,9 @@ namespace Infrastructure.Controller
 {
     public class ContraCoreClient
     {
-        private          TcpClient            _client;
-        private          NetworkStream        _stream;
-        private          StreamReader         _reader;
+        private          TcpClient            _client                    = null!;
+        private          NetworkStream        _stream                    = null!;
+        private          StreamReader         _reader                    = null!;
         private readonly FixedSizedQueue<Log> _data                      = new FixedSizedQueue<Log>(1000);
         private readonly Channel<List<Log>>   _cacheChannel              = Channel.CreateUnbounded<List<Log>>();
         private readonly SemaphoreSlim        _pongEvent                 = new SemaphoreSlim(1, 1);
@@ -28,24 +30,24 @@ namespace Infrastructure.Controller
 
         public event Action         OnConnected;
         public event Action         OnDisconnected;
-        public event Action         OnStatusChange; // OnConnected + OnDisconnected
-        public event Action<Log?>   OnNewLog;
-        public event Action<string> OnGenRulesCallback;
-        public event Action<string> OnGenOUICallback;
+        public event Action         OnStatusChange     = null!; // OnConnected + OnDisconnected
+        public event Action<Log?>   OnNewLog           = null!;
+        public event Action<string> OnGenRulesCallback = null!;
+        public event Action<string> OnGenOUICallback   = null!;
 
-        public event Action<string> OnReloadBlacklistStatusCallback;
-        public event Action<string> OnReloadBlacklistErrorCallback;
-        public event Action<string> OnReloadWhitelistStatusCallback;
-        public event Action<string> OnReloadWhitelistErrorCallback;
+        public event Action<string> OnReloadBlacklistStatusCallback = null!;
+        public event Action<string> OnReloadBlacklistErrorCallback  = null!;
+        public event Action<string> OnReloadWhitelistStatusCallback = null!;
+        public event Action<string> OnReloadWhitelistErrorCallback  = null!;
 
         public bool         GeneratingRules { get; private set; }
-        public event Action OnGenRulesChange;
+        public event Action OnGenRulesChange = null!;
         public bool         GeneratingOUI { get; private set; }
-        public event Action OnGenOUIChange;
+        public event Action OnGenOUIChange = null!;
         public bool         ReloadingBlacklist { get; private set; }
-        public event Action OnReloadBlacklistChange;
+        public event Action OnReloadBlacklistChange = null!;
         public bool         ReloadingWhitelist { get; private set; }
-        public event Action OnReloadWhitelistChange;
+        public event Action OnReloadWhitelistChange = null!;
 
         public readonly ManualResetEventSlim ConnectionComplete = new ManualResetEventSlim();
 
@@ -103,8 +105,6 @@ namespace Infrastructure.Controller
             OnConnected -= Setup;
         }
 
-        private readonly Dictionary<string, bool> _seenClients = new Dictionary<string, bool>();
-
         [SuppressMessage("ReSharper", "FunctionNeverReturns")]
         private async void Read(string hostname)
         {
@@ -136,10 +136,10 @@ namespace Infrastructure.Controller
                 try
                 {
                     string line;
-                    while ((line = await _reader.ReadLineAsync()) != null)
+                    while ((line = (await _reader.ReadLineAsync())!) != null)
                     {
-                        string cmd = line.Contains(" ") ? line.Substring(0, line.IndexOf(" ")) : line;
-                        string val = line.Substring(line.IndexOf(" ") + 1);
+                        string cmd = line.Contains(" ") ? line.Substring(0, line.IndexOf(" ", StringComparison.Ordinal)) : line;
+                        string val = line.Substring(line.IndexOf(" ", StringComparison.Ordinal) + 1);
 
                         if (cmd != "query" && cmd != "gen_oui.gen_progress")
                             Common.Logger.Debug($"NetMgr <- {cmd}");
@@ -157,50 +157,12 @@ namespace Infrastructure.Controller
                             case "get_cache.cache":
                                 List<Log> logs = JsonConvert.DeserializeObject<List<Log>>(val);
 
-                                // var logsFiltered = new List<Log>();
-                                //
-                                // logsFiltered.AddRange(Enumerable.Range(0, 1000).Select(v => new Log()));
-                                //
-                                // foreach (Log i in logs)
-                                // {
-                                //     // if (_seenClients.ContainsKey(i.Question))
-                                //         // continue;
-                                //     // _seenClients[i.Question] = true;
-                                //     
-                                //     // if (_seenClients.ContainsKey(i.Client) && _seenClients[i.Client] > 2)
-                                //     //     continue;
-                                //     // _seenClients[i.Client] = _seenClients.ContainsKey(i.Client) ? _seenClients[i.Client] + 1 : 1;
-                                //     //
-                                //     // if (!i.Action.StartsWith("block.") && i.Time.Ticks % 3 != 0)
-                                //     //     continue;
-                                //
-                                //     // var key = $"{i.Client}_{i.Action.Split('.')[0]}";
-                                //     // if (_seenClients.ContainsKey(key))
-                                //     //     continue;
-                                //     // _seenClients[key] = true;
-                                //     
-                                //     logsFiltered.Add(i);
-                                // }
-
-                                
                                 await _cacheChannel.Writer.WriteAsync(logs);
                                 break;
 
                             case "query":
                                 Log log = JsonConvert.DeserializeObject<Log>(val);
                                 Common.Logger.Debug($"Incoming: {log}");
-
-                                // if (_seenClients.ContainsKey(log.Question))
-                                    // continue;
-                                // _seenClients[log.Question] = true;
-                                // if (_seenClients.ContainsKey(log.Client) && _seenClients[log.Client] > 2)
-                                //     continue;
-                                // _seenClients[log.Client] = _seenClients.ContainsKey(log.Client) ? _seenClients[log.Client] + 1 : 1;
-
-                                // var key2 = $"{log.Client}_{log.Action.Split('.')[0]}";
-                                // if (_seenClients.ContainsKey(key2))
-                                //     continue;
-                                // _seenClients[key2] = true;
 
                                 _data.Enqueue(log);
 
@@ -279,8 +241,6 @@ namespace Infrastructure.Controller
             }
         }
 
-        // public IEnumerable<Log> Data() => _data.Queue.Any() ? _data.Queue.Reverse() : new List<Log>();
-
         public IEnumerable<Log> Data(string? ip)
         {
             if (_data.Queue.Count == 0)
@@ -294,7 +254,7 @@ namespace Infrastructure.Controller
                 if (ip != null)
                     if (ip == e.Client)
                         yield return e;
-                    else;
+                    else { }
                 else
                     yield return e;
             }
@@ -377,31 +337,6 @@ namespace Infrastructure.Controller
 
             return false;
         }
-
-        // public async Task<bool> ReloadWhitelist()
-        // {
-        //     if (_client == null)
-        //         return false;
-        //
-        //     CancellationTokenSource source = new CancellationTokenSource();
-        //     OnDisconnected += source.Cancel;
-        //
-        //     await Send("reload_whitelist");
-        //     Stopwatch stopwatch = Stopwatch.StartNew();
-        //
-        //     Task task = _reloadWhitelistCompleteEvent.WaitAsync(source.Token);
-        //     if (await Task.WhenAny(task, Task.Delay(25 * 1000, source.Token)) == task)
-        //     {
-        //         Common.Logger.Info("Reload whitelist complete message received",
-        //             new Fields {{"Time (ms)", stopwatch.ElapsedMilliseconds}});
-        //         return true;
-        //     }
-        //
-        //     Common.Logger.Warning("Reload config timeout occured");
-        //     _reloadWhitelistCompleteEvent.Release();
-        //
-        //     return false;
-        // }
 
         public async Task<bool> ReloadBlacklist()
         {

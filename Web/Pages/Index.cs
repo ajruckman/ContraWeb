@@ -17,7 +17,7 @@ namespace Web.Pages
         private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
         [CascadingParameter]
-        public string ClientIP { get; set; }
+        public string? ClientIP { get; set; }
 
         private readonly UpdateTrigger _statusChangeTrigger = new UpdateTrigger();
 

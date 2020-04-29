@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionPrefix>1.0.1</VersionPrefix>
         <VersionSuffix>alpha</VersionSuffix>
         <PackageProjectUrl>https://github.com/ajruckman/ContraWeb/</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ajruckman/ContraWeb/</RepositoryUrl>
@@ -16,6 +16,7 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Docker' ">
         <Optimize>true</Optimize>
+        <NoWarn>1701;1702;1998;4014</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

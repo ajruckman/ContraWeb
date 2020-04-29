@@ -19,7 +19,7 @@ namespace Infrastructure.Schema
         public List<PhysicalAddress>? MACs      { get; set; }
         public List<string>?          Vendors   { get; set; }
         
-        public dynamic RemoveButton { get; set; }
+        public dynamic RemoveButton { get; set; } = null!;
 
         public Whitelist() { }
 

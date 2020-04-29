@@ -6,12 +6,12 @@ namespace Infrastructure.Schema
     public class Blacklist
     {
         public int       ID      { get; set; }
-        public string    Pattern { get; set; }
+        public string    Pattern { get; set; } = null!;
         public DateTime? Expires { get; set; }
         public int       Class   { get; set; }
-        public string    Domain  { get; set; }
-        public string    TLD     { get; set; }
-        public string    SLD     { get; set; }
+        public string    Domain  { get; set; } = null!;
+        public string    TLD     { get; set; } = null!;
+        public string    SLD     { get; set; } = null!;
 
         public Blacklist()
         {

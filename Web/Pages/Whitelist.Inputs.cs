@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable 1998
+#pragma warning disable 4014
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -41,7 +44,7 @@ namespace Web.Pages
             {
                 UpdateOverall();
                 InvokeAsync(StateHasChanged);
-            }, "", 200);
+            }, "");
             
             // New inputs
 
@@ -152,6 +155,7 @@ namespace Web.Pages
             _onInputValidation.Trigger();
         }
 
+        #pragma warning disable 1998
         private async Task OnPatternChange(ChangeEventArgs args)
         {
             var pattern = args.Value?.ToString() ?? "";
@@ -159,6 +163,7 @@ namespace Web.Pages
             UpdateOverall();
             _patternChangeDebouncer!.Reset(pattern);
         }
+        #pragma warning restore 1998
 
         private string ExpiresDateString => Rule().Expires.HasValue
             ? Rule().Expires!.Value.ToString("yyyy-MM-dd")
