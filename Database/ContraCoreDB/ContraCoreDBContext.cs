@@ -33,7 +33,7 @@ namespace Database.ContraCoreDB
             if (!optionsBuilder.IsConfigured)
             {
                 #if DOCKER
-                optionsBuilder.UseNpgsql("Server=10.3.0.16;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
+                optionsBuilder.UseNpgsql("Server=contradb;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
                 #else
                 optionsBuilder.UseNpgsql("Server=10.3.0.16;Port=5432;User Id=contracore_usr;Password=EvPvkro59Jb7RK3o;Database=contradb;");
                 #endif
